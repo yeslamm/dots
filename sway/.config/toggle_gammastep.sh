@@ -1,1 +1,0 @@
-sway/scripts/toggle_gammastep.sh

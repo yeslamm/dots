@@ -1,1 +1,0 @@
-sway/scripts/replay.sh

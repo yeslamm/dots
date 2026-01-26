@@ -1,1 +1,0 @@
-sway/scripts/bright.sh
