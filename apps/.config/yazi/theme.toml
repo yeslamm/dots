@@ -1,0 +1,282 @@
+# A OneDark theme for Yazi
+# Blue Folders + Green Status Bar + Boxxy Layout + White Selection
+
+"$schema" = "https://yazi-rs.github.io/schemas/theme.json"
+
+# : Flavor {{{
+[flavor]
+dark = ""
+light = ""
+# : }}}
+
+# : App {{{
+[app]
+overall = {}
+# : }}}
+
+# : Manager {{{
+[mgr]
+cwd = { fg = "#61afef" } # Blue
+
+# Find
+find_keyword = { fg = "#be5046", bold = true, italic = true, underline = true }
+find_position = { fg = "#c678dd", bg = "reset", bold = true, italic = true }
+
+# Symlink
+symlink_target = { fg = "#c678dd", italic = true }
+
+# Marker
+marker_copied = { fg = "#98c379", bg = "#98c379" }
+marker_cut = { fg = "#e06c75", bg = "#e06c75" }
+marker_marked = { fg = "#56b6c2", bg = "#56b6c2" }
+marker_selected = { fg = "#8fb572", bg = "#8fb572" } # Green
+
+# Count
+count_copied = { fg = "#282c34", bg = "#98c379" }
+count_cut = { fg = "#282c34", bg = "#e06c75" }
+count_selected = { fg = "#282c34", bg = "#8fb572" } # Green
+
+# Border
+border_symbol = "│"
+border_style = { fg = "#5c6370" }
+
+# Highlighting
+syntect_theme = ""
+# : }}}
+
+# : Tabs {{{
+[tabs]
+# Active: Black on Green (Matches Status Bar)
+active = { fg = "#282c34", bg = "#8fb572", bold = true }
+inactive = { fg = "#abb2bf", bg = "#3e4452" }
+
+# Boxxy Separators
+sep_inner = { open = "", close = "" }
+sep_outer = { open = "", close = "" }
+# : }}}
+
+# : Mode {{{
+[mode]
+# Normal Mode: Green (The "Bar Below")
+normal_main = { fg = "#282c34", bg = "#8fb572", bold = true }
+normal_alt = { fg = "#8fb572", bg = "#3e4452" }
+
+# Select Mode: Purple
+select_main = { fg = "#282c34", bg = "#c678dd", bold = true }
+select_alt = { fg = "#c678dd", bg = "#3e4452" }
+
+# Unset Mode: Red
+unset_main = { fg = "#282c34", bg = "#e06c75", bold = true }
+unset_alt = { fg = "#e06c75", bg = "#3e4452" }
+# : }}}
+
+# : Indicator of hovered file {{{
+[indicator]
+# Selection Bar: Bright White Background with Dark Text
+current = { bg = "#cccccc", fg = "#000000", bold = true }
+parent = { bg = "#cccccc", fg = "#000000", bold = true }
+
+# Boxxy Style: Solid vertical bar
+padding = { open = "█", close = "" }
+# : }}}
+
+# : Status bar {{{
+[status]
+overall = {}
+sep_left = { open = "", close = "" }
+sep_right = { open = "", close = "" }
+
+# Permissions
+perm_sep = { fg = "#5c6370" }
+perm_type = { fg = "#8fb572" }  # Green
+perm_read = { fg = "#98c379" }
+perm_write = { fg = "#e06c75" }
+perm_exec = { fg = "#61afef" }
+
+# Progress
+progress_label = { bold = true }
+progress_normal = { fg = "#282c34", bg = "#8fb572" } # Black on Green
+progress_error = { fg = "#282c34", bg = "#e06c75" }
+# : }}}
+
+# : Which {{{
+[which]
+cols = 3
+mask = { bg = "#282c34" }
+cand = { fg = "#61afef" }
+rest = { fg = "#5c6370" }
+desc = { fg = "#c678dd" }
+separator = "  "
+separator_style = { fg = "#5c6370" }
+# : }}}
+
+# : Confirmation {{{
+[confirm]
+border = { fg = "#8fb572" }
+title = { fg = "#8fb572" }
+body = {}
+list = {}
+btn_yes = { reversed = true }
+btn_no = {}
+btn_labels = ["  [Y]es  ", "  (N)o  "]
+# : }}}
+
+# : Spotter {{{
+[spot]
+border = { fg = "#8fb572" }
+title = { fg = "#8fb572" }
+tbl_col = { fg = "#8fb572" }
+tbl_cell = { fg = "#282c34", bg = "#8fb572" }
+# : }}}
+
+# : Notification {{{
+[notify]
+title_info = { fg = "#98c379" }
+title_warn = { fg = "#e5c07b" }
+title_error = { fg = "#e06c75" }
+
+icon_info = ""
+icon_warn = ""
+icon_error = ""
+# : }}}
+
+# : Picker {{{
+[pick]
+border = { fg = "#8fb572" }
+active = { fg = "#c678dd", bold = true }
+inactive = {}
+# : }}}
+
+# : Input {{{
+[input]
+border = { fg = "#8fb572" }
+title = {}
+value = {}
+selected = { reversed = true }
+# : }}}
+
+# : Completion {{{
+[cmp]
+border = { fg = "#8fb572" }
+active = { fg = "#282c34", bg = "#8fb572" }
+inactive = {}
+
+icon_file = ""
+icon_folder = ""
+icon_command = ""
+# : }}}
+
+# : Task manager {{{
+[tasks]
+border = { fg = "#8fb572" }
+title = {}
+hovered = { fg = "#c678dd", bold = true }
+# : }}}
+
+# : Help menu {{{
+[help]
+on = { fg = "#8fb572" }
+run = { fg = "#c678dd" }
+desc = {}
+hovered = { reversed = true, bold = true }
+footer = { fg = "#282c34", bg = "#abb2bf" }
+# : }}}
+
+# : File-specific styles {{{
+[filetype]
+rules = [
+  # Directories -> Blue
+  { mime = "inode/directory", fg = "#61afef" },
+
+  # Image
+  { mime = "image/*", fg = "#e5c07b" },
+  # Media
+  { mime = "{audio,video}/*", fg = "#c678dd" },
+  # Archive
+  { mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "#e06c75" },
+  # Document
+  { mime = "application/{pdf,doc,rtf}", fg = "#56b6c2" },
+  # Fallback
+  { url = "*/", fg = "#abb2bf" },
+]
+# : }}}
+
+# : Icons {{{
+[icon]
+globs = []
+dirs = [
+  { name = ".config", text = "", fg = "#61afef" },
+  { name = ".git", text = "", fg = "#61afef" },
+  { name = "Desktop", text = "", fg = "#61afef" },
+  { name = "Documents", text = "", fg = "#61afef" },
+  { name = "Downloads", text = "", fg = "#61afef" },
+  { name = "Pictures", text = "", fg = "#61afef" },
+  { name = "Videos", text = "", fg = "#61afef" },
+]
+files = [
+  { name = ".bashrc", text = "", fg = "#98c379" },
+  { name = ".zshrc", text = "", fg = "#98c379" },
+  { name = ".gitconfig", text = "", fg = "#e06c75" },
+  { name = "dockerfile", text = "󰡨", fg = "#61afef" },
+  { name = "makefile", text = "", fg = "#5c6370" },
+  { name = "readme.md", text = "󰂺", fg = "#abb2bf" },
+  { name = "license", text = "", fg = "#e5c07b" },
+]
+exts = [
+  { name = "zip", text = "", fg = "#e5c07b" },
+  { name = "rar", text = "", fg = "#e5c07b" },
+  { name = "7z", text = "", fg = "#e5c07b" },
+  { name = "tar", text = "", fg = "#e5c07b" },
+  { name = "gz", text = "", fg = "#e5c07b" },
+  { name = "xz", text = "", fg = "#e5c07b" },
+  { name = "py", text = "", fg = "#e5c07b" },
+  { name = "js", text = "", fg = "#e5c07b" },
+  { name = "ts", text = "", fg = "#56b6c2" },
+  { name = "html", text = "", fg = "#e06c75" },
+  { name = "css", text = "", fg = "#61afef" },
+  { name = "scss", text = "", fg = "#c678dd" },
+  { name = "json", text = "", fg = "#e5c07b" },
+  { name = "md", text = "", fg = "#abb2bf" },
+  { name = "txt", text = "󰈙", fg = "#98c379" },
+  { name = "pdf", text = "", fg = "#e06c75" },
+  { name = "doc", text = "󰈬", fg = "#61afef" },
+  { name = "docx", text = "󰈬", fg = "#61afef" },
+  { name = "xls", text = "󰈛", fg = "#98c379" },
+  { name = "xlsx", text = "󰈛", fg = "#98c379" },
+  { name = "ppt", text = "󰈧", fg = "#e06c75" },
+  { name = "pptx", text = "󰈧", fg = "#e06c75" },
+  { name = "mp3", text = "", fg = "#61afef" },
+  { name = "wav", text = "", fg = "#61afef" },
+  { name = "flac", text = "", fg = "#61afef" },
+  { name = "mp4", text = "", fg = "#e5c07b" },
+  { name = "mkv", text = "", fg = "#e5c07b" },
+  { name = "avi", text = "", fg = "#e5c07b" },
+  { name = "jpg", text = "", fg = "#c678dd" },
+  { name = "jpeg", text = "", fg = "#c678dd" },
+  { name = "png", text = "", fg = "#c678dd" },
+  { name = "gif", text = "", fg = "#c678dd" },
+  { name = "svg", text = "󰜫", fg = "#e5c07b" },
+  { name = "go", text = "", fg = "#61afef" },
+  { name = "rs", text = "", fg = "#e5c07b" },
+  { name = "c", text = "", fg = "#61afef" },
+  { name = "cpp", text = "", fg = "#61afef" },
+  { name = "h", text = "", fg = "#c678dd" },
+  { name = "sh", text = "", fg = "#5c6370" },
+  { name = "bash", text = "", fg = "#98c379" },
+  { name = "zsh", text = "", fg = "#98c379" },
+  { name = "fish", text = "", fg = "#5c6370" },
+  { name = "lua", text = "", fg = "#61afef" },
+  { name = "vim", text = "", fg = "#98c379" },
+  { name = "conf", text = "", fg = "#5c6370" },
+  { name = "ini", text = "", fg = "#5c6370" },
+  { name = "yaml", text = "", fg = "#5c6370" },
+  { name = "yml", text = "", fg = "#5c6370" },
+  { name = "toml", text = "", fg = "#e06c75" },
+]
+conds = [
+  # Fallback Directory Icon -> Blue
+  { if = "dir", text = "", fg = "#61afef" },
+  { if = "exec", text = "", fg = "#98c379" },
+  { if = "!dir", text = "", fg = "#abb2bf" },
+]
+# : }}}

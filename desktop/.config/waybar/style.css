@@ -1,0 +1,147 @@
+* {
+    /* font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font", sans-serif; */
+    font-family: "Iosevka Nerd Font", "Symbols Nerd Font", sans-serif;
+    font-size: 17px;
+}
+
+#waybar {
+  /* background-color: rgba(40, 40, 40, 1); */
+  background-color: rgba(0, 0, 0, 1);
+  color: #ffffff;
+}
+
+/* --- Workspaces (Vertical: 0px, Horizontal: 4px) --- */
+
+#workspaces button.active {
+  border-bottom: 1px solid #3584e4;
+  border-radius: 0px;
+  /* Vertical padding removed (0px), Horizontal kept at 4px */
+  padding: 0px 4px;  
+  margin: 0px 0px;
+  background: #3584e4;
+  color: #ffffff;
+}
+
+#workspaces button {
+  border-bottom: 0px solid #5e5c64;
+  border-radius: 0px;
+  /* Vertical padding removed (0px), Horizontal kept at 4px */
+  padding: 0px 4px;  
+  margin: 0px 0px;
+  background: rgba(46, 52, 64, 0);
+  color: #ffffff;
+}
+
+#workspaces button.focused {
+  border-bottom: 1px solid #ffffff;
+  border-radius: 0px;
+  /* Vertical padding removed (0px), Horizontal kept at 4px */
+  padding: 0px 4px;  
+  margin: 0px 0px;
+  background: #575759;
+  color: #ffffff;
+}
+
+#workspaces button.urgent {
+  border-bottom: 0px solid #c01c28;
+  border-radius: 0px;
+  /* Vertical padding removed (0px), Horizontal kept at 4px */
+  padding: 0px 4px;  
+  margin: 0px 0px;
+  background: rgba(198, 40, 40, 0.3);
+  color: #ffffff;
+}
+
+#workspaces button.active label,
+#workspaces button.focused label,
+#workspaces button.urgent label,
+#workspaces button label {
+  /* No padding here */
+}
+
+/* --- Modules with ZERO Vertical Padding --- */
+
+.binding_mode {
+  border-bottom: 0px solid #e5a50a;
+  border-radius: 0px;
+  /* 0px vertical, 0px horizontal */
+  padding: 0px 0px;  
+  margin: 0px 0px;
+  background: rgba(46, 52, 64, 0.2);
+  color: #2e3436;
+}
+
+/* Clock */
+#clock {
+  background: rgba(46, 52, 64, 0);
+  color: #ffffff;
+  border-radius: 0px;
+  /* 0px vertical, 0px horizontal */
+  margin-top: 2px;
+  padding: 0px 0px;  
+  font-size: 20px;
+}
+
+/* All other modules (disk, memory, cpu, etc.) */
+#memory, #disk, #cpu, #temperature, #pulseaudio, #backlight, #sway-language #network {
+  background: rgba(46, 52, 64, 0);
+  color: #ffffff;
+  border-radius: 0px;
+  margin: 0px;
+  /* 0px vertical, 0px horizontal */
+  padding: 0px 0px;  
+}
+
+/* Mode (Vertical: 0px, Horizontal: 4px) */
+#mode {
+    background-color: #575759;
+    color: #ffffff;    
+    /* Vertical padding removed (0px), Horizontal kept at 4px */
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-left: 12px; 
+    margin-right: 0px;
+    border-radius: 0px;
+}
+
+/* Custom Updates */
+#custom-updates {
+  /* 0px vertical, 0px horizontal */
+  padding: 0px 0px;
+  margin-right: 16px;
+  font-size: 16px;
+}
+
+/* Tray */
+#tray {
+    background: rgba(46, 52, 64, 0);
+    color: #ffffff;
+    border-radius: 0px;
+    margin: 0px;
+    margin-left: 16px; /* Kept original 0px margin-right */
+    /* 0px vertical, 0px horizontal */
+    padding: 0px 0px;
+}
+
+/* Battery (Vertical: 0px, Horizontal: 0px in your original request, 
+   but since we kept 4px for workspaces/mode, let's confirm the horizontal for battery) */
+#battery {
+  /* You had padding: 2px 0px; here. Now 0px vertical, 0px horizontal */
+  padding: 0px 0px; 
+  /* margin: 0px 0px; */
+  margin-right: 8px;
+}
+
+/* power-profiles-daemon (Font size only) */
+#power-profiles-daemon {
+    font-size: 16px;
+    margin-top: 1px;
+}
+
+/* --- Separators (No Padding) --- */
+#custom-separator0,
+#custom-separator1 {
+  color: #666666;
+  /* Padding remains 0px */
+  padding: 0px;
+}

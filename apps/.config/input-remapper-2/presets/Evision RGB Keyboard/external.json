@@ -1,0 +1,106 @@
+[
+    {
+        "input_combination": [
+            {
+                "type": 1,
+                "code": 58,
+                "origin_hash": "db334ca53b788b20f3d0a48913f8e60c"
+            }
+        ],
+        "target_uinput": "keyboard",
+        "output_symbol": "Escape",
+        "mapping_type": "key_macro"
+    },
+    {
+        "input_combination": [
+            {
+                "type": 1,
+                "code": 29,
+                "origin_hash": "db334ca53b788b20f3d0a48913f8e60c"
+            },
+            {
+                "type": 1,
+                "code": 58,
+                "origin_hash": "db334ca53b788b20f3d0a48913f8e60c"
+            },
+            {
+                "type": 1,
+                "code": 35,
+                "origin_hash": "db334ca53b788b20f3d0a48913f8e60c"
+            }
+        ],
+        "target_uinput": "keyboard",
+        "output_symbol": "KP_Left",
+        "name": "Escape + h",
+        "mapping_type": "key_macro"
+    },
+    {
+        "input_combination": [
+            {
+                "type": 1,
+                "code": 29,
+                "origin_hash": "db334ca53b788b20f3d0a48913f8e60c"
+            },
+            {
+                "type": 1,
+                "code": 58,
+                "origin_hash": "db334ca53b788b20f3d0a48913f8e60c"
+            },
+            {
+                "type": 1,
+                "code": 36,
+                "origin_hash": "db334ca53b788b20f3d0a48913f8e60c"
+            }
+        ],
+        "target_uinput": "keyboard",
+        "output_symbol": "KP_Down",
+        "name": "Escape + j",
+        "mapping_type": "key_macro"
+    },
+    {
+        "input_combination": [
+            {
+                "type": 1,
+                "code": 29,
+                "origin_hash": "db334ca53b788b20f3d0a48913f8e60c"
+            },
+            {
+                "type": 1,
+                "code": 58,
+                "origin_hash": "db334ca53b788b20f3d0a48913f8e60c"
+            },
+            {
+                "type": 1,
+                "code": 37,
+                "origin_hash": "db334ca53b788b20f3d0a48913f8e60c"
+            }
+        ],
+        "target_uinput": "keyboard",
+        "output_symbol": "KP_Up",
+        "name": "Escape + k",
+        "mapping_type": "key_macro"
+    },
+    {
+        "input_combination": [
+            {
+                "type": 1,
+                "code": 29,
+                "origin_hash": "db334ca53b788b20f3d0a48913f8e60c"
+            },
+            {
+                "type": 1,
+                "code": 58,
+                "origin_hash": "db334ca53b788b20f3d0a48913f8e60c"
+            },
+            {
+                "type": 1,
+                "code": 38,
+                "origin_hash": "db334ca53b788b20f3d0a48913f8e60c"
+            }
+        ],
+        "target_uinput": "keyboard",
+        "output_symbol": "KP_Left",
+        "name": "Escape + l",
+        "mapping_type": "key_macro"
+    }
+]

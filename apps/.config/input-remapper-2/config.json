@@ -1,0 +1,7 @@
+{
+    "version": "2.2.0",
+    "autoload": {
+        "Evision RGB Keyboard": "external",
+        "AT Translated Set 2 keyboard": "main_kb"
+    }
+}

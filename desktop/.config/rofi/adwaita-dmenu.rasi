@@ -1,0 +1,137 @@
+/**
+ * Rofi Adwaita Suggestions Theme (Validated Syntax)
+ *
+ * This configuration ensures all color definitions use Rofi's required 
+ * hexadecimal format (#RRGGBB) to prevent 'unexpected rgb[a]' errors.
+ */
+
+configuration {
+    /* Define the modes Rofi should use for suggestions */
+    modi: "run,drun,ssh"; 
+    show-icons: true;     
+    font: "Cantarell 10"; 
+}
+
+* {
+    /* --- Adwaita Light Palette (Using strict #RRGGBB syntax) --- */
+    
+    /* Key Colors */
+    selected-normal-background: #3584E4; /* GNOME Blue (Accent) */
+    selected-normal-foreground: #FFFFFF; /* White */
+    
+    /* Normal State Colors */
+    normal-background:          #FFFFFF; /* White */
+    normal-foreground:          #333333; /* Dark text */
+    
+    /* Alternate State (Matches Normal) */
+    alternate-normal-background: @normal-background;
+    alternate-normal-foreground: @normal-foreground;
+    
+    /* Urgent State Colors (Optional red) */
+    urgent-background:          #E95459; 
+    urgent-foreground:          #FFFFFF;
+    
+    /* Active State (Matches Selected) */
+    active-background:          @selected-normal-background;
+    active-foreground:          @selected-normal-foreground;
+    
+    /* Main Window Background */
+    background-color:           #FFFFFF; 
+    foreground:                 #333333;
+    
+    /* Border and Divider Color */
+    border-color:               #D3D3D3; 
+    
+    /* --- General Styling --- */
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+window {
+    background-color: @background-color;
+    border:           1px;
+    border-color:     @border-color;
+    
+    location:         center; 
+    anchor:           center;
+    
+    width:            500px; 
+    height:           40%; 
+    
+    padding:          0;
+    border-radius:    8px; 
+    
+    box-shadow: 0 4px 6px #0000001A; /* Shadow with hex RGBA for transparency */
+}
+
+mainbox {
+    border: 0;
+    padding: 0;
+    children: [ inputbar, listview ];
+}
+
+/* -------------------------------------- */
+/* 1. Input Bar (Search Field)            */
+/* -------------------------------------- */
+inputbar {
+    children: [ prompt, entry ];
+    expand: false;
+    background-color: @normal-background;
+    text-color: @normal-foreground;
+    padding: 10px 15px; 
+    border: 0;
+    border-radius: 8px 8px 0 0; 
+}
+
+prompt {
+    padding: 0px 10px 0px 0px;
+    text-color: @selected-normal-background; 
+}
+
+entry {
+    padding: 0;
+}
+
+/* -------------------------------------- */
+/* 2. List View (Suggestions)             */
+/* -------------------------------------- */
+listview {
+    lines: 10;          
+    columns: 1;         
+    fixed-height: true; 
+    
+    spacing: 0px;       
+    
+    border: 0;
+    padding: 5px 10px 5px 10px; 
+    background-color: @normal-background;
+    scrollbar: false;
+}
+
+element {
+    padding: 8px 10px; 
+    border: 0;
+    background-color: @normal-background;
+    text-color: @normal-foreground;
+    border-radius: 4px; 
+}
+
+element selected {
+    background-color: @selected-normal-background;
+    text-color: @selected-normal-foreground;
+    
+    margin: 0; 
+    padding: 8px 10px;
+}
+
+element-icon {
+    size: 1.2em; 
+    margin: 0 10px 0 0;
+}
+
+element-text {
+    background-color: inherit;
+    text-color:       inherit;
+    highlight:        bold; 
+}

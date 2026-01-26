@@ -1,0 +1,10 @@
+return {
+  'sindrets/diffview.nvim',
+  cmd = { 'DiffviewOpen', 'DiffviewClose', 'DiffviewToggleFiles', 'DiffviewFocusFiles' },
+  keys = { { '<leader>gv', '<cmd>DiffviewOpen<CR>', desc = 'Open Diffview' } },
+  opts = {
+    -- Your desired configuration
+    -- Example:
+    diff_bin = 'diff', -- Set this to 'diff' for standard diff or 'delta' if you have it installed
+  },
+}
