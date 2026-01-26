@@ -1,0 +1,1 @@
+sway/scripts/sway-run.sh

@@ -1,0 +1,341 @@
+# ==============================================================================
+#  SWAY CONFIGURATION
+# ==============================================================================
+
+# ==============================================================================
+#  1. VARIABLES & DEFINITIONS
+# ==============================================================================
+
+set $mod Mod4
+
+set $q 24
+set $w 25
+set $e 26
+set $r 27
+set $t 28
+set $y 29
+set $u 30
+set $i 31
+set $o 32
+set $p 33
+
+set $a 38
+set $s 39
+set $d 40
+set $f 41
+set $g 42
+set $h 43
+set $j 44
+set $k 45
+set $l 46
+
+set $left  43
+set $down  44
+set $up    45
+set $right 46
+set $l_mode 46
+
+set $z 52
+set $x 53
+set $c 54
+set $v 55
+set $b 56
+set $n 57
+set $m 58
+
+set $semicolon  47
+set $apostrophe 48
+set $grave      49
+set $comma      59
+set $period     60
+
+set $term       kitty
+set $menu       fuzzel
+set $files      exec $term -e yazi
+set $g_files    pcmanfm
+set $scripts    ~/.config/sway/scripts
+
+# ==============================================================================
+#  2. HARDWARE: INPUT & OUTPUT
+# ==============================================================================
+
+output * bg ~/Pictures/darkmountain.jpg fill
+
+input type:keyboard {
+    xkb_layout "us,ara"
+    xkb_capslock disabled
+    # xkb_options "grp:alt_shift_toggle, caps:escape"
+    xkb_options "grp:alt_shift_toggle"
+    repeat_delay 190
+    repeat_rate 60
+}
+
+input type:touchpad {
+    accel_profile adaptive
+    pointer_accel 0.4
+    scroll_factor 0.8
+    dwt enabled
+    tap enabled
+    tap_button_map lrm
+    drag_lock disabled
+}
+
+bindgesture swipe:3:left workspace prev
+bindgesture swipe:3:right workspace next
+
+seat seat0 xcursor_theme capitaine-cursors-r3 24
+seat seat0 hide_cursor when-typing enable
+mouse_warping output
+# focus_wrapping no
+
+# ==============================================================================
+#  3. AUTOSTART
+# ==============================================================================
+
+exec_always /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+exec --no-startup-id input-remapper-control --command autoload
+exec --no-startup-id swaync
+exec easyeffects --hide-window
+exec asusctl profile set Quiet
+exec gammastep -l 31.11167:30.94583
+
+exec --no-startup-id nm-applet || notify-send "Network Applet Failed"
+exec --no-startup-id sleep 1 && blueman-applet || notify-send "Bluetooth Failed"
+
+exec $scripts/idle-mgr.sh
+exec --no-startup-id flameshot
+exec --no-startup-id copyq --start-server
+exec sleep 1 && firefox
+
+exec wpctl set-volume @DEFAULT_SINK@ 0.30
+exec_always wpctl set-volume @DEFAULT_SOURCE@ 0.40
+exec_always amixer -c 1 set 'Internal Mic Boost' 0
+
+# ==============================================================================
+#  4. APPEARANCE & THEME
+# ==============================================================================
+
+xwayland enable
+
+default_border pixel 2
+for_window [app_id=".*"] border pixel 2
+hide_edge_borders smart
+gaps inner 10
+smart_gaps on
+
+client.focused          #d3d7cf  #d3d7cf  #2e3436  #d3d7cf    #d3d7cf
+client.unfocused        #575759  #575759  #ffffff  #575759    #575759
+client.focused_inactive #888a85  #888a85  #2e3436  #888a85    #888a85
+client.urgent           #cc0000  #cc0000  #ffffff  #cc0000    #cc0000
+
+bar {
+    swaybar_command waybar
+}
+
+# ==============================================================================
+#  5. WINDOW RULES
+# ==============================================================================
+
+for_window [app_id="fdm"] floating enable, move scratchpad
+for_window [app_id="FileRoller"] floating enable
+for_window [app_id="org.strawberrymusicplayer.strawberry"] floating enable
+for_window [app_id="com.github.hluk.copyq"] floating enable, border pixel 1
+
+for_window [app_id="pavucontrol"] floating enable, border pixel 1, scratchpad move
+for_window [app_id="nm-connection-editor"] floating enable, border pixel 1, sticky enable, scratchpad move
+for_window [app_id="blueman-manager"] floating enable, border pixel 1, sticky enable, scratchpad move
+for_window [app_id="blueman-services"] floating enable, border pixel 1, sticky enable, scratchpad move
+
+for_window [title="float-term"] floating enable, resize set 1100 800, move position center, title set ""
+
+for_window [app_id="firefox" title="^Extension: \(.*\) - .*$"] floating enable
+for_window [app_id="firefox" title="Extension:.*"] floating enable, focus
+
+# ==============================================================================
+#  6. KEYBINDINGS: LAUNCHERS & SYSTEM
+# ==============================================================================
+
+bindsym $mod+Return         exec $term
+bindsym $mod+Shift+Return   exec $term --title=float-term
+bindsym $mod+space          exec --no-startup-id $menu
+
+bindcode $mod+$y            exec $files
+bindcode $mod+Shift+$y      exec $term --title=float-term -e yazi
+bindcode $mod+$g            exec $g_files
+bindcode $mod+$b            exec $term -e btop
+bindcode $mod+Shift+$b      exec $term --title=float-term -e btop
+bindcode $mod+$t            exec $term -e watch -n 3 -d sensors
+
+bindcode $mod+$q            kill
+bindsym  $mod+Shift+q       exec swaymsg kill
+bindcode $mod+$x            exec $scripts/kill-focused.sh
+bindcode $mod+Shift+$r      reload
+bindcode Control+$mod+$r    exec $scripts/replay.sh save
+bindcode Control+$mod+Shift+$r exec $scripts/replay.sh toggle
+
+# --- GPU Screen Recorder Control (ShadowPlay Style) ---
+bindsym $mod+F10       exec $scripts/replay.sh save
+bindsym $mod+F9        exec $scripts/replay.sh toggle
+bindsym $mod+Shift+F9  exec $scripts/replay.sh record
+
+# bindsym  $mod+Shift+F23     nop
+
+# ==============================================================================
+#  7. KEYBINDINGS: NAVIGATION & LAYOUT
+# ==============================================================================
+
+bindsym  $mod+tab           focus mode_toggle
+bindcode $mod+$left         focus left
+bindcode $mod+$down         focus down
+bindcode $mod+$up           focus up
+bindcode $mod+$right        focus right
+
+bindcode $mod+Shift+$left   move left
+bindcode $mod+Shift+$down   move down
+bindcode $mod+Shift+$up     move up
+bindcode $mod+Shift+$right  move right
+
+bindcode $mod+Shift+$period move workspace to output next
+bindcode $mod+Shift+$comma  move workspace to output prev
+bindcode $mod+$grave        workspace back_and_forth
+
+bindcode $mod+$semicolon    split v
+bindcode $mod+$apostrophe   split h
+bindcode $mod+$f            floating toggle
+bindsym  F11                fullscreen
+floating_modifier $mod normal
+
+bindsym $mod+equal          move scratchpad
+bindsym $mod+minus          scratchpad show
+
+bindcode Control+$mod+$left  resize shrink width 40px
+bindcode Control+$mod+$down  resize grow height 40px
+bindcode Control+$mod+$up    resize shrink height 40px
+bindcode Control+$mod+$right resize grow width 40px
+
+# ==============================================================================
+#  8. KEYBINDINGS: WORKSPACES
+# ==============================================================================
+
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Shift+0 move container to workspace number 10
+
+# ==============================================================================
+#  9. KEYBINDINGS: MEDIA & UTILITIES
+# ==============================================================================
+
+bindsym --locked XF86AudioRaiseVolume exec --no-startup-id $scripts/vol.sh up
+bindsym --locked XF86AudioLowerVolume exec --no-startup-id $scripts/vol.sh down
+bindsym --locked XF86AudioMute        exec --no-startup-id $scripts/vol.sh mute
+bindcode --locked $mod+$u             exec --no-startup-id $scripts/vol.sh up
+bindcode --locked $mod+$d             exec --no-startup-id $scripts/vol.sh down
+bindcode --locked $mod+$m             exec --no-startup-id $scripts/vol.sh mute
+
+bindsym --locked XF86MonBrightnessUp   exec --no-startup-id $scripts/bright.sh up
+bindsym --locked XF86MonBrightnessDown exec --no-startup-id $scripts/bright.sh down
+bindcode --locked $mod+Shift+$u        exec --no-startup-id $scripts/bright.sh up
+bindcode --locked $mod+Shift+$d        exec --no-startup-id $scripts/bright.sh down
+
+bindsym  XF86AudioPrev exec --no-startup-id $scripts/media.sh prev
+bindsym  mod4+F6       exec --no-startup-id $scripts/media.sh prev
+bindcode $mod+$p       exec --no-startup-id $scripts/media.sh prev
+
+bindsym  XF86AudioPlay exec --no-startup-id $scripts/media.sh play-pause
+bindsym  mod4+F7       exec --no-startup-id $scripts/media.sh play-pause
+bindcode $mod+$c       exec --no-startup-id $scripts/media.sh play-pause
+
+bindsym  XF86AudioNext exec --no-startup-id $scripts/media.sh next
+bindsym  mod4+F8       exec --no-startup-id $scripts/media.sh next
+bindcode $mod+$n       exec --no-startup-id $scripts/media.sh next
+
+bindcode $mod+Shift+$n exec swaync-client -t -sw
+bindcode $mod+Shift+$c exec swaync-client --close-latest
+
+bindcode $mod+$i       exec $scripts/idle-mgr.sh
+bindcode $mod+$o       exec $scripts/idle-off.sh
+bindsym Mod1+Print     exec $scripts/ocr.sh
+bindcode $mod+$v       exec copyq toggle
+
+bindcode Control+Shift+$s exec --no-startup-id flameshot gui -c
+bindcode Control+mod1+$s  exec --no-startup-id flameshot gui -p ~/Pictures/Screenshots
+bindsym  Print            exec --no-startup-id flameshot full -c && notify-send -t 1000 "Screenshot copied"
+bindsym  Shift+Print      exec --no-startup-id flameshot full -p ~/Pictures/Screenshots && notify-send -t 1000 "Screenshot saved"
+
+# ==============================================================================
+#  10. MODES
+# ==============================================================================
+
+bindcode $mod+$s mode Super
+mode Super {
+    bindcode $s exec "swaylock -f -c 000000 -F -e -k -L && ( $scripts/sentry.sh & ) && sleep 1 && systemctl suspend", mode default
+    bindcode $l_mode exec $scripts/lock-ns.sh, mode default
+    bindcode $e exec swaymsg exit, mode default
+    bindcode $r exec systemctl reboot, mode default
+    bindcode $p exec systemctl poweroff, mode default
+
+    bindcode $g exec $scripts/toggle_gammastep.sh, mode default
+    bindcode $u exec $term -e sh -c 'sudo pacman -Syu && yay -Syua; read -p "Press enter to exit..."', mode default
+    bindcode $a exec $term -e sh -c 'alsamixer', mode default
+
+    bindsym Escape mode default
+    bindsym Return mode default
+    bindcode $mod+$s mode default
+}
+
+bindcode $mod+$a mode Apps
+
+mode Apps {
+    bindcode $f exec firefox, mode "default"
+    bindcode $h exec heroic, mode "default"
+
+    bindsym Escape mode "default"
+    bindsym Return mode "default"
+    bindcode $mod+$a mode "default"
+}
+
+bindsym XF86Launch1 mode Power
+bindsym $mod+Escape mode Power
+mode Power {
+    bindcode $q exec asusctl profile set Quiet \
+        && pkill -RTMIN+8 waybar \
+        && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Profile: Quiet", mode "default"
+    
+    bindcode $b exec asusctl profile set Balanced \
+        && pkill -RTMIN+8 waybar \
+        && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Profile: Balanced", mode "default"
+    
+    bindcode $p exec asusctl profile set Performance \
+        && pkill -RTMIN+8 waybar \
+        && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Profile: Performance", mode "default"
+
+    bindcode $semicolon exec notify-send -t 2000 -h string:x-canonical-private-synchronous:asus " Current: $(asusctl profile get | grep -oP '(Quiet|Balanced|Performance)')", mode "default"
+      
+    bindsym Escape mode "default"
+    bindsym Return mode "default"
+    bindsym XF86Launch1 mode "default"
+    bindsym $mod+Escape mode "default"
+}
+# ==============================================================================
+#  11. INCLUDES
+# ==============================================================================
+
+include /etc/sway/config.d/*

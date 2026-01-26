@@ -1,0 +1,1 @@
+sway/scripts/lock-ns.sh

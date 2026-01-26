@@ -1,0 +1,1 @@
+sway/scripts/kill-focused.sh
