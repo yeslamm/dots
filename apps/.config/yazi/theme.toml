@@ -23,7 +23,7 @@ find_keyword = { fg = "#be5046", bold = true, italic = true, underline = true }
 find_position = { fg = "#c678dd", bg = "reset", bold = true, italic = true }
 
 # Symlink
-symlink_target = { fg = "#c678dd", italic = true }
+symlink_target = { fg = "#666666", italic = true }
 
 # Marker
 marker_copied = { fg = "#98c379", bg = "#98c379" }

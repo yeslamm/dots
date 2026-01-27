@@ -1,0 +1,153 @@
+# =============================================================================
+# OPTIMIZED SWAYIMG CONFIGURATION (FIXED)
+# =============================================================================
+
+[general]
+# Start in viewer mode. Use 'swayimg --gallery' alias for gallery start.
+mode = viewer
+
+# Disable window decorations for tiling WM integration.
+decoration = no
+
+# Application ID for window rules (e.g., floating enable).
+app_id = swayimg
+
+[viewer]
+# WINDOW BACKGROUND:
+# CHANGED: Set to solid black (#000000ff).
+# This prevents the wallpaper from showing through transparency.
+window = #000000ff
+
+# TRANSPARENCY:
+# Use 'grid' for technical accuracy (checking alpha channels).
+# Toggle to solid color via keybinding if needed.
+transparency = grid
+
+# SCALING:
+# 'optimal' fits large images but keeps small images at 100% to avoid blur.
+scale = optimal
+
+# ANTIALIASING:
+# Magic Kernel Sharp 2013: Best balance of sharpness and artifact reduction.
+antialiasing = mks13
+
+# Loop navigation at end of list.
+loop = yes
+
+# Cache and Preload
+# Keep 5 previous images in memory for comparison.
+history = 5
+# Preload next image to eliminate decode latency.
+preload = 1
+
+[gallery]
+# THUMBNAIL SIZE:
+# 300px is a sweet spot for 1080p/1440p displays.
+size = 300
+
+# VISUALS:
+# Do not crop thumbnails (fill = no) to see full composition.
+fill = no
+# Dark grey background reduces eye strain compared to pitch black.
+background = #202020ff
+# High contrast selection border.
+select = #404040ff
+border = #ffffffaa
+shadow = #00000088
+
+# PERFORMANCE:
+# Store thumbnails on disk to speed up restart.
+pstore = yes
+# Cache 500 thumbnails in RAM for smooth scrolling.
+cache = 500
+# Preload off-screen thumbnails.
+preload = yes
+
+[list]
+# Standard alphabetical sort.
+order = alpha
+# If a single file is opened, implicitly open the whole directory.
+all = yes
+# Do not recurse subdirectories by default (keeps lists manageable).
+recursive = no
+
+[slideshow]
+# 4 seconds per slide.
+time = 4
+
+[font]
+# High legibility font settings.
+name = Monospace
+size = 14
+color = #ffffffff
+# Hard shadow ensures readability on white images.
+shadow = #000000ff
+background = #00000000
+
+[info]
+# Heads-Up Display (HUD) settings.
+show = yes
+# Auto-hide info after 5 seconds to clear view.
+info_timeout = 5
+padding = 10
+
+# HUD LAYOUT:
+# Top Left: Filename
+# Top Right: Index (e.g., 5/100)
+# Bottom Left: Technical Data (Res, Size, Format)
+# Bottom Right: EXIF Data (Camera settings)
+[info.viewer]
+top_left = +name
+top_right = +index
+bottom_left = +imagesize, +filesize, +format
+bottom_right = +exif
+
+# =============================================================================
+# KEYBINDINGS
+# =============================================================================
+
+[keys.viewer]
+# NAVIGATION (Vim Style)
+# Next/Prev File
+j = next_file
+k = prev_file
+Space = next_file
+BackSpace = prev_file
+# Panning (when zoomed)
+h = step_left
+l = step_right
+Up = step_up
+Down = step_down
+Left = step_left
+Right = step_right
+
+# ZOOM & VIEW
+f = fullscreen
+0 = zoom real
+Equal = zoom +10
+Minus = zoom -10
+z = zoom fit
+Z = zoom fill
+
+# ROTATION (Visual only)
+r = rotate_right
+Shift+r = rotate_left
+m = flip_vertical
+Shift+m = flip_horizontal
+
+# EXIT
+q = exit
+Escape = exit
+
+[keys.gallery]
+# NAVIGATION
+h = step_left
+j = step_down
+k = step_up
+l = step_right
+Enter = mode viewer
+
+# ACTIONS
+f = fullscreen
+q = exit
+Escape = exit
