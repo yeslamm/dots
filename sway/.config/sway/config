@@ -137,7 +137,7 @@ bar {
 # ==============================================================================
 
 for_window [app_id="fdm"] floating enable, resize set 1100 800, move position center, move scratchpad
-for_window [class="com-abdownloadmanager-desktop-AppKt"] floating enable, move scratchpad
+for_window [class="com-abdownloadmanager-desktop-AppKt"] floating enable
 for_window [app_id="FileRoller"] floating enable
 for_window [app_id="org.strawberrymusicplayer.strawberry"] floating enable
 for_window [app_id="com.github.hluk.copyq"] floating enable, border pixel 1
