@@ -27,7 +27,6 @@ require('lazy').setup({
     require 'plugins.autopairs',
     require 'plugins.gitsigns',
     require 'plugins.neogit',
-    require 'plugins.fugitive',
     require 'plugins.which_key',
     require 'plugins.telescope',
     require 'plugins.lualine',

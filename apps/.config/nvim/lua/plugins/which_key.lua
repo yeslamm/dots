@@ -57,9 +57,11 @@ return { -- Useful plugin to show you pending keybinds.
             { '<leader>t', group = '[T]oggle/Trouble' },
             -- Git group
             { '<leader>g', group = '[G]it', mode = { 'n', 'v' } },
-            { '<leader>gs', desc = 'Stage Hunk' },
+            { '<leader>gg', desc = 'Lazygit' },
             { '<leader>gn', desc = 'Neogit' },
             { '<leader>gv', desc = 'Diffview' },
+            { '<leader>gs', desc = 'Stage Hunk' },
+            { '<leader>gr', desc = 'Reset Hunk' },
             { '<leader>gb', desc = 'Blame Line' },
             -- Diagnostic group
             { '<leader>d', group = '[D]ebug' },

@@ -62,7 +62,7 @@ return {
 
         -- KEYMAPS
         vim.keymap.set('n', '<leader>r', _run_code, { noremap = true, silent = true, desc = 'Run_Code' })
-        vim.keymap.set('n', '<leader>gl', _lazygit_toggle, { noremap = true, silent = true, desc = 'Open Lazygit (Toggleterm)' })
+        vim.keymap.set('n', '<leader>gg', _lazygit_toggle, { noremap = true, silent = true, desc = 'Open Lazygit (Toggleterm)' })
         vim.keymap.set({ 'n', 'i', 't' }, '<A-`>', '<cmd>ToggleTerm<CR>', { desc = 'Toggle Terminal' })
     end,
 }
