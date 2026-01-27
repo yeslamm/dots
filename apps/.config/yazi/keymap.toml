@@ -238,7 +238,7 @@ keymap = [
   ], run = "cd ~/.config", desc = "Go ~/.config" },
   { on = [
     "g",
-    "d",
+    "D",
   ], run = "cd ~/Downloads", desc = "Go ~/Downloads" },
   { on = [
     "g",
@@ -248,6 +248,10 @@ keymap = [
     "g",
     "f",
   ], run = "follow", desc = "Follow hovered symlink" },
+  { on = [
+    "g",
+    "d",
+  ], run = "cd ~/dots", desc = "Go ~/dots" },
 
   # Tabs
   { on = "t", run = "tab_create --current", desc = "Create a new tab with CWD" },
