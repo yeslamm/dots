@@ -1,5 +1,5 @@
-# A OneDark theme for Yazi
-# Blue Folders + Green Status Bar + Boxxy Layout + White Selection
+# A Fuzzel-Matched Theme for Yazi
+# Fixed: Symlink contrast adapts to selection (Dark on Blue / White on Dark)
 
 "$schema" = "https://yazi-rs.github.io/schemas/theme.json"
 
@@ -16,29 +16,29 @@ overall = {}
 
 # : Manager {{{
 [mgr]
-cwd = { fg = "#61afef" } # Blue
+cwd = { fg = "#61afef" }
 
 # Find
-find_keyword = { fg = "#be5046", bold = true, italic = true, underline = true }
-find_position = { fg = "#c678dd", bg = "reset", bold = true, italic = true }
+find_keyword = { fg = "#e06c75", bold = true, italic = true, underline = true }
+find_position = { fg = "#61afef", bg = "reset", bold = true, italic = true }
 
-# Symlink
-symlink_target = { fg = "#666666", italic = true }
+# OneDark Comment Grey for a darker, more integrated look
+symlink_target = { fg = "#5c6370", italic = true }
 
 # Marker
 marker_copied = { fg = "#98c379", bg = "#98c379" }
 marker_cut = { fg = "#e06c75", bg = "#e06c75" }
-marker_marked = { fg = "#56b6c2", bg = "#56b6c2" }
-marker_selected = { fg = "#8fb572", bg = "#8fb572" } # Green
+marker_marked = { fg = "#61afef", bg = "#61afef" }
+marker_selected = { fg = "#61afef", bg = "#61afef" }
 
 # Count
 count_copied = { fg = "#282c34", bg = "#98c379" }
 count_cut = { fg = "#282c34", bg = "#e06c75" }
-count_selected = { fg = "#282c34", bg = "#8fb572" } # Green
+count_selected = { fg = "#282c34", bg = "#61afef" }
 
 # Border
 border_symbol = "│"
-border_style = { fg = "#5c6370" }
+border_style = { fg = "#d3d7cf" }
 
 # Highlighting
 syntect_theme = ""
@@ -46,9 +46,9 @@ syntect_theme = ""
 
 # : Tabs {{{
 [tabs]
-# Active: Black on Green (Matches Status Bar)
-active = { fg = "#282c34", bg = "#8fb572", bold = true }
-inactive = { fg = "#abb2bf", bg = "#3e4452" }
+# Active: Black on Cyan 
+active = { fg = "#282928", bg = "#61afef", bold = true }
+inactive = { fg = "#abb2bf", bg = "#282928" }
 
 # Boxxy Separators
 sep_inner = { open = "", close = "" }
@@ -57,24 +57,24 @@ sep_outer = { open = "", close = "" }
 
 # : Mode {{{
 [mode]
-# Normal Mode: Green (The "Bar Below")
-normal_main = { fg = "#282c34", bg = "#8fb572", bold = true }
-normal_alt = { fg = "#8fb572", bg = "#3e4452" }
+# Normal Mode: Cyan 
+normal_main = { fg = "#282928", bg = "#61afef", bold = true }
+normal_alt = { fg = "#61afef", bg = "#282928" }
 
 # Select Mode: Purple
-select_main = { fg = "#282c34", bg = "#c678dd", bold = true }
-select_alt = { fg = "#c678dd", bg = "#3e4452" }
+select_main = { fg = "#282928", bg = "#c678dd", bold = true }
+select_alt = { fg = "#c678dd", bg = "#282928" }
 
 # Unset Mode: Red
-unset_main = { fg = "#282c34", bg = "#e06c75", bold = true }
-unset_alt = { fg = "#e06c75", bg = "#3e4452" }
+unset_main = { fg = "#282928", bg = "#e06c75", bold = true }
+unset_alt = { fg = "#e06c75", bg = "#282928" }
 # : }}}
 
 # : Indicator of hovered file {{{
 [indicator]
-# Selection Bar: Bright White Background with Dark Text
-current = { bg = "#cccccc", fg = "#000000", bold = true }
-parent = { bg = "#cccccc", fg = "#000000", bold = true }
+# Selection Bar: Directory Blue Background (#61afef) with Dark Text (#282928)
+current = { bg = "#61afef", fg = "#282928", bold = true }
+parent = { bg = "#61afef", fg = "#282928", bold = true }
 
 # Boxxy Style: Solid vertical bar
 padding = { open = "█", close = "" }
@@ -87,34 +87,34 @@ sep_left = { open = "", close = "" }
 sep_right = { open = "", close = "" }
 
 # Permissions
-perm_sep = { fg = "#5c6370" }
-perm_type = { fg = "#8fb572" }  # Green
+perm_sep = { fg = "#d3d7cf" }
+perm_type = { fg = "#61afef" }
 perm_read = { fg = "#98c379" }
 perm_write = { fg = "#e06c75" }
 perm_exec = { fg = "#61afef" }
 
 # Progress
 progress_label = { bold = true }
-progress_normal = { fg = "#282c34", bg = "#8fb572" } # Black on Green
-progress_error = { fg = "#282c34", bg = "#e06c75" }
+progress_normal = { fg = "#282928", bg = "#61afef" }
+progress_error = { fg = "#282928", bg = "#e06c75" }
 # : }}}
 
 # : Which {{{
 [which]
 cols = 3
-mask = { bg = "#282c34" }
+mask = { bg = "#282928" }
 cand = { fg = "#61afef" }
-rest = { fg = "#5c6370" }
+rest = { fg = "#d3d7cf" }
 desc = { fg = "#c678dd" }
 separator = "  "
-separator_style = { fg = "#5c6370" }
+separator_style = { fg = "#d3d7cf" }
 # : }}}
 
 # : Confirmation {{{
 [confirm]
-border = { fg = "#8fb572" }
-title = { fg = "#8fb572" }
-body = {}
+border = { fg = "#61afef" }
+title = { fg = "#61afef" }
+body = { fg = "#abb2bf" }
 list = {}
 btn_yes = { reversed = true }
 btn_no = {}
@@ -123,10 +123,10 @@ btn_labels = ["  [Y]es  ", "  (N)o  "]
 
 # : Spotter {{{
 [spot]
-border = { fg = "#8fb572" }
-title = { fg = "#8fb572" }
-tbl_col = { fg = "#8fb572" }
-tbl_cell = { fg = "#282c34", bg = "#8fb572" }
+border = { fg = "#61afef" }
+title = { fg = "#61afef" }
+tbl_col = { fg = "#61afef" }
+tbl_cell = { fg = "#282928", bg = "#61afef" }
 # : }}}
 
 # : Notification {{{
@@ -142,24 +142,24 @@ icon_error = ""
 
 # : Picker {{{
 [pick]
-border = { fg = "#8fb572" }
-active = { fg = "#c678dd", bold = true }
-inactive = {}
+border = { fg = "#61afef" }
+active = { fg = "#61afef", bold = true }
+inactive = { fg = "#abb2bf" }
 # : }}}
 
 # : Input {{{
 [input]
-border = { fg = "#8fb572" }
-title = {}
-value = {}
+border = { fg = "#61afef" }
+title = { fg = "#abb2bf" }
+value = { fg = "#abb2bf" }
 selected = { reversed = true }
 # : }}}
 
 # : Completion {{{
 [cmp]
-border = { fg = "#8fb572" }
-active = { fg = "#282c34", bg = "#8fb572" }
-inactive = {}
+border = { fg = "#61afef" }
+active = { fg = "#282928", bg = "#61afef" }
+inactive = { fg = "#abb2bf" }
 
 icon_file = ""
 icon_folder = ""
@@ -168,24 +168,24 @@ icon_command = ""
 
 # : Task manager {{{
 [tasks]
-border = { fg = "#8fb572" }
-title = {}
-hovered = { fg = "#c678dd", bold = true }
+border = { fg = "#61afef" }
+title = { fg = "#abb2bf" }
+hovered = { fg = "#61afef", bold = true }
 # : }}}
 
 # : Help menu {{{
 [help]
-on = { fg = "#8fb572" }
+on = { fg = "#61afef" }
 run = { fg = "#c678dd" }
-desc = {}
+desc = { fg = "#abb2bf" }
 hovered = { reversed = true, bold = true }
-footer = { fg = "#282c34", bg = "#abb2bf" }
+footer = { fg = "#282928", bg = "#abb2bf" }
 # : }}}
 
 # : File-specific styles {{{
 [filetype]
 rules = [
-  # Directories -> Blue
+  # Directories -> Fuzzel Cyan/Blue
   { mime = "inode/directory", fg = "#61afef" },
 
   # Image
@@ -218,7 +218,7 @@ files = [
   { name = ".zshrc", text = "", fg = "#98c379" },
   { name = ".gitconfig", text = "", fg = "#e06c75" },
   { name = "dockerfile", text = "󰡨", fg = "#61afef" },
-  { name = "makefile", text = "", fg = "#5c6370" },
+  { name = "makefile", text = "", fg = "#d3d7cf" },
   { name = "readme.md", text = "󰂺", fg = "#abb2bf" },
   { name = "license", text = "", fg = "#e5c07b" },
 ]
@@ -261,20 +261,20 @@ exts = [
   { name = "c", text = "", fg = "#61afef" },
   { name = "cpp", text = "", fg = "#61afef" },
   { name = "h", text = "", fg = "#c678dd" },
-  { name = "sh", text = "", fg = "#5c6370" },
+  { name = "sh", text = "", fg = "#d3d7cf" },
   { name = "bash", text = "", fg = "#98c379" },
   { name = "zsh", text = "", fg = "#98c379" },
-  { name = "fish", text = "", fg = "#5c6370" },
+  { name = "fish", text = "", fg = "#d3d7cf" },
   { name = "lua", text = "", fg = "#61afef" },
   { name = "vim", text = "", fg = "#98c379" },
-  { name = "conf", text = "", fg = "#5c6370" },
-  { name = "ini", text = "", fg = "#5c6370" },
-  { name = "yaml", text = "", fg = "#5c6370" },
-  { name = "yml", text = "", fg = "#5c6370" },
+  { name = "conf", text = "", fg = "#d3d7cf" },
+  { name = "ini", text = "", fg = "#d3d7cf" },
+  { name = "yaml", text = "", fg = "#d3d7cf" },
+  { name = "yml", text = "", fg = "#d3d7cf" },
   { name = "toml", text = "", fg = "#e06c75" },
 ]
 conds = [
-  # Fallback Directory Icon -> Blue
+  # Fallback Directory Icon -> Fuzzel Match
   { if = "dir", text = "", fg = "#61afef" },
   { if = "exec", text = "", fg = "#98c379" },
   { if = "!dir", text = "", fg = "#abb2bf" },
