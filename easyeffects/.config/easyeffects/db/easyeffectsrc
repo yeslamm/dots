@@ -12,7 +12,7 @@ plugins=filter#0,rnnoise#0,gate#0,compressor#0,equalizer#0,limiter#0
 pluginsListWidth=288
 usedPresets=input_preset:5,input_preset2:1
 visiblePage=pluginsPage
-visiblePlugin=limiter#0
+visiblePlugin=gate#0
 
 [StreamOutputs]
 mostUsedPresets=Bass_Enhancing_Perfect_EQ

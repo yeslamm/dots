@@ -1,9 +1,0 @@
-[Unit]
-Description=CopyQ Clipboard Manager
-PartOf=sway-session.target
-After=sway-session.target
-
-[Service]
-Type=simple
-ExecStart=/usr/bin/copyq --start-server
-Restart=on-failure

@@ -2,6 +2,12 @@
 #  SWAY CONFIGURATION
 # ==============================================================================
 
+# ------------------------------------------------------------------------------
+#  0. INCLUDES 
+# ------------------------------------------------------------------------------
+
+include /etc/sway/config.d/*
+
 # ==============================================================================
 #  1. VARIABLES & DEFINITIONS
 # ==============================================================================
@@ -92,14 +98,20 @@ mouse_warping output
 #  3. AUTOSTART
 # ==============================================================================
 
-exec systemctl --user start polkit-gnome gammastep-custom nm-applet blueman-applet sway-idle \
-flameshot copyq easyeffects input-remapper
+exec systemctl --user start sway-idle.service
 
-exec --no-startup-id swaync
-exec asusctl profile set Quiet
+exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+exec gammastep -l 31.11167:30.94583
+exec nm-applet --indicator
+exec blueman-applet
+exec flameshot
+exec easyeffects --gapplication-service
+exec input-remapper-control --command autoload
+exec copyq --start-server
 
 exec sleep 2 && firefox
 
+exec asusctl profile set Quiet
 exec wpctl set-volume @DEFAULT_SINK@ 0.30
 exec_always wpctl set-volume @DEFAULT_SOURCE@ 0.40
 exec_always amixer -c 1 set 'Internal Mic Boost' 0
@@ -328,8 +340,3 @@ mode Power {
     bindsym XF86Launch1 mode "default"
     bindsym $mod+Escape mode "default"
 }
-# ==============================================================================
-#  11. INCLUDES
-# ==============================================================================
-
-include /etc/sway/config.d/*

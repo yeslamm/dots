@@ -1,9 +1,0 @@
-[Unit]
-Description=EasyEffects Audio Effects
-PartOf=sway-session.target
-After=sway-session.target
-
-[Service]
-Type=simple
-ExecStart=/usr/bin/easyeffects --hide-window
-Restart=on-failure
