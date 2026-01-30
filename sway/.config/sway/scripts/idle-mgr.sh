@@ -6,6 +6,16 @@ SWAYIDLE_PID_FILE="/dev/shm/swayidle.pid"
 MANAGER_PID_FILE="/dev/shm/idle-mgr.pid"
 STATE_FILE="/dev/shm/idle-mgr.state"
 
+# Prevent multiple instances
+if [ -f "$MANAGER_PID_FILE" ]; then
+    existing_pid=$(cat "$MANAGER_PID_FILE" 2>/dev/null)
+    if [ -n "$existing_pid" ] && kill -0 "$existing_pid" 2>/dev/null; then
+        notify-send -t 1000 "Idle manager already running"
+        # Force an update just in case the UI is desynced
+        pkill -SIGRTMIN+8 waybar
+        exit 0
+    fi
+fi
 
 echo $$ >"$MANAGER_PID_FILE"
 

@@ -1,0 +1,208 @@
+{
+    "height": 28,
+    "position": "top",
+    "modules-left": [
+        "sway/workspaces",
+        "sway/mode",
+        "custom/separator0",
+        "disk",
+        "custom/separator0",
+        "memory",
+        "custom/separator0",
+        "cpu",
+        "custom/separator0",
+        "temperature",
+        // "custom/separator4",
+        // "network",
+        "custom/separator0",
+        "custom/swayidle"
+    ],
+    "modules-right": [
+        "custom/updates",
+        "tray",
+        "custom/separator0",
+        "power-profiles-daemon",
+        "custom/separator0",
+        "pulseaudio",
+        "custom/separator0",
+        "backlight",
+        "custom/separator0",
+        "sway/language",
+        "custom/separator0",
+        "battery",
+        "custom/separator0",
+        "clock"
+    ],
+    "modules-center": ["sway/window"],
+    // "group/system-stats": {
+    //   "orientation": "horizontal",
+    //   "click-to-reveal": true,
+    //   "drawer": {
+    //     "transition-duration": 300, // Optional: Add a smooth animation
+    //     "transition-left-to-right": false // Optional: Controls slide direction
+    //   },
+    //   "modules": [
+    //     "custom/drawer-anchor"
+    //   ]
+    // },
+    "custom/separator0": {
+        "format": "  ", // or "|", "•", " ", etc.
+        "tooltip": false
+    },
+    "custom/separator": {
+        "format": " • ", // or "|", "•", " ", etc.
+        "tooltip": false
+    },
+    "custom/separator4": {
+        "format": " •", // or "|", "•", " ", etc.
+        "tooltip": false
+    },
+    "custom/separator1": {
+        "format": "|", // or "|", "•", " ", etc.
+        "tooltip": false
+    },
+    "custom/separator2": {
+        "format": " | ", // or "|", "•", " ", etc.
+        "tooltip": false
+    },
+    "custom/separator3": {
+        "format": "| ", // or "|", "•", " ", etc.
+        "tooltip": false
+    },
+    "tray": {
+        "icon-size": 16,
+        "spacing": 16
+    },
+    "pulseaudio": {
+        "format": "{volume}% {icon}",
+        "format-icons": [" "],
+        "format-muted": "Muted  ",
+        "on-scroll-up": "pamixer --increase 1",
+        "on-scroll-down": "pamixer --decrease 1",
+        "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+        "on-click-right": "playerctl play-pause",
+        "on-click-middle": "pavucontrol"
+    },
+    // Optional old backlight configs are commented out — can remove to clean
+    "backlight": {
+        "device": "amdgpu_bl1",
+        "format": "{percent}% {icon}",
+        "format-icons": [" "],
+        "on-scroll-up": "brightnessctl -d amdgpu_bl1 set +1%",
+        "on-scroll-down": "brightnessctl -d amdgpu_bl1 set 1%-",
+        "on-click": "brightnessctl -d amdgpu_bl1 set 100%",
+        "on-click-right": "brightnessctl -d amdgpu_bl1 set 30%",
+        "on-click-middle": "brightnessctl -d amdgpu_bl1 set 50%",
+        "tooltip": false
+    },
+    "clock": {
+        "interval": 60,
+        "tooltip": true,
+        // "format": "{:%I:%M %p}",
+        // "tooltip-format": "{:%A %d/%m}",
+        "format": "{:%d/%m - %I:%M %p}",
+        "tooltip-format": "{:%A %d of %B}",
+        "max-length": 25
+    },
+    "battery": {
+        "interval": 1,
+        "format-charging": "+ {capacity}% {icon}",
+        "format-discharging": "- {capacity}% {icon}",
+        "format-full": "{capacity}% {icon}",
+        "format-icons": [" ", " ", " ", " ", " "]
+    },
+    "memory": {
+        "interval": 3,
+        "format": "{used:0.2f} {icon}",
+        "format-icons": [" "],
+        "on-click": "kitty -e btop",
+        "tooltip": false
+    },
+    "temperature": {
+        "interval": 1,
+        "tooltip": false,
+        "thermal-zone": 0,
+        "format": "{temperatureC}°C ",
+        "critical-threshold": 80,
+        "format-critical": "󰸁 {temperatureC}°C",
+        "on-click": "kitty -e watch -d sensors"
+    },
+    "cpu": {
+        "interval": 3,
+        "format": "{}%  ",
+        "max-length": 10,
+        "on-click": "gnome-system-monitor"
+        // "on-click": "plasma-systemmonitor"
+    },
+    "network": {
+        "interface": "wlan0",
+        "format": " {bandwidthDownBytes} ",
+        "interval": 3,
+        "tooltip-format": "{ifname}",
+        "tooltip": false,
+        // "tooltip-format-wifi": "{essid}",
+        "tooltip-format-ethernet": "{ifname}",
+        "format-disconnected": " Offline  ",
+        "on-click": "nmgui"
+    },
+    "sway/window": {
+        "format": "{title}",
+        "max-length": 50,
+        "tooltip": true
+    },
+    "sway/language": {
+        "format": "{short} {variant}",
+        "tooltip": false
+    },
+    "custom/swayidle": {
+        "exec": "~/.config/waybar/scripts/swayidle_status.sh",
+        "interval": 2,
+        "tooltip": false,
+        "return-type": "json",
+        "format": "{text}"
+    },
+    "custom/gammastep": {
+        "exec": "~/.config/waybar/scripts/gamma_status.sh",
+        "interval": 1,
+        "tooltip": false,
+        "return-type": "json",
+        "format": "{text}"
+    },
+    "disk": {
+        "path": "/home",
+        "interval": 30,
+        "format": "{percentage_used}%  ",
+        "on-click": "gnome-disks"
+    },
+    // "power-profiles-daemon": {
+    //     "format": "{profile}",
+    //     "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
+    //     "tooltip": true,
+    // },
+    "power-profiles-daemon": {
+        "format": "{icon}",
+        "format-icons": {
+            "performance": " ",
+            "balanced": "⏼ ",
+            "power-saver": "󰌪 "
+        }
+    },
+    "sway/mode": {
+        "format": "{}"
+    },
+    "custom/updates": {
+        "format": "{} {icon}",
+        "return-type": "json",
+        "format-icons": {
+            "has-updates": " ",
+            "updated": ""
+        },
+        "exec-if": "which waybar-module-pacman-updates",
+        "exec": "waybar-module-pacman-updates --interval-seconds 5 --network-interval-seconds 5 --no-zero-output",
+        "on-click": "kitty -e sh -c 'sudo pacman -Syu && yay -Syua; read -p \"Press enter to exit...\"'"
+    },
+    "custom/drawer-anchor": {
+        "format": "   ", // A nice icon to represent system stats/toggle
+        "tooltip": "false"
+    }
+}

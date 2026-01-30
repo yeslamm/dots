@@ -2,12 +2,6 @@
 #  SWAY CONFIGURATION
 # ==============================================================================
 
-# ------------------------------------------------------------------------------
-#  0. INCLUDES 
-# ------------------------------------------------------------------------------
-
-include /etc/sway/config.d/*
-
 # ==============================================================================
 #  1. VARIABLES & DEFINITIONS
 # ==============================================================================
@@ -98,20 +92,21 @@ mouse_warping output
 #  3. AUTOSTART
 # ==============================================================================
 
-exec systemctl --user start sway-idle.service
-
-exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-exec gammastep -l 31.11167:30.94583
-exec nm-applet --indicator
-exec blueman-applet
-exec flameshot
-exec easyeffects --gapplication-service
-exec input-remapper-control --command autoload
-exec copyq --start-server
-
-exec sleep 2 && firefox
-
+exec_always /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+exec --no-startup-id input-remapper-control --command autoload
+exec --no-startup-id swaync
+exec easyeffects --hide-window
 exec asusctl profile set Quiet
+exec gammastep -l 31.11167:30.94583
+
+exec --no-startup-id nm-applet || notify-send "Network Applet Failed"
+exec --no-startup-id sleep 1 && blueman-applet || notify-send "Bluetooth Failed"
+
+exec $scripts/idle-mgr.sh
+exec --no-startup-id flameshot
+exec --no-startup-id copyq --start-server
+exec sleep 1 && firefox
+
 exec wpctl set-volume @DEFAULT_SINK@ 0.30
 exec_always wpctl set-volume @DEFAULT_SOURCE@ 0.40
 exec_always amixer -c 1 set 'Internal Mic Boost' 0
@@ -276,7 +271,7 @@ bindcode $mod+$n       exec --no-startup-id $scripts/media.sh next
 bindcode $mod+Shift+$n exec swaync-client -t -sw
 bindcode $mod+Shift+$c exec swaync-client --close-latest
 
-bindcode $mod+$i       exec systemctl --user start sway-idle.service
+bindcode $mod+$i       exec $scripts/idle-mgr.sh
 bindcode $mod+$o       exec $scripts/idle-off.sh
 bindsym Mod1+Print     exec $scripts/ocr.sh
 bindcode $mod+$v       exec copyq toggle
@@ -340,3 +335,8 @@ mode Power {
     bindsym XF86Launch1 mode "default"
     bindsym $mod+Escape mode "default"
 }
+# ==============================================================================
+#  11. INCLUDES
+# ==============================================================================
+
+include /etc/sway/config.d/*
