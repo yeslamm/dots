@@ -1,0 +1,9 @@
+[Unit]
+Description=Flameshot Screenshot Tool
+PartOf=sway-session.target
+After=sway-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/flameshot
+Restart=on-failure

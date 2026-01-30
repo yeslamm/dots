@@ -1,18 +1,11 @@
 #!/bin/bash
-# idle-off.sh - Gracefully stop all idle processes
+# idle-off.sh - Gracefully stop all idle processes via systemd
 
-# Send TERM signal to the manager, allowing it to clean up.
-pkill -f "idle-mgr.sh"
+systemctl --user stop sway-idle.service
 
 # FORCE CLEANUP: Remove PID file immediately for instant UI feedback.
+# (Systemd ExecStopPost handles swayidle, but we ensure state files are gone for UI)
 rm -f /dev/shm/idle-mgr.pid /dev/shm/idle-mgr.state
-
-# Also send TERM signal to the swayidle process itself.
-pkill -x swayidle
-
-# The manager's cleanup should handle its PID file, but we run this
-# as a fallback in case only swayidle was running without the manager.
-rm -f /dev/shm/swayidle.pid
 
 # Signal Waybar to update immediately
 pkill -SIGRTMIN+8 waybar

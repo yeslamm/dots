@@ -1,0 +1,9 @@
+[Unit]
+Description=Input Remapper Daemon
+PartOf=sway-session.target
+After=sway-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/input-remapper-control --command autoload
+Restart=on-failure

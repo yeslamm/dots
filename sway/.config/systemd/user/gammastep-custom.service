@@ -1,0 +1,9 @@
+[Unit]
+Description=Gammastep Screen Color Temperature Adjuster
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/gammastep -l 31.11167:30.94583
+Restart=on-failure

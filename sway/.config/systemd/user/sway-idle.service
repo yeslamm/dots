@@ -1,0 +1,13 @@
+[Unit]
+Description=Sway Idle Manager
+Documentation=man:swayidle(1)
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.config/sway/scripts/idle-mgr.sh
+Restart=on-failure
+RestartSec=5
+# Clean up any leftover swayidle processes if the service dies
+ExecStopPost=/usr/bin/pkill -x swayidle
