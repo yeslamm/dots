@@ -114,7 +114,7 @@
     "battery": {
         "interval": 1,
         "states": {
-            "clamped": 80 // Define a state for your Asus threshold
+            "clamped": 70
         },
         "format": "BATT: {capacity}%",
         "format-charging": "BATT: + {capacity}%",

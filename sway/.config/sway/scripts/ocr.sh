@@ -10,7 +10,7 @@ for cmd in grim slurp tesseract wl-copy; do
     fi
 done
 
-TEMP_IMG="/tmp/ocr_$(date +%s).png"
+TEMP_IMG=$(mktemp /tmp/ocr_XXXX.png)
 
 # 2. Select Area & Capture
 # -d prevents taking a screenshot if selection is cancelled (slurp returns empty)

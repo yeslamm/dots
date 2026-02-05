@@ -1,113 +1,112 @@
 #!/bin/bash
-# idle-mgr.sh
-# Optimized: Uses explicit state file to prevent UI race conditions.
+# idle-mgr.sh - Bulletproof Singleton
+# Uses a stable lock file that is NEVER deleted to prevent race conditions.
 
-SWAYIDLE_PID_FILE="/dev/shm/swayidle.pid"
 MANAGER_PID_FILE="/dev/shm/idle-mgr.pid"
 STATE_FILE="/dev/shm/idle-mgr.state"
+INHIBIT_APPS_FILE="$HOME/.config/sway/idle_inhibit_apps"
 
-# Prevent multiple instances
-if [ -f "$MANAGER_PID_FILE" ]; then
-    existing_pid=$(cat "$MANAGER_PID_FILE" 2>/dev/null)
-    if [ -n "$existing_pid" ] && kill -0 "$existing_pid" 2>/dev/null; then
-        notify-send -t 1000 "Idle manager already running"
-        # Force an update just in case the UI is desynced
-        pkill -SIGRTMIN+8 waybar
-        exit 0
+# --- 1. Aggressive & Stable Singleton ---
+# Open the PID file (creating if necessary) and KEEP it open.
+exec 9>>"$MANAGER_PID_FILE"
+
+# Try to get the lock. If it fails, another instance is running.
+if ! flock -n 9; then
+    # Surgical Strike: Kill the current owner of the lock
+    OLD_PID=$(cat "$MANAGER_PID_FILE" 2>/dev/null)
+    if [ -n "$OLD_PID" ] && [ "$OLD_PID" -ne "$$" ]; then
+        kill -9 "$OLD_PID" 2>/dev/null
     fi
+    # Wait to acquire the lock
+    flock -x 9
 fi
 
-echo $$ >"$MANAGER_PID_FILE"
+# We have the lock. Update the file with our PID.
+truncate -s 0 "$MANAGER_PID_FILE"
+echo $$ >&9
 
-# Helper: Write state and signal Waybar
+# --- 2. State & Signal Management ---
+PAUSED=false
+
 set_state() {
     echo "$1" > "$STATE_FILE"
     pkill -SIGRTMIN+8 waybar
 }
 
-# Cleanup on exit
-cleanup() {
-    # Check if we are still the "official" manager (process ID matches the PID file)
-    if [ -f "$MANAGER_PID_FILE" ] && [ "$(cat "$MANAGER_PID_FILE")" = "$$" ]; then
-        # We are the owner. Clean up everything.
-        rm -f "$MANAGER_PID_FILE" "$SWAYIDLE_PID_FILE" "$STATE_FILE"
-        pkill -SIGRTMIN+8 waybar
+handle_pause() {
+    if [ "$PAUSED" = true ]; then
+        PAUSED=false
     else
-        # We are NOT the owner (a new instance has likely overwritten the PID file).
-        # Do nothing. Die silently to protect the new instance.
-        :
+        PAUSED=true
+        kill_swayidle
+        set_state "PAUSED"
     fi
+}
+
+cleanup() {
+    # NEVER delete the PID file, just truncate its content.
+    truncate -s 0 "$MANAGER_PID_FILE"
+    rm -f "$STATE_FILE"
+    
+    pkill -x swayidle
+    pkill -SIGRTMIN+8 waybar
     exit 0
 }
+
+trap handle_pause SIGUSR1
 trap cleanup EXIT INT TERM
 
-# Send startup notification
-notify-send -t 1000 "Idle manager started"
+# --- 3. Logic ---
 
 is_swayidle_running() {
-    if [ -f "$SWAYIDLE_PID_FILE" ]; then
-        pid=$(cat "$SWAYIDLE_PID_FILE" 2>/dev/null)
-        if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
-            return 0
-        fi
-    fi
-    return 1
+    pgrep -x swayidle >/dev/null
 }
 
 kill_swayidle() {
     if is_swayidle_running; then
         pkill -x swayidle
-        rm -f "$SWAYIDLE_PID_FILE"
-        # State changed: Active -> Inhibited
         set_state "HOLD"
     fi
-    # Ensure state is set even if swayidle wasn't running (e.g., initial inhibition)
-    if [ ! -f "$STATE_FILE" ] || [ "$(cat "$STATE_FILE")" != "HOLD" ]; then
+    if [ ! -f "$STATE_FILE" ] || { [ "$(cat "$STATE_FILE")" != "HOLD" ] && [ "$PAUSED" = false ]; }; then
          set_state "HOLD"
     fi
 }
 
 start_swayidle() {
     if ! is_swayidle_running; then
-        # Flags applied: -f (daemonize), -c 000000 (black), -F (failed count),
-        # -e (no empty password), -k (layout), -L (no caps text)
-        exec swayidle -w \
+        swayidle -w \
             timeout 120 'swaylock -f -c 000000 -F -e -k -L' \
             timeout 240 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
             timeout 360 'systemctl suspend' before-sleep 'swaylock -f -c 000000 -F -e -k -L' &
-        echo $! >"$SWAYIDLE_PID_FILE"
-        # State changed: Inhibited -> Active
         set_state "ON"
     fi
-    # Ensure state is set even if swayidle was already running
     if [ ! -f "$STATE_FILE" ] || [ "$(cat "$STATE_FILE")" != "ON" ]; then
          set_state "ON"
     fi
 }
 
 should_be_inhibited() {
-    # 1. Application inhibition (Fastest - pgrep loop)
-    INHIBIT_APPS_FILE="$HOME/.config/sway/idle_inhibit_apps"
     if [ -f "$INHIBIT_APPS_FILE" ]; then
-        while IFS= read -r app_pattern; do
-            if [[ -z "$app_pattern" || "$app_pattern" =~ ^# ]]; then continue; fi
-            if pgrep -x "$app_pattern" >/dev/null; then return 0; fi
-        done <"$INHIBIT_APPS_FILE"
+        APPS_REGEX=$(grep -v '^#' "$INHIBIT_APPS_FILE" | grep -v '^$' | tr '\n' '|' | sed 's/|$//')
+        if [ -n "$APPS_REGEX" ] && pgrep -x "$APPS_REGEX" >/dev/null; then
+            return 0
+        fi
     fi
-
-    # 2. Application inhibition (Medium - playerctl)
-    if playerctl -a status 2>/dev/null | grep -q "Playing"; then return 0; fi
-
-    # 3. Audio inhibition (Slower - pactl)
-    if pactl list sink-inputs 2>/dev/null | grep -q "Corked: no"; then return 0; fi
-
+    playerctl -a status 2>/dev/null | grep -q "Playing" && return 0
+    pactl list sink-inputs 2>/dev/null | grep -q "Corked: no" && return 0
     return 1
 }
 
-# Main daemon loop
+# --- 4. Main Loop ---
+notify-send -t 1000 "Idle manager started"
+
 while true; do
-    if should_be_inhibited;
-    then
+    if [ "$PAUSED" = true ]; then
+        sleep 5
+        continue
+    fi
+
+    if should_be_inhibited; then
         kill_swayidle
     else
         start_swayidle

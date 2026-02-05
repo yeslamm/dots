@@ -165,11 +165,10 @@ bindcode $mod+Shift+$y      exec $term --title=float-term -e yazi
 bindcode $mod+$g            exec $g_files
 bindcode $mod+$b            exec $term -e btop
 bindcode $mod+Shift+$b      exec $term --title=float-term -e btop
-bindcode $mod+$t            exec $term -e watch -n 3 -d sensors
+bindcode $mod+$t            exec $term -e watch -n 2.5 -d sensors
 
 bindcode $mod+$q            kill
 bindsym  $mod+Shift+q       exec swaymsg kill
-bindcode $mod+$x            exec $scripts/kill-focused.sh
 bindcode $mod+Shift+$r      reload
 bindcode Control+$mod+$r    exec $scripts/replay.sh save
 bindcode Control+$mod+Shift+$r exec $scripts/replay.sh toggle
@@ -307,6 +306,7 @@ bindcode $mod+$a mode Apps
 mode Apps {
     bindcode $f exec firefox, mode "default"
     bindcode $h exec heroic, mode "default"
+    bindcode $v exec pavucontrol, mode "default"
 
     bindsym Escape mode "default"
     bindsym Return mode "default"

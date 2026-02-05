@@ -18,8 +18,9 @@ overall = {}
 [mgr]
 cwd = { fg = "#61afef" }
 
-# Find
-find_keyword = { fg = "#e06c75", bold = true, italic = true, underline = true }
+# Find / Search Highlight
+# Changed from Red (#e06c75) to Purple (#c678dd) for a smoother look
+find_keyword = { fg = "#c678dd", bold = true, italic = true, underline = true }
 find_position = { fg = "#61afef", bg = "reset", bold = true, italic = true }
 
 # OneDark Comment Grey for a darker, more integrated look
@@ -280,3 +281,4 @@ conds = [
   { if = "!dir", text = "", fg = "#abb2bf" },
 ]
 # : }}}
+

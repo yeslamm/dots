@@ -7,13 +7,14 @@ export XDG_SESSION_TYPE=wayland
 export XDG_CURRENT_DESKTOP=sway
 export XDG_SESSION_DESKTOP=sway
 
-# Update data directories safely
-export XDG_DATA_DIRS="/usr/local/share:/usr/share${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}"
+# Update data directories safely (including Flatpak paths)
+export XDG_DATA_DIRS="/usr/local/share:/usr/share:/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/exports/share${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}"
 
 # ==============================================================================
 # 2. TOOLKIT COMPATIBILITY & DECORATIONS
 # ==============================================================================
-# export GDK_BACKEND=wayland,x11
+
+export _JAVA_AWT_WM_NONREPARENTING=1
 export GTK_USE_PORTAL=1
 export MOZ_ENABLE_WAYLAND=1
 export QT_QPA_PLATFORM=wayland

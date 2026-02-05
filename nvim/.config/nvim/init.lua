@@ -34,7 +34,6 @@ require('lazy').setup({
     require 'plugins.indent_line',
     require 'plugins.tmux-nav',
     require 'plugins.surround',
-    require 'plugins.persistence',
     require 'plugins.dashboard',
     require 'plugins.markdown',
     require 'plugins.noice',
@@ -51,7 +50,6 @@ require('lazy').setup({
     require 'plugins.diffview',
     require 'plugins.oil',
     require 'plugins.nvimtree',
-    -- require 'plugins.barbar', -- Tabs/Buffers
     require 'plugins.persistence',
 
     rocks = {

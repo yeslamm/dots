@@ -47,7 +47,17 @@ case "$1" in
         -c "$CONTAINER" \
         -o "$VIDEO_DIR" &
     
-    echo $! > "$PID_FILE"
+    GSR_PID=$!
+    echo $GSR_PID > "$PID_FILE"
+    
+    # Ensure PID file is removed if the process dies immediately
+    (
+        sleep 1
+        if ! kill -0 $GSR_PID 2>/dev/null; then
+            rm -f "$PID_FILE"
+        fi
+    ) &
+
     notify-send "Replay" "Buffer started. Ready to save." -t 2000 -h string:x-canonical-private-synchronous:replay
     ;;
 

@@ -292,7 +292,7 @@ alias alacconf='nvim ~/.config/alacritty/alacritty.toml'
 alias fuzzconf='nvim ~/.config/fuzzel/fuzzel.ini'
 alias yconf='yazi ~/.config/yazi/'
 alias nemo='nemo > /dev/null 2>&1 &'
-alias img='swayimg'
+alias footconf='nvim ~/.config/foot/foot.ini'
 
 ### Other
 alias discordf='flatpak run com.discordapp.Discord'
