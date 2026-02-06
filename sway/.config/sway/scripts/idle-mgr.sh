@@ -69,7 +69,7 @@ start_idle() {
 should_be_inhibited() {
     # 1. Focus Check
     local focused
-    focused=$(swaymsg -t get_tree | jq -r '.. | select(.focused? == true) | .app_id // .window_properties.class' 2>/dev/null || true)
+    focused=$(swaymsg -t get_tree | jq -r '.. | select(.focused? == true) | (.app_id // .window_properties.class // "") + " " + (.name // "")' 2>/dev/null || true)
 
     if [ -n "$focused" ] && [ -f "$INHIBIT_APPS_FILE" ]; then
         while IFS= read -r pattern; do
@@ -78,12 +78,12 @@ should_be_inhibited() {
         done <"$INHIBIT_APPS_FILE"
     fi
 
-    # 2. Media/Audio Check (Using 'if' for set -e safety)
+    # 2. Media/Audio Check
     if playerctl -a status 2>/dev/null | grep -q "Playing"; then
         return 0
     fi
 
-    if pactl list sink-inputs 2>/dev/null | grep -q "Corked: no"; then
+    if pw-dump | jq -e '.[] | select(.type == "PipeWire:Interface:Node" and .info.props."media.class" == "Stream/Output/Audio" and .info.state == "running")' >/dev/null 2>&1; then
         return 0
     fi
 
@@ -148,10 +148,19 @@ update_waybar
 check_and_act
 
 (
-    until swaymsg -t subscribe '["window", "workspace"]' --monitor | while read -r _; do
+    until swaymsg -t subscribe '["window"]' --monitor | jq --unbuffered -c 'select(.change == "focus" or .change == "title")' 2>/dev/null | while read -r _; do
         kill -SIGALRM $$ 2>/dev/null
     done; do
         sleep 2
+    done
+) &
+
+(
+    until playerctl status --follow 2>/dev/null | while read -r _; do
+        sleep 0.1
+        kill -SIGALRM $$ 2>/dev/null
+    done; do
+        sleep 5
     done
 ) &
 
@@ -161,4 +170,3 @@ check_and_act
 done) &
 
 while true; do wait || true; done
-

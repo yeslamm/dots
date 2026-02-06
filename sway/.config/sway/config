@@ -168,7 +168,7 @@ bindcode $mod+Shift+$b      exec $term --title=float-term -e btop
 bindcode $mod+$t            exec $term -e watch -n 2.5 -d sensors
 
 bindcode $mod+$q            kill
-bindsym  $mod+Shift+q       exec swaymsg kill
+bindsym  $mod+x             exec "swaymsg -t get_tree | jq -r '.. | select(.focused? == true) | .pid' | xargs kill -9"
 bindcode $mod+Shift+$r      reload
 bindcode Control+$mod+$r    exec $scripts/replay.sh save
 bindcode Control+$mod+Shift+$r exec $scripts/replay.sh toggle
