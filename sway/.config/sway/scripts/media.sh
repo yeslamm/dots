@@ -73,3 +73,4 @@ elif [ "$STATUS" = "Paused" ]; then
         -t 2000 \
         -h string:x-canonical-private-synchronous:media
 fi
+

@@ -1,27 +1,24 @@
 #!/bin/bash
-# idle-off.sh - High-Speed Surgical Stop
+# idle-off.sh - Aggressive stop
 
-MANAGER_PID_FILE="/dev/shm/idle-mgr.pid"
+PID_FILE="/dev/shm/idle-mgr.pid"
 STATE_FILE="/dev/shm/idle-mgr.state"
+WAYBAR_SIGNAL=9
 
-# 1. Kill the manager by its specific PID
-if [ -f "$MANAGER_PID_FILE" ]; then
-    PID=$(cat "$MANAGER_PID_FILE")
-    if [ -n "$PID" ]; then
-        kill -9 "$PID" 2>/dev/null
-    fi
+# 1. Kill the manager via PID file
+if [ -f "$PID_FILE" ]; then
+    PID=$(cat "$PID_FILE")
+    kill "$PID" 2>/dev/null
 fi
 
-# 2. Cleanup state but DO NOT delete the PID file (keep flock stable)
-truncate -s 0 "$MANAGER_PID_FILE"
-rm -f "$STATE_FILE"
-
-# 3. Aggressive fallback for any remaining instances
-# This ensures that even if the PID file was wrong, they all die.
-pgrep -f "idle-mgr.sh" | grep -v "^$$" | xargs kill -9 2>/dev/null
+# 2. Aggressive cleanup of any stragglers
+pkill -f "idle-mgr.sh"
 pkill -x swayidle
 
-# 4. Signal Waybar
-pkill -SIGRTMIN+8 waybar
+# 3. Wipe state
+rm -f "$PID_FILE" "$STATE_FILE"
 
-notify-send -t 1000 "Idle processes stopped"
+# 4. Refresh Waybar
+pkill -RTMIN+$WAYBAR_SIGNAL waybar
+
+notify-send -t 1000 "Idle Manager" "Fully Stopped"

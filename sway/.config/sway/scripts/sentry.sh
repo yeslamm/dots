@@ -1,20 +1,19 @@
 #!/bin/bash
-# sentry.sh - Production Grade
-# Robust signaling with live PID re-discovery in the cleanup trap.
+# sentry.sh - Force Pause while locking/suspending
 
-MANAGER_PID_FILE="/dev/shm/idle-mgr.pid"
+PID_FILE="/dev/shm/idle-mgr.pid"
 
-# 1. Initial Signaling
-if [ -f "$MANAGER_PID_FILE" ]; then
-    CURRENT_PID=$(cat "$MANAGER_PID_FILE")
+# 1. Force Pause on start
+if [ -f "$PID_FILE" ]; then
+    CURRENT_PID=$(cat "$PID_FILE")
     [ -n "$CURRENT_PID" ] && kill -SIGUSR1 "$CURRENT_PID" 2>/dev/null
 fi
 
-# 2. Cleanup Trap (Live PID discovery)
 cleanup() {
-    if [ -f "$MANAGER_PID_FILE" ]; then
-        LIVE_PID=$(cat "$MANAGER_PID_FILE")
-        [ -n "$LIVE_PID" ] && kill -SIGUSR1 "$LIVE_PID" 2>/dev/null
+    # 2. Force Resume on exit
+    if [ -f "$PID_FILE" ]; then
+        LIVE_PID=$(cat "$PID_FILE")
+        [ -n "$LIVE_PID" ] && kill -SIGUSR2 "$LIVE_PID" 2>/dev/null
     fi
     exit 0
 }

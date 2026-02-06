@@ -1,115 +1,164 @@
 #!/bin/bash
-# idle-mgr.sh - Bulletproof Singleton
-# Uses a stable lock file that is NEVER deleted to prevent race conditions.
+# idle-mgr.sh
+# Hardened against set -e and Shellcheck compliant.
 
-MANAGER_PID_FILE="/dev/shm/idle-mgr.pid"
+set -euo pipefail
+
+LOCK_FILE="/dev/shm/idle-mgr.lock"
+PID_FILE="/dev/shm/idle-mgr.pid"
 STATE_FILE="/dev/shm/idle-mgr.state"
 INHIBIT_APPS_FILE="$HOME/.config/sway/idle_inhibit_apps"
+WAYBAR_SIGNAL=9
 
-# --- 1. Aggressive & Stable Singleton ---
-# Open the PID file (creating if necessary) and KEEP it open.
-exec 9>>"$MANAGER_PID_FILE"
-
-# Try to get the lock. If it fails, another instance is running.
-if ! flock -n 9; then
-    # Surgical Strike: Kill the current owner of the lock
-    OLD_PID=$(cat "$MANAGER_PID_FILE" 2>/dev/null)
-    if [ -n "$OLD_PID" ] && [ "$OLD_PID" -ne "$$" ]; then
-        kill -9 "$OLD_PID" 2>/dev/null
+# --- 1. Atomic Singleton ---
+exec 8>"$LOCK_FILE"
+if ! flock -n 8; then
+    if [ -f "$PID_FILE" ]; then
+        OLD_PID=$(cat "$PID_FILE")
+        if [ -n "$OLD_PID" ] && kill -0 "$OLD_PID" 2>/dev/null; then
+            CURRENT_STATE=$(cat "$STATE_FILE" 2>/dev/null || echo "ON")
+            if [ "$CURRENT_STATE" = "PAUSED" ]; then
+                kill -SIGUSR2 "$OLD_PID" 2>/dev/null
+            else
+                kill -SIGUSR1 "$OLD_PID" 2>/dev/null
+            fi
+        fi
     fi
-    # Wait to acquire the lock
-    flock -x 9
+    exit 0
 fi
+echo $$ >"$PID_FILE"
 
-# We have the lock. Update the file with our PID.
-truncate -s 0 "$MANAGER_PID_FILE"
-echo $$ >&9
-
-# --- 2. State & Signal Management ---
+# --- 2. State Management ---
 PAUSED=false
+IDLE_PID=""
+
+update_waybar() {
+    pkill -RTMIN+$WAYBAR_SIGNAL waybar 2>/dev/null || true
+}
 
 set_state() {
-    echo "$1" > "$STATE_FILE"
-    pkill -SIGRTMIN+8 waybar
-}
-
-handle_pause() {
-    if [ "$PAUSED" = true ]; then
-        PAUSED=false
-    else
-        PAUSED=true
-        kill_swayidle
-        set_state "PAUSED"
+    local new_state="$1"
+    if [ ! -f "$STATE_FILE" ] || [ "$(cat "$STATE_FILE")" != "$new_state" ]; then
+        echo "$new_state" >"$STATE_FILE"
+        update_waybar
     fi
 }
 
-cleanup() {
-    # NEVER delete the PID file, just truncate its content.
-    truncate -s 0 "$MANAGER_PID_FILE"
-    rm -f "$STATE_FILE"
-    
-    pkill -x swayidle
-    pkill -SIGRTMIN+8 waybar
-    exit 0
-}
-
-trap handle_pause SIGUSR1
-trap cleanup EXIT INT TERM
-
-# --- 3. Logic ---
-
-is_swayidle_running() {
-    pgrep -x swayidle >/dev/null
-}
-
-kill_swayidle() {
-    if is_swayidle_running; then
-        pkill -x swayidle
-        set_state "HOLD"
+stop_idle() {
+    if [ -n "$IDLE_PID" ]; then
+        kill "$IDLE_PID" 2>/dev/null
+        wait "$IDLE_PID" 2>/dev/null
+        IDLE_PID=""
     fi
-    if [ ! -f "$STATE_FILE" ] || { [ "$(cat "$STATE_FILE")" != "HOLD" ] && [ "$PAUSED" = false ]; }; then
-         set_state "HOLD"
-    fi
+    pkill -x swayidle 2>/dev/null || true
 }
 
-start_swayidle() {
-    if ! is_swayidle_running; then
+start_idle() {
+    if [ -z "$IDLE_PID" ] || ! kill -0 "$IDLE_PID" 2>/dev/null; then
         swayidle -w \
             timeout 120 'swaylock -f -c 000000 -F -e -k -L' \
             timeout 240 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
             timeout 360 'systemctl suspend' before-sleep 'swaylock -f -c 000000 -F -e -k -L' &
+        IDLE_PID=$!
         set_state "ON"
-    fi
-    if [ ! -f "$STATE_FILE" ] || [ "$(cat "$STATE_FILE")" != "ON" ]; then
-         set_state "ON"
     fi
 }
 
+# --- 3. Inhibition Logic (Safe from set -e) ---
+
 should_be_inhibited() {
-    if [ -f "$INHIBIT_APPS_FILE" ]; then
-        APPS_REGEX=$(grep -v '^#' "$INHIBIT_APPS_FILE" | grep -v '^$' | tr '\n' '|' | sed 's/|$//')
-        if [ -n "$APPS_REGEX" ] && pgrep -x "$APPS_REGEX" >/dev/null; then
-            return 0
-        fi
+    # 1. Focus Check
+    local focused
+    focused=$(swaymsg -t get_tree | jq -r '.. | select(.focused? == true) | .app_id // .window_properties.class' 2>/dev/null || true)
+
+    if [ -n "$focused" ] && [ -f "$INHIBIT_APPS_FILE" ]; then
+        while IFS= read -r pattern; do
+            [[ "$pattern" =~ ^#.*$ || -z "$pattern" ]] && continue
+            if [[ "$focused" =~ $pattern ]]; then return 0; fi
+        done <"$INHIBIT_APPS_FILE"
     fi
-    playerctl -a status 2>/dev/null | grep -q "Playing" && return 0
-    pactl list sink-inputs 2>/dev/null | grep -q "Corked: no" && return 0
+
+    # 2. Media/Audio Check (Using 'if' for set -e safety)
+    if playerctl -a status 2>/dev/null | grep -q "Playing"; then
+        return 0
+    fi
+
+    if pactl list sink-inputs 2>/dev/null | grep -q "Corked: no"; then
+        return 0
+    fi
+
     return 1
 }
 
-# --- 4. Main Loop ---
-notify-send -t 1000 "Idle manager started"
-
-while true; do
-    if [ "$PAUSED" = true ]; then
-        sleep 5
-        continue
+check_and_act() {
+    if [ "${PAUSED}" = true ]; then
+        [ -n "$IDLE_PID" ] && stop_idle
+        set_state "PAUSED"
+        return
     fi
 
     if should_be_inhibited; then
-        kill_swayidle
+        [ -n "$IDLE_PID" ] && stop_idle
+        set_state "HOLD"
     else
-        start_swayidle
+        start_idle
     fi
-    sleep 5
-done
+}
+
+# --- 4. Signals & Cleanup ---
+
+handle_pause() {
+    PAUSED=true
+    notify-send -t 1000 "Idle Manager" "Paused"
+    check_and_act
+}
+handle_resume() {
+    PAUSED=false
+    notify-send -t 1000 "Idle Manager" "Resumed"
+    check_and_act
+}
+
+cleanup() {
+    local exit_code=$?
+    set +e
+
+    # Only notify on true crashes
+    # 0=success, 1=false (from logic), 130=SIGINT, 143=SIGTERM
+    if [[ $exit_code -ne 0 && $exit_code -ne 1 && $exit_code -ne 130 && $exit_code -ne 143 ]]; then
+        notify-send -u critical "Idle Manager" "CRASHED (Exit Code: $exit_code)"
+    fi
+
+    # shellcheck disable=SC2046
+    [ -n "$(jobs -p)" ] && kill $(jobs -p) 2>/dev/null || true
+
+    stop_idle
+    rm -f "$STATE_FILE" "$PID_FILE" "$LOCK_FILE"
+    update_waybar
+    exit "$exit_code"
+}
+
+trap handle_pause SIGUSR1
+trap handle_resume SIGUSR2
+trap "check_and_act" SIGALRM
+trap cleanup EXIT INT TERM
+
+# --- 5. Main ---
+notify-send -t 1000 "Idle Manager" "Started"
+update_waybar
+check_and_act
+
+(
+    until swaymsg -t subscribe '["window", "workspace"]' --monitor | while read -r _; do
+        kill -SIGALRM $$ 2>/dev/null
+    done; do
+        sleep 2
+    done
+) &
+
+(while true; do
+    sleep 60
+    kill -SIGALRM $$ 2>/dev/null
+done) &
+
+while true; do wait || true; done
+

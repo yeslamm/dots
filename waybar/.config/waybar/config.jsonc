@@ -197,7 +197,7 @@
     "custom/swayidle": {
         "exec": "~/.config/waybar/idle_status.sh",
         "interval": "once",
-        "signal": 8,
+        "signal": 9,
         "return-type": "json",
         "format": "{text}",
         "tooltip": true
