@@ -28,18 +28,20 @@ return {
                 enable = true,
                 icons = {
                     hint = ' ',
-                    info = ' ',
-                    warning = ' ',
-                    error = ' ',
+                    info = ' ',
+                    warning = ' ',
+                    error = ' ',
                 },
             },
             -- Add this block to sync with current file's directory
             update_focused_file = {
                 enable = true,
-                update_root = true,
+                update_root = {
+                    enable = true,
+                },
             },
         }
-        vim.keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
+        vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { noremap = true, silent = true, desc = '[E]xplorer (NvimTree)' })
     end,
 
     lazy = false, -- load on startup

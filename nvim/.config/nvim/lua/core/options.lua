@@ -29,7 +29,7 @@ vim.o.hlsearch = false -- Highlight all matches for last search
 vim.o.termguicolors = true -- Enable 24-bit RGB colors
 vim.o.showtabline = 2 -- Always show tabs (required for bufferline)
 vim.o.pumheight = 10 -- Pop up menu height
-vim.o.conceallevel = 0 -- So that `` is visible in markdown files
+vim.o.conceallevel = 2 -- Hide * or _ in markdown and other symbols for a cleaner look
 
 -- Indentation options
 vim.opt.expandtab = true -- Use spaces instead of tabs

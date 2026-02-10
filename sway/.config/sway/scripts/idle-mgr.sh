@@ -7,7 +7,8 @@ set -euo pipefail
 LOCK_FILE="/dev/shm/idle-mgr.lock"
 PID_FILE="/dev/shm/idle-mgr.pid"
 STATE_FILE="/dev/shm/idle-mgr.state"
-INHIBIT_APPS_FILE="$HOME/.config/sway/idle_inhibit_apps"
+IDLE_APPS_FILE="$HOME/.config/sway/idle_apps"
+IDLE_NF_APPS_FILE="$HOME/.config/sway/idle_nf_apps"
 WAYBAR_SIGNAL=9
 
 # --- 1. Atomic Singleton ---
@@ -67,18 +68,35 @@ start_idle() {
 # --- 3. Inhibition Logic (Safe from set -e) ---
 
 should_be_inhibited() {
-    # 1. Focus Check
-    local focused
-    focused=$(swaymsg -t get_tree | jq -r '.. | select(.focused? == true) | (.app_id // .window_properties.class // "") + " " + (.name // "")' 2>/dev/null || true)
+    local tree
+    tree=$(swaymsg -t get_tree 2>/dev/null || true)
+    [ -z "$tree" ] && return 1
 
-    if [ -n "$focused" ] && [ -f "$INHIBIT_APPS_FILE" ]; then
-        while IFS= read -r pattern; do
-            [[ "$pattern" =~ ^#.*$ || -z "$pattern" ]] && continue
-            if [[ "$focused" =~ $pattern ]]; then return 0; fi
-        done <"$INHIBIT_APPS_FILE"
+    # 1. Non-focus Check (Any window matching IDLE_NF_APPS_FILE)
+    if [ -f "$IDLE_NF_APPS_FILE" ]; then
+        local all_windows
+        all_windows=$(echo "$tree" | jq -r '.. | select(.type? == "con" or .type? == "floating_con") | (.app_id // .window_properties.class // "") + " " + (.name // "")' 2>/dev/null || true)
+
+        local nf_patterns
+        nf_patterns=$(grep -vE '^#|^$' "$IDLE_NF_APPS_FILE" | tr '\n' '|' | sed 's/|$//' || true)
+        if [ -n "$nf_patterns" ] && echo "$all_windows" | grep -Ei "$nf_patterns" >/dev/null; then
+            return 0
+        fi
     fi
 
-    # 2. Media/Audio Check
+    # 2. Focus Check (Focused window matching IDLE_APPS_FILE)
+    if [ -f "$IDLE_APPS_FILE" ]; then
+        local focused
+        focused=$(echo "$tree" | jq -r '.. | select(.focused? == true) | (.app_id // .window_properties.class // "") + " " + (.name // "")' 2>/dev/null || true)
+
+        local f_patterns
+        f_patterns=$(grep -vE '^#|^$' "$IDLE_APPS_FILE" | tr '\n' '|' | sed 's/|$//' || true)
+        if [ -n "$focused" ] && [ -n "$f_patterns" ] && echo "$focused" | grep -Ei "$f_patterns" >/dev/null; then
+            return 0
+        fi
+    fi
+
+    # 3. Media/Audio Check
     if playerctl -a status 2>/dev/null | grep -q "Playing"; then
         return 0
     fi
@@ -109,12 +127,12 @@ check_and_act() {
 
 handle_pause() {
     PAUSED=true
-    notify-send -t 1000 "Idle Manager" "Paused"
+    notify-send -t 1000 -h string:x-canonical-private-synchronous:state "Idle Manager" "Paused"
     check_and_act
 }
 handle_resume() {
     PAUSED=false
-    notify-send -t 1000 "Idle Manager" "Resumed"
+    notify-send -t 1000 -h string:x-canonical-private-synchronous:state "Idle Manager" "Resumed"
     check_and_act
 }
 
@@ -143,7 +161,7 @@ trap "check_and_act" SIGALRM
 trap cleanup EXIT INT TERM
 
 # --- 5. Main ---
-notify-send -t 1000 "Idle Manager" "Started"
+notify-send -t 1000 -h string:x-canonical-private-synchronous:state "Idle Manager" "Started"
 update_waybar
 check_and_act
 

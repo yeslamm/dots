@@ -1,83 +1,38 @@
-return { -- Useful plugin to show you pending keybinds.
+return {
     'folke/which-key.nvim',
-    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
+    event = 'VimEnter',
     opts = {
-        -- delay between pressing a key and opening which-key (milliseconds)
-        -- this setting is independent of vim.o.timeoutlen
+        preset = 'helix',
         delay = 0,
         icons = {
-            -- set icon mappings to true if you have a Nerd Font
-            mappings = false,
-            -- If you are using a Nerd Font: set icons.keys to an empty table which will use the
-            -- default which-key.nvim defined Nerd Font icons, otherwise define a string table
-            keys = vim.g.have_nerd_font and {} or {
-                Up = '<Up> ',
-                Down = '<Down> ',
-                Left = '<Left> ',
-                Right = '<Right> ',
-                C = '<C-…> ',
-                M = '<M-…> ',
-                D = '<D-…> ',
-                S = '<S-…> ',
-                CR = '<CR> ',
-                Esc = '<Esc> ',
-                ScrollWheelDown = '<ScrollWheelDown> ',
-                ScrollWheelUp = '<ScrollWheelUp> ',
-                NL = '<NL> ',
-                BS = '<BS> ',
-                Space = '<Space> ',
-                Tab = '<Tab> ',
-                F1 = '<F1>',
-                F2 = '<F2>',
-                F3 = '<F3>',
-                F4 = '<F4>',
-                F5 = '<F5>',
-                F6 = '<F6>',
-                F7 = '<F7>',
-                F8 = '<F8>',
-                F9 = '<F9>',
-                F10 = '<F10>',
-                F11 = '<F11>',
-                F12 = '<F12>',
-            },
+            breadcrumb = '»',
+            separator = '➜',
+            group = '+',
+            mappings = false, -- Disable icons for mappings
         },
-        preset = 'helix', -- helix, classic, modern
-        -- layout = {
-        --     height = { min = 40, max = 50 },
-        --     width = { min = 20, max = 40 },
-        --     spacing = 10,
-        --     align = 'left',
-        -- },
-
-        -- Document existing key chains
+        win = {
+            border = 'rounded',
+            padding = { 1, 2 },
+            title = true,
+            title_pos = 'center',
+        },
+        layout = {
+            align = 'center',
+        },
         spec = {
-            -- Telescope search group
             { '<leader>s', group = '[S]earch' },
-            -- Toggle/Trouble group
-            { '<leader>t', group = '[T]oggle/Trouble' },
-            -- Git group
+            { '<leader>x', group = '[X] Trouble' },
             { '<leader>g', group = '[G]it', mode = { 'n', 'v' } },
-            { '<leader>gg', desc = 'Lazygit' },
-            { '<leader>gn', desc = 'Neogit' },
-            { '<leader>gv', desc = 'Diffview' },
-            { '<leader>gs', desc = 'Stage Hunk' },
-            { '<leader>gr', desc = 'Reset Hunk' },
-            { '<leader>gb', desc = 'Blame Line' },
-            -- Diagnostic group
+            { '<leader>gt', group = '[T]oggles' },
+            { '<leader>t', group = '[T]ools' },
             { '<leader>d', group = '[D]ebug' },
-            -- Buffer management group
             { '<leader>b', group = '[B]uffer' },
-            { '<leader>q', group = 'quit' },
-
-            -- Plugin-specific groups
-            { '<leader>L', group = 'Lazy' },
-            { '<leader>M', group = 'Mason' },
-
-            -- Persistance
-            { '<leader>p', group = '[P]ersistance', mode = { 'n', 'v' } },
-
-            -- quick fix
-            { '<leader>q', desc = 'quickfix list' },
+            { '<leader>Q', desc = 'Quit Neovim' },
+            { '<leader>L', desc = 'Lazy' },
+            { '<leader>M', desc = 'Mason' },
+            { '<leader>f', desc = 'Quickfix list' },
+            { '<leader>q', desc = 'Close Buffer' },
+            { '<leader>e', desc = 'Explorer' },
         },
     },
 }

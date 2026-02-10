@@ -13,7 +13,6 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
     end
 end
 
----@type vim.Option
 local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
@@ -28,13 +27,14 @@ require('lazy').setup({
     require 'plugins.gitsigns',
     require 'plugins.neogit',
     require 'plugins.which_key',
-    require 'plugins.telescope',
+    require 'plugins.fzf-lua',
     require 'plugins.lualine',
     require 'plugins.mini',
     require 'plugins.indent_line',
     require 'plugins.tmux-nav',
     require 'plugins.surround',
     require 'plugins.dashboard',
+    require 'plugins.session',
     require 'plugins.markdown',
     require 'plugins.noice',
     require 'plugins.neoscroll',
@@ -50,7 +50,6 @@ require('lazy').setup({
     require 'plugins.diffview',
     require 'plugins.oil',
     require 'plugins.nvimtree',
-    require 'plugins.persistence',
 
     rocks = {
         enabled = false,
@@ -85,6 +84,10 @@ require('lazy').setup({
         },
     },
 })
+
+-- Lazy keybind
+vim.keymap.set('n', '<leader>L', '<cmd>Lazy<CR>', { desc = '[L]azy' })
+
 local function set_tabline_colors()
     -- Get the colors of the Normal group (editor background)
     local normal_hl = vim.api.nvim_get_hl(0, { name = 'Normal' })

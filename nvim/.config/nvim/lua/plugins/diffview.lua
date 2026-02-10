@@ -1,7 +1,7 @@
 return {
   'sindrets/diffview.nvim',
   cmd = { 'DiffviewOpen', 'DiffviewClose', 'DiffviewToggleFiles', 'DiffviewFocusFiles' },
-  keys = { { '<leader>gv', '<cmd>DiffviewOpen<CR>', desc = 'Open Diffview' } },
+  keys = { { '<leader>tv', '<cmd>DiffviewOpen<CR>', desc = 'Open [T]ools [V]iew' } },
   opts = {
     -- Your desired configuration
     -- Example:

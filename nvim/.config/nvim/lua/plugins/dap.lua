@@ -111,6 +111,6 @@ return {
         vim.keymap.set('n', '<S-F5>', dap.terminate, { desc = 'Debug: Stop' })
 
         -- Manual UI Toggle
-        vim.keymap.set('n', '<leader>du', dapui.toggle, { desc = 'Debug: Toggle UI' })
+        vim.keymap.set('n', '<F10>', dapui.toggle, { desc = 'Debug: Toggle UI' })
     end,
 }

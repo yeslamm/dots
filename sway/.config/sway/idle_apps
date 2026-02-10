@@ -1,5 +1,6 @@
 steam
 okular
-pacman
-yay
 .*\.exe$
+gamescope
+mpv
+vlc

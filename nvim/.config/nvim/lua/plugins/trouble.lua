@@ -8,42 +8,42 @@ return {
     cmd = 'Trouble',
     keys = {
         {
-            '<leader>td',
+            '<leader>xx',
             '<cmd>Trouble diagnostics toggle<cr>',
             desc = 'Diagnostics (Trouble)',
         },
         {
-            '<leader>tD',
+            '<leader>xX',
             '<cmd>Trouble diagnostics toggle filter.buf=0<cr>',
             desc = 'Buffer Diagnostics (Trouble)',
         },
         {
-            '<leader>tq',
+            '<leader>xq',
             '<cmd>Trouble qflist toggle<cr>',
             desc = 'Quickfix List (Trouble)',
         },
         {
-            '<leader>tl',
+            '<leader>xl',
             '<cmd>Trouble loclist toggle<cr>',
             desc = 'Location List (Trouble)',
         },
         {
-            '<leader>tr',
+            '<leader>xr',
             '<cmd>Trouble lsp_references toggle<cr>',
             desc = 'LSP References (Trouble)',
         },
         {
-            '<leader>tM', -- M for Meanings/Types
+            '<leader>xt',
             '<cmd>Trouble lsp_type_definitions toggle<cr>',
             desc = 'LSP Type Definitions (Trouble)',
         },
         {
-            '<leader>tI', -- I for Implementations
+            '<leader>xi',
             '<cmd>Trouble lsp_implementations toggle<cr>',
             desc = 'LSP Implementations (Trouble)',
         },
         {
-            '<leader>tR', -- R for Definitions/Declarations
+            '<leader>xd',
             '<cmd>Trouble lsp_definitions toggle<cr>',
             desc = 'LSP Definitions (Trouble)',
         },

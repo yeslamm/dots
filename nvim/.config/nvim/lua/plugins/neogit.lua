@@ -3,11 +3,10 @@ return {
     dependencies = {
         'nvim-lua/plenary.nvim',
         'sindrets/diffview.nvim',
-        'nvim-telescope/telescope.nvim',
     },
     opts = {},
     keys = {
-        { '<leader>gn', '<cmd>Neogit<CR>', desc = 'Open Neogit' },
+        { '<leader>tn', '<cmd>Neogit<CR>', desc = 'Open [T]ools [N]eogit' },
     },
 }
 

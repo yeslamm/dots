@@ -136,21 +136,32 @@ bar {
 #  5. WINDOW RULES
 # ==============================================================================
 
+# --- Specific Apps ---
 for_window [app_id="fdm"] floating enable, resize set 1100 800, move position center, move scratchpad
+for_window [app_id="org.qbittorrent.qBittorrent"] floating enable, resize set 1300 900, move position center
 for_window [class="com-abdownloadmanager-desktop-AppKt"] floating enable
 for_window [app_id="FileRoller"] floating enable
 for_window [app_id="org.strawberrymusicplayer.strawberry"] floating enable
 for_window [app_id="com.github.hluk.copyq"] floating enable, border pixel 1
+for_window [app_id="mpv"] floating enable
 
-for_window [app_id="pavucontrol"] floating enable, border pixel 1, scratchpad move
-for_window [app_id="nm-connection-editor"] floating enable, border pixel 1, sticky enable, scratchpad move
-for_window [app_id="blueman-manager"] floating enable, border pixel 1, sticky enable, scratchpad move
-for_window [app_id="blueman-services"] floating enable, border pixel 1, sticky enable, scratchpad move
+# --- System / Portals / Dialogs ---
+for_window [app_id="xdg-desktop-portal-gtk"] floating enable, sticky enable
+for_window [instance="sun-awt-X11-XDialogPeer"] floating enable
 
-for_window [title="float-term"] floating enable, resize set 1100 800, move position center, title set ""
+# Match all X11 dialog types (Keep these, they are good for compatibility)
+for_window [window_role="pop-up|bubble|task_dialog|dialog|menu"] floating enable
 
-for_window [app_id="firefox" title="^Extension: \(.*\) - .*$"] floating enable
-for_window [app_id="firefox" title="Extension:.*"] floating enable, focus
+# --- Background Scratchpad Apps ---
+# (Removed 'sticky' assuming standard scratchpad usage; add back if you want them to follow you)
+for_window [app_id="pavucontrol"] floating enable, border pixel 1, sticky enable
+for_window [app_id="nm-connection-editor"] floating enable, border pixel 1, sticky enable
+for_window [app_id="blueman-manager"] floating enable, border pixel 1, sticky enable
+for_window [app_id="blueman-services"] floating enable, border pixel 1, sticky enable
+
+for_window [title="float-term"] floating enable, resize set 1100 800, move position center, title_format ""
+for_window [app_id="firefox" title="^Extension:.*"] floating enable, focus
+for_window [title="Picture-in-Picture"] floating enable, sticky enable
 
 # ==============================================================================
 #  6. KEYBINDINGS: LAUNCHERS & SYSTEM

@@ -1,0 +1,87 @@
+enable_audio_bell no
+
+# font_family         Hack Nerd Font Regular
+# bold_font           Hack Nerd Font Bold
+# bold_italic_font    Hack Nerd Font Bold Italic
+
+# font_family       JetBrainsMono NFM Regular 
+# bold_font         JetBrainsMono NFM Bold 
+# bold_italic_font  JetBrainsMono NFM Bold Italic
+
+font_family      JetBrainsMonoNL NF Regular
+bold_font        JetBrainsMonoNL NF Bold
+bold_italic_font JetBrainsMonoNL NF Bold Italic
+
+# font_family      Iosevka Nerd Font
+# bold_font        Iosevka Nerd Font Bold
+# bold_italic_font Iosevka Nerd Font Bold Italic
+
+# font_family      IosevkaTerm Nerd Font Regular
+# bold_font        IosevkaTerm Nerd Font Bold
+# bold_italic_font IosevkaTerm Nerd Font Bold Italic
+
+# font_family FiraCode Nerd Font
+# bold_font FiraCode Nerd Font Bold
+# italic_font FiraCode Nerd Font Italic
+# bold_italic_font FiraCode Nerd Font Bold Italic
+
+font_size 16.0
+
+disable_ligatures never
+term xterm-256color
+
+repaint_delay 10
+# input_delay 0
+sync_to_monitor no
+
+
+map ctrl+shift+enter new_window
+map ctrl+shift+right next_window
+map ctrl+shift+left previous_window
+
+
+# map ctrl+shift+l next_layout
+
+
+map ctrl+shift+t new_tab
+map ctrl+shift+l next_tab
+map ctrl+shift+h previous_tab
+map ctrl+shift+q close_tab
+
+
+mouse_hide_wait -1
+
+window_padding_width 0 3 0 3
+
+copy_on_select yes
+#paste_on_middle_mouse_button yes
+
+cursor_shape block
+cursor_blink_interval 0.8
+shell_integration no-cursor
+confirm_os_window_close 0
+cursor_trail 10
+cursor_trail_start_threshold 0 
+cursor_trail_decay 0.01 0.05
+
+scrollback_lines 10000
+wheel_scroll_multiplier 15.0
+touch_scroll_multiplier 15.0
+
+tab_bar_align center 
+active_tab_font_style  bold-italic
+inactive_tab_font_style bold-italic
+
+map ctrl+backspace send_text all \x17
+
+
+remember_window_size  no
+initial_window_width  1200
+initial_window_height 800
+
+# background_opacity 0.6
+
+# BEGIN_KITTY_THEME
+# Adwaita darker
+include current-theme.conf
+# END_KITTY_THEME

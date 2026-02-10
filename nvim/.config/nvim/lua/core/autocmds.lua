@@ -14,6 +14,21 @@ vim.api.nvim_create_autocmd('FileType', {
     end,
 })
 
+-- Set conceallevel for specific filetypes
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = { 'markdown', 'markdown_inline' },
+    callback = function()
+        vim.opt_local.conceallevel = 2
+    end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'json',
+    callback = function()
+        vim.opt_local.conceallevel = 0
+    end,
+})
+
 -- Restore cursor to file position in previous editing session
 vim.api.nvim_create_autocmd('BufReadPost', {
     callback = function(args)

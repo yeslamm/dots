@@ -48,17 +48,18 @@ return {
                     end
 
                     -- The `gr` prefix stands for "Go To -> LSP"
+                    local fzf = require 'fzf-lua'
                     map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
                     map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
-                    map('grr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-                    map('gri', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-                    map('grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+                    map('grr', fzf.lsp_references, '[G]oto [R]eferences')
+                    map('gri', fzf.lsp_implementations, '[G]oto [I]mplementation')
+                    map('grd', fzf.lsp_definitions, '[G]oto [D]efinition')
                     map('grD', vim.lsp.buf.declaration, '[D]eclaration')
-                    map('grt', require('telescope.builtin').lsp_type_definitions, '[G]oto [T]ype Definition')
+                    map('grt', fzf.lsp_typedefs, '[G]oto [T]ype Definition')
 
                     -- Fuzzy find symbols in the current document or workspace
-                    map('gO', require('telescope.builtin').lsp_document_symbols, 'Open Document Symbols')
-                    map('gW', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Open Workspace Symbols')
+                    map('gO', fzf.lsp_document_symbols, 'Open Document Symbols')
+                    map('gW', fzf.lsp_live_workspace_symbols, 'Open Workspace Symbols')
 
                     map('K', function()
                         vim.lsp.buf.hover { border = 'rounded' }
@@ -112,9 +113,9 @@ return {
                 float = { border = 'rounded', source = 'if_many' },
                 signs = vim.g.have_nerd_font and {
                     text = {
-                        [vim.diagnostic.severity.ERROR] = ' ',
-                        [vim.diagnostic.severity.WARN] = ' ',
-                        [vim.diagnostic.severity.INFO] = ' ',
+                        [vim.diagnostic.severity.ERROR] = ' ',
+                        [vim.diagnostic.severity.WARN] = ' ',
+                        [vim.diagnostic.severity.INFO] = ' ',
                         [vim.diagnostic.severity.HINT] = ' ',
                     },
                 } or {},
@@ -163,6 +164,9 @@ return {
                 'clang-format',
             })
             require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+
+            -- Mason keybind
+            vim.keymap.set('n', '<leader>M', '<cmd>Mason<CR>', { desc = '[M]ason' })
 
             -- This block configures nvim-lspconfig to use the tools installed by Mason.
             require('mason-lspconfig').setup {
