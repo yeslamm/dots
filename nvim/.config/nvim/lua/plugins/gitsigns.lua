@@ -32,7 +32,7 @@ return {
                 else
                     gitsigns.nav_hunk 'next'
                 end
-            end, { desc = 'Next [C]hange' })
+            end, { desc = 'Next Change' })
 
             map('n', '[c', function()
                 if vim.wo.diff then
@@ -40,7 +40,7 @@ return {
                 else
                     gitsigns.nav_hunk 'prev'
                 end
-            end, { desc = 'Prev [C]hange' })
+            end, { desc = 'Prev Change' })
 
             -- Actions
             map('n', '<leader>gs', gitsigns.stage_hunk, { desc = 'Stage Hunk' })
@@ -57,13 +57,13 @@ return {
             map('n', '<leader>gu', gitsigns.undo_stage_hunk, { desc = 'Undo Stage Hunk' })
             map('n', '<leader>gp', gitsigns.preview_hunk, { desc = 'Preview Hunk' })
             map('n', '<leader>gb', gitsigns.blame_line, { desc = 'Blame Line' })
-            map('n', '<leader>gd', gitsigns.diffthis, { desc = 'Diff Against Index' })
+            map('n', '<leader>gd', gitsigns.diffthis, { desc = 'Diff Index' })
             map('n', '<leader>gD', function()
                 gitsigns.diffthis '~'
-            end, { desc = 'Diff Against Last Commit' })
+            end, { desc = 'Diff Last Commit' })
 
             -- Toggles
-            map('n', '<leader>gtb', gitsigns.toggle_current_line_blame, { desc = 'Toggle Blame Line' })
+            map('n', '<leader>gtb', gitsigns.toggle_current_line_blame, { desc = 'Toggle Blame' })
             map('n', '<leader>gtd', gitsigns.toggle_deleted, { desc = 'Toggle Deleted' })
             map('n', '<leader>gtw', gitsigns.toggle_word_diff, { desc = 'Toggle Word Diff' })
         end,

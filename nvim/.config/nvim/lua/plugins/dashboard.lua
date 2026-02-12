@@ -30,7 +30,7 @@ return {
                         desc_hl = 'String',
                         key = 'f',
                         key_hl = 'Keyword',
-                        action = 'FzfLua files',
+                        action = 'Telescope find_files',
                         key_format = '[%s]',
                     },
                     {
@@ -40,7 +40,7 @@ return {
                         desc_hl = 'String',
                         key = 'g',
                         key_hl = 'Keyword',
-                        action = 'FzfLua live_grep',
+                        action = 'Telescope live_grep',
                         key_format = '[%s]',
                     },
                     {
@@ -86,7 +86,7 @@ return {
                         desc_hl = 'String',
                         key = 'r',
                         key_hl = 'Keyword',
-                        action = 'FzfLua oldfiles',
+                        action = 'Telescope oldfiles',
                         key_format = '[%s]',
                     },
                     -- {
@@ -106,7 +106,7 @@ return {
                         desc_hl = 'String',
                         key = 'd',
                         key_hl = 'Keyword',
-                        action = 'FzfLua files cwd=~/.config/nvim/',
+                        action = 'Telescope find_files cwd=~/.config/nvim/',
                         key_format = '[%s]',
                     },
 

@@ -6,7 +6,6 @@ return {
     },
     opts = {},
     keys = {
-        { '<leader>tn', '<cmd>Neogit<CR>', desc = 'Open [T]ools [N]eogit' },
+        { '<leader>Tn', '<cmd>Neogit<CR>', desc = 'Neogit' },
     },
 }
-

@@ -3,33 +3,41 @@
 -- See `:help lua-guide-options`
 
 -- General options
-vim.o.number = true -- Show line numbers
-vim.o.relativenumber = true -- Show relative line numbers
-vim.o.mouse = 'a' -- Enable mouse support
-vim.o.clipboard = 'unnamedplus' -- Sync clipboard with system clipboard
-vim.o.wrap = false -- Do not wrap lines
-vim.o.undofile = true -- Enable persistent undo (creates undo files)
-vim.o.ignorecase = true -- Ignore case in search patterns
-vim.o.smartcase = true -- Override ignorecase if pattern contains uppercase characters
-vim.o.updatetime = 300 -- Time in ms to wait for CursorHold event
-vim.o.timeoutlen = 300 -- Time in ms to wait for a mapped sequence to complete
-vim.o.splitright = true -- Split windows to the right of the current one
-vim.o.splitbelow = true -- Split windows below the current one
-vim.o.inccommand = 'split' -- Show effects of :substitute and :global commands in a split window
-vim.o.cursorline = true -- Highlight the current line
-vim.o.confirm = true -- Ask for confirmation when closing unsaved buffers
+vim.opt.number = true -- Show line numbers
+vim.opt.relativenumber = true -- Show relative line numbers
+vim.opt.mouse = 'a' -- Enable mouse support
+vim.opt.clipboard = 'unnamedplus' -- Sync clipboard with system clipboard
+vim.opt.wrap = false -- Do not wrap lines
+vim.opt.undofile = true -- Enable persistent undo
+vim.opt.ignorecase = true -- Ignore case in search
+vim.opt.smartcase = true -- Override ignorecase if pattern contains uppercase
+vim.opt.updatetime = 300 -- Faster completion and diagnostic display
+vim.opt.timeoutlen = 300 -- Time to wait for a mapped sequence
+vim.opt.splitright = true -- Vertical splits to the right
+vim.opt.splitbelow = true -- Horizontal splits below
+vim.opt.inccommand = 'split' -- Preview incremental substitute
+vim.opt.cursorline = true -- Highlight current line
+vim.opt.confirm = true -- Confirm unsaved changes
+vim.opt.smoothscroll = true -- Smooth scrolling for wrapped lines
+vim.o.laststatus = 2 -- Per-window statusline
+vim.o.winborder = 'rounded' -- Rounded borders for windows
+
+-- Folding settings for nvim-ufo
+vim.opt.foldcolumn = '0'
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+vim.opt.foldenable = true
 
 -- UI options
-vim.o.signcolumn = 'yes' -- Always show the sign column
-vim.o.showmode = false -- Do not show current mode in command line
-vim.o.ruler = false -- Do not show cursor position in status line
-vim.o.scrolloff = 4 -- Minimal number of screen lines to keep above/below cursor
-vim.o.sidescrolloff = 8 -- Minimal number of screen columns either side of cursor if wrap is `false`
-vim.o.hlsearch = false -- Highlight all matches for last search
-vim.o.termguicolors = true -- Enable 24-bit RGB colors
-vim.o.showtabline = 2 -- Always show tabs (required for bufferline)
-vim.o.pumheight = 10 -- Pop up menu height
-vim.o.conceallevel = 2 -- Hide * or _ in markdown and other symbols for a cleaner look
+vim.opt.signcolumn = 'yes' -- Always show sign column
+vim.opt.showmode = false -- Mode already in statusline
+vim.opt.scrolloff = 10 -- Lines of context around cursor
+vim.opt.sidescrolloff = 8 -- Columns of context around cursor
+vim.opt.hlsearch = true -- Keep search highlights
+vim.opt.termguicolors = true -- Enable 24-bit RGB colors
+vim.opt.showtabline = 2 -- Always show tabline
+vim.opt.pumheight = 10 -- Height of popup menu
+vim.opt.conceallevel = 2 -- Hide markup for better readability
 
 -- Indentation options
 vim.opt.expandtab = true -- Use spaces instead of tabs

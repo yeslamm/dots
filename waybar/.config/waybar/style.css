@@ -104,6 +104,12 @@
     border-radius: 0px;
 }
 
+#custom-layout {
+    color: #ffffff;
+    padding-left: 8px;
+    padding-right: 0px;
+}
+
 /* Custom Updates */
 #custom-updates {
   /* 0px vertical, 0px horizontal */

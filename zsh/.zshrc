@@ -293,6 +293,7 @@ alias fuzzconf='nvim ~/.config/fuzzel/fuzzel.ini'
 alias yconf='yazi ~/.config/yazi/'
 alias nemo='nemo > /dev/null 2>&1 &'
 alias footconf='nvim ~/.config/foot/foot.ini'
+alias img='swayimg'
 
 ### Other
 alias discordf='flatpak run com.discordapp.Discord'

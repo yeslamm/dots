@@ -50,21 +50,20 @@ return {
             require('lualine').setup {
                 options = {
                     icons_enabled = true,
-                    -- theme = 'github_dark_default', -- Set theme based on environment variable
-                    theme = 'onedark', -- Set theme based on environment variable
-                    -- theme = nord_theme, -- Set theme based on environment variable theme = normal_theme, -- Set theme based on environment variable Some useful glyphs: https://www.nerdfonts.com/cheat-sheet        
-                    -- section_separators = { left = '', right = '' },
-                    -- component_separators = { left = '', right = '' },
-
-                    -- section_separators = { left = '', right = '' },
-                    -- component_separators = { left = '|', right = '|' },
-                    -- section_separators = { left = '|', right = '|' },
-                    -- component_separators = { left = '|', right = '|' },
-
+                    theme = 'onedark',
                     section_separators = { left = '', right = '' },
                     component_separators = { left = '', right = '' },
-
-                    disabled_filetypes = { 'dashboard', 'ministarter', 'NvimTree', 'undotree', 'neo-tree', 'toggleterm', 'terminal', 'statusline' },
+                    disabled_filetypes = {
+                        statusline = {
+                            'NvimTree',
+                            'undotree',
+                            'dashboard',
+                            'ministarter',
+                            'toggleterm',
+                            'terminal',
+                            'TelescopePrompt',
+                        },
+                    },
                     always_divide_middle = true,
                     globalstatus = false,
                 },

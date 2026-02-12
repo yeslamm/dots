@@ -17,17 +17,14 @@
     "position": "top",
     "modules-left": [
         "sway/workspaces",
+        "custom/layout",
         "sway/mode",
-        // "custom/separator0",
-        // "disk",
         "custom/separator0",
         "memory",
         "custom/separator0",
         "cpu",
         "custom/separator0",
         "temperature",
-        // "custom/separator0",
-        // "network"
         "custom/separator0",
         "custom/swayidle"
     ],
@@ -47,6 +44,14 @@
         "battery"
     ],
     "modules-center": ["clock"],
+
+    "custom/layout": {
+        "exec": "~/.config/sway/scripts/split-mgr.sh query",
+        "return-type": "json",
+        "format": "{}",
+        "signal": 12,
+        "tooltip": true
+    },
 
     "custom/separator0": {
         "format": " / ",

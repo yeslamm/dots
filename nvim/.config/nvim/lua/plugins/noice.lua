@@ -26,25 +26,30 @@ return {
                 silent = false,
             },
             override = {
-                -- Enable these if you want noice.nvim to handle markdown rendering in LSP and cmp documentation
                 ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
                 ['vim.lsp.util.stylize_markdown'] = true,
-                ['cmp.entry.get_documentation'] = true, -- requires hrsh7th/nvim-cmp,
+                ['cmp.entry.get_documentation'] = true,
             },
         },
         messages = {
-            -- disable or tune confirmation prompts
-            enabled = true, -- disables most message spam, can reduce interrupts
+            enabled = true,
         },
         cmdline = {
             enabled = true,
         },
         presets = {
-            bottom_search = false, -- Puts / and ? at the bottom like classic cmdline
-            command_palette = true, -- Puts : cmdline and popupmenu together
-            long_message_to_split = false, -- Long messages go to a separate split
-            inc_rename = false, -- Disable input dialog for inc-rename.nvim
-            lsp_doc_border = true, -- Enabled to help with flicker
+            bottom_search = false,
+            command_palette = true,
+            long_message_to_split = false,
+            inc_rename = false,
+            lsp_doc_border = true,
+        },
+        -- Ensure Noice uses nvim-notify for notifications
+        views = {
+            notify = {
+                backend = 'notify',
+                fallback = 'mini',
+            },
         },
     },
     dependencies = {
@@ -53,13 +58,16 @@ return {
             'rcarriga/nvim-notify',
             opts = {
                 render = 'wrapped-compact',
-                -- stages = 'fade',
-                -- stages = 'fade_in_slide_out',
-                -- stages = 'slide',
-                stages = 'static',
+                stages = 'static', -- this is the key for no animation
                 timeout = 2500,
                 background_colour = '#000000',
+                fps = 1, -- lowering fps for static stages can sometimes help stability
             },
+            config = function(_, opts)
+                require('notify').setup(opts)
+                vim.notify = require 'notify' -- explicitly override the global notify function
+            end,
         },
     },
 }
+

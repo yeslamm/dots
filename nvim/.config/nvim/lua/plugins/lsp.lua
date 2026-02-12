@@ -48,18 +48,18 @@ return {
                     end
 
                     -- The `gr` prefix stands for "Go To -> LSP"
-                    local fzf = require 'fzf-lua'
-                    map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
-                    map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
-                    map('grr', fzf.lsp_references, '[G]oto [R]eferences')
-                    map('gri', fzf.lsp_implementations, '[G]oto [I]mplementation')
-                    map('grd', fzf.lsp_definitions, '[G]oto [D]efinition')
-                    map('grD', vim.lsp.buf.declaration, '[D]eclaration')
-                    map('grt', fzf.lsp_typedefs, '[G]oto [T]ype Definition')
+                    local builtin = require 'telescope.builtin'
+                    map('grn', vim.lsp.buf.rename, 'Rename')
+                    map('gra', vim.lsp.buf.code_action, 'Code Action', { 'n', 'x' })
+                    map('grr', builtin.lsp_references, 'References')
+                    map('gri', builtin.lsp_implementations, 'Implementation')
+                    map('grd', builtin.lsp_definitions, 'Definition')
+                    map('grD', vim.lsp.buf.declaration, 'Declaration')
+                    map('grt', builtin.lsp_type_definitions, 'Type Definition')
 
                     -- Fuzzy find symbols in the current document or workspace
-                    map('gO', fzf.lsp_document_symbols, 'Open Document Symbols')
-                    map('gW', fzf.lsp_live_workspace_symbols, 'Open Workspace Symbols')
+                    map('gO', builtin.lsp_document_symbols, 'Document Symbols')
+                    map('gW', builtin.lsp_dynamic_workspace_symbols, 'Workspace Symbols')
 
                     map('K', function()
                         vim.lsp.buf.hover { border = 'rounded' }
@@ -99,15 +99,14 @@ return {
 
                     -- Toggle inlay hints if the server supports them
                     if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
-                        map('<leader>th', function()
+                        map('<leader>Th', function()
                             vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
-                        end, '[T]oggle Inlay [H]ints')
+                        end, 'Inlay Hints')
                     end
                 end,
             })
 
             -- Configure how diagnostics (errors, warnings, etc.) are displayed.
-            vim.g.have_nerd_font = true
             vim.diagnostic.config {
                 severity_sort = true,
                 float = { border = 'rounded', source = 'if_many' },
@@ -146,27 +145,35 @@ return {
                         },
                     },
                 },
+                jsonls = {
+                    on_new_config = function(new_config)
+                        new_config.settings.json.schemas = new_config.settings.json.schemas or {}
+                        vim.list_extend(new_config.settings.json.schemas, require('schemastore').json.schemas())
+                    end,
+                    settings = {
+                        json = {
+                            format = { enable = false },
+                            validate = { enable = true },
+                        },
+                    },
+                },
             }
 
             -- This list tells mason-tool-installer which tools to ensure are installed.
             -- It includes LSP servers, formatters, and linters.
             local ensure_installed = vim.tbl_keys(servers or {})
             vim.list_extend(ensure_installed, {
-                -- 'lua_ls',
                 'stylua', -- Formatter
                 'shellcheck', -- Linter
                 'shfmt', -- Formatter
                 'prettier', -- Formatter
                 'markdownlint', -- Linter
                 'ruff', -- Formatter/Linter (Python)
-                'basedpyright', -- LSP (Python) - Not in 'servers' table because it has a custom handler
+                'basedpyright', -- LSP (Python)
                 'stylelint',
                 'clang-format',
             })
             require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-
-            -- Mason keybind
-            vim.keymap.set('n', '<leader>M', '<cmd>Mason<CR>', { desc = '[M]ason' })
 
             -- This block configures nvim-lspconfig to use the tools installed by Mason.
             require('mason-lspconfig').setup {
@@ -198,39 +205,6 @@ return {
                                 -- Disable ruff's hover provider to use basedpyright's richer hover info
                                 client.server_capabilities.hoverProvider = false
                             end,
-                            settings = {
-                                args = {},
-                            },
-                        }
-                    end,
-                    -- Custom handler for jsonls (JSON)
-                    ['jsonls'] = function()
-                        require('lspconfig').jsonls.setup {
-                            on_new_config = function(new_config)
-                                new_config.settings.json.schemas = new_config.settings.json.schemas or {}
-                                -- Add schemas from schemastore.nvim for enhanced JSON validation
-                                vim.list_extend(new_config.settings.json.schemas, require('schemastore').json.schemas())
-                            end,
-                            settings = {
-                                json = {
-                                    format = { enable = false },
-                                    validate = { enable = true },
-                                },
-                            },
-                        }
-                    end,
-
-                    lua_ls = function()
-                        require('lspconfig').lua_ls.setup {
-                            capabilities = capabilities,
-                            settings = {
-                                Lua = {
-                                    runtime = { version = 'LuaJIT' },
-                                    diagnostics = { globals = { 'vim' } },
-                                    workspace = { checkThirdParty = false },
-                                    format = { enable = false }, -- stylua handles formatting
-                                },
-                            },
                         }
                     end,
 
@@ -242,8 +216,6 @@ return {
                     end,
                 },
             }
-
-            vim.o.winborder = 'rounded' -- Or 'single', 'double', etc.
         end,
     },
 }

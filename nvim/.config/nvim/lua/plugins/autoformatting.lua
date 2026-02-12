@@ -9,7 +9,7 @@ return { -- Autoformat
                 require('conform').format { async = true }
             end,
             mode = '',
-            desc = '[F]ormat buffer',
+            desc = 'Format buffer',
         },
     },
     opts = {
@@ -29,8 +29,8 @@ return { -- Autoformat
             json = { 'prettier' },
             jsonc = { 'prettier' },
             python = { 'ruff_organize_imports', 'ruff_format' },
-            sh = { 'shfmt', 'shellcheck' },
-            bash = { 'shfmt', 'shellcheck' },
+            sh = { 'shfmt' },
+            bash = { 'shfmt' },
             zsh = {},
             toml = { 'taplo' },
 

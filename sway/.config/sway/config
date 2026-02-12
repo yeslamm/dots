@@ -48,6 +48,7 @@ set $apostrophe 48
 set $grave      49
 set $comma      59
 set $period     60
+set $slash      61
 
 set $term       kitty
 set $menu       fuzzel
@@ -118,14 +119,15 @@ exec_always amixer -c 1 set 'Internal Mic Boost' 0
 xwayland enable
 
 default_border pixel 2
-for_window [app_id=".*"] border pixel 2
+# for_window [app_id=".*"] border pixel 2
 hide_edge_borders smart
 gaps inner 10
 smart_gaps on
 
-client.focused          #d3d7cf  #d3d7cf  #2e3436  #d3d7cf    #d3d7cf
-client.unfocused        #575759  #575759  #ffffff  #575759    #575759
-client.focused_inactive #888a85  #888a85  #2e3436  #888a85    #888a85
+# client.focused          <border> <bg>     <text>   <indicator> <child_border>
+client.focused          #d3d7cf  #d3d7cf  #2e3436  #d3d7cf     #d3d7cf
+client.unfocused        #575759  #575759  #ffffff  #575759     #575759
+client.focused_inactive #888a85  #888a85  #2e3436  #888a85     #888a85
 client.urgent           #cc0000  #cc0000  #ffffff  #cc0000    #cc0000
 
 bar {
@@ -144,6 +146,7 @@ for_window [app_id="FileRoller"] floating enable
 for_window [app_id="org.strawberrymusicplayer.strawberry"] floating enable
 for_window [app_id="com.github.hluk.copyq"] floating enable, border pixel 1
 for_window [app_id="mpv"] floating enable
+for_window [app_id="swayimg"] floating enable
 
 # --- System / Portals / Dialogs ---
 for_window [app_id="xdg-desktop-portal-gtk"] floating enable, sticky enable
@@ -152,8 +155,6 @@ for_window [instance="sun-awt-X11-XDialogPeer"] floating enable
 # Match all X11 dialog types (Keep these, they are good for compatibility)
 for_window [window_role="pop-up|bubble|task_dialog|dialog|menu"] floating enable
 
-# --- Background Scratchpad Apps ---
-# (Removed 'sticky' assuming standard scratchpad usage; add back if you want them to follow you)
 for_window [app_id="pavucontrol"] floating enable, border pixel 1, sticky enable
 for_window [app_id="nm-connection-editor"] floating enable, border pixel 1, sticky enable
 for_window [app_id="blueman-manager"] floating enable, border pixel 1, sticky enable
@@ -196,10 +197,10 @@ bindsym $mod+Shift+F9  exec $scripts/replay.sh record
 # ==============================================================================
 
 bindsym  $mod+tab           focus mode_toggle
-bindcode $mod+$left         focus left
-bindcode $mod+$down         focus down
-bindcode $mod+$up           focus up
-bindcode $mod+$right        focus right
+bindcode $mod+$left         focus left; exec $scripts/split-mgr.sh update
+bindcode $mod+$down         focus down; exec $scripts/split-mgr.sh update
+bindcode $mod+$up           focus up; exec $scripts/split-mgr.sh update
+bindcode $mod+$right        focus right; exec $scripts/split-mgr.sh update
 
 bindcode $mod+Shift+$left   move left
 bindcode $mod+Shift+$down   move down
@@ -210,14 +211,14 @@ bindcode $mod+Shift+$period move workspace to output next
 bindcode $mod+Shift+$comma  move workspace to output prev
 bindcode $mod+$grave        workspace back_and_forth
 
-bindcode $mod+$semicolon    split v
-bindcode $mod+$apostrophe   split h
+bindcode $mod+$semicolon    exec $scripts/split-mgr.sh v
+bindcode $mod+$apostrophe   exec $scripts/split-mgr.sh h
 bindcode $mod+$f            floating toggle
 bindsym  F11                fullscreen
 floating_modifier $mod normal
 
-bindsym $mod+equal          move scratchpad
-bindsym $mod+minus          scratchpad show
+bindsym $mod+w              scratchpad show     
+bindsym $mod+Shift+w        move scratchpad 
 
 bindcode Control+$mod+$left  resize shrink width 40px
 bindcode Control+$mod+$down  resize grow height 40px
@@ -297,7 +298,7 @@ bindsym  Shift+Print      exec --no-startup-id flameshot full -p ~/Pictures/Scre
 
 bindcode $mod+$s mode Super
 mode Super {
-    bindcode $s exec "swaylock -f -c 000000 -F -e -k -L && ( $scripts/sentry.sh & ) && sleep 1 && systemctl suspend", mode default
+    bindcode $s exec "swaylock -f -c 000000 -F -e -k -L && systemctl suspend", mode default
     bindcode $l_mode exec $scripts/lock-ns.sh, mode default
     bindcode $e exec swaymsg exit, mode default
     bindcode $r exec systemctl reboot, mode default
@@ -339,8 +340,12 @@ mode Power {
         && pkill -RTMIN+8 waybar \
         && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Profile: Performance", mode "default"
 
-    bindcode $semicolon exec notify-send -t 2000 -h string:x-canonical-private-synchronous:asus " Current: $(asusctl profile get | grep -oP '(Quiet|Balanced|Performance)')", mode "default"
-      
+    bindsym semicolon exec asusctl battery limit 60 \
+        && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Battery: Limit set to 60%", mode default
+
+    bindsym apostrophe exec asusctl battery oneshot \
+        && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Battery: Charging to 100%", mode default
+
     bindsym Escape mode "default"
     bindsym Return mode "default"
     bindsym XF86Launch1 mode "default"

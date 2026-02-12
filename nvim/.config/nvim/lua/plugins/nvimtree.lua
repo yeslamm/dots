@@ -41,7 +41,7 @@ return {
                 },
             },
         }
-        vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { noremap = true, silent = true, desc = '[E]xplorer (NvimTree)' })
+        vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { noremap = true, silent = true, desc = 'Explorer' })
     end,
 
     lazy = false, -- load on startup

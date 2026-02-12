@@ -2,7 +2,7 @@ return {
     'rmagatti/auto-session',
     lazy = false,
     dependencies = {
-        'ibhagwan/fzf-lua',
+        'nvim-telescope/telescope.nvim',
     },
     config = function()
         require('auto-session').setup {
@@ -16,8 +16,8 @@ return {
         }
 
         -- Keymaps
-        vim.keymap.set('n', '<leader>wr', '<cmd>AutoSession restore<cr>', { desc = 'Restore session for cwd' })
-        vim.keymap.set('n', '<leader>ws', '<cmd>AutoSession save<cr>', { desc = 'Save session' })
-        vim.keymap.set('n', '<leader>wa', '<cmd>AutoSession search<cr>', { desc = 'Search sessions' })
+        vim.keymap.set('n', '<leader>wr', '<cmd>AutoSession restore<cr>', { desc = 'Restore Session' })
+        vim.keymap.set('n', '<leader>ws', '<cmd>AutoSession save<cr>', { desc = 'Save Session' })
+        vim.keymap.set('n', '<leader>wa', '<cmd>AutoSession search<cr>', { desc = 'Search Sessions' })
     end,
 }

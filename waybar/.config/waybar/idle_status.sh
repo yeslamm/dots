@@ -30,6 +30,9 @@ case "$STATE" in
 "PAUSED")
     echo '{"text":"IDLE: PAUSE","class":"idle-paused", "tooltip": "Idle management is paused."}'
     ;;
+"LOCKED")
+    echo '{"text":"IDLE: LCKD","class":"idle-locked", "tooltip": "Locked. Will re-suspend in < 30s if not unlocked."}'
+    ;;
 *)
     echo '{"text":"IDLE: ...","class":"idle-stopped", "tooltip": "Initializing..."}'
     ;;

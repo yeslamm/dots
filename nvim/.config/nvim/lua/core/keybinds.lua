@@ -10,14 +10,14 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- Save and Quit
-vim.keymap.set('n', '<C-s>', '<cmd>w<CR>', { desc = 'Save file' })
-vim.keymap.set('n', '<leader>Q', '<cmd>wa | qa<CR>', { desc = '[Q]uit all' })
+vim.keymap.set('n', '<C-s>', '<cmd>w<CR>', { desc = 'Save' })
+vim.keymap.set('n', '<leader>Q', '<cmd>wa | qa<CR>', { desc = 'Quit All' })
 
 -- [[ Diagnostic Keymaps ]]
-vim.keymap.set('n', '<leader>f', vim.diagnostic.setqflist, { desc = 'Open [F]ix (Quickfix) list' })
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic' })
-vim.keymap.set('n', 'gl', vim.diagnostic.open_float, { desc = '[G]o to [L]ine diagnostic' })
+vim.keymap.set('n', '<leader>f', vim.diagnostic.setqflist, { desc = 'Quickfix List' })
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Prev Diagnostic' })
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Next Diagnostic' })
+vim.keymap.set('n', 'gl', vim.diagnostic.open_float, { desc = 'Line Diagnostic' })
 
 -- [[ Basic Navigation ]]
 -- Vertical scroll and center
@@ -35,15 +35,15 @@ vim.keymap.set('n', '<Left>', ':vertical resize -2<CR>', { silent = true })
 vim.keymap.set('n', '<Right>', ':vertical resize +2<CR>', { silent = true })
 
 -- [[ Tab Management ]]
-vim.keymap.set('n', '<leader><tab>a', '<cmd>tabnew<CR>', { desc = '[T]ab [A]dd' })
-vim.keymap.set('n', '<leader><tab>q', '<cmd>tabclose<CR>', { desc = '[T]ab [Q]lose' })
+vim.keymap.set('n', '<leader><tab>a', '<cmd>tabnew<CR>', { desc = 'Add Tab' })
+vim.keymap.set('n', '<leader><tab>q', '<cmd>tabclose<CR>', { desc = 'Close Tab' })
 vim.keymap.set('n', '[t', '<cmd>tabprevious<CR>', { desc = 'Prev Tab' })
 vim.keymap.set('n', ']t', '<cmd>tabnext<CR>', { desc = 'Next Tab' })
 
 -- [[ Buffer Management ]]
 vim.keymap.set('n', '[b', '<cmd>bprevious<CR>', { desc = 'Prev Buffer' })
 vim.keymap.set('n', ']b', '<cmd>bnext<CR>', { desc = 'Next Buffer' })
-vim.keymap.set('n', '<leader>q', '<cmd>bd<CR>', { desc = '[Q] Close Buffer' })
+vim.keymap.set('n', '<leader>q', '<cmd>bd<CR>', { desc = 'Close Buffer' })
 
 -- [[ Code Manipulation ]]
 -- Stay in indent mode

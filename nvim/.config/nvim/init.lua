@@ -2,8 +2,9 @@ require 'core.options'
 require 'core.keybinds'
 require 'core.autocmds'
 
+vim.g.have_nerd_font = true
+
 -- [[ Install `lazy.nvim` plugin manager ]]
---    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
     local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
@@ -12,44 +13,46 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
         error('Error cloning lazy.nvim:\n' .. out)
     end
 end
-
-local rtp = vim.opt.rtp
-rtp:prepend(lazypath)
+vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
-    require 'plugins.lsp',
-    require 'plugins.autoformatting',
     require 'plugins.autocompletion',
-    require 'plugins.trouble',
-    require 'plugins.mason-conform',
-    require 'plugins.lint',
+    require 'plugins.autoformatting',
     require 'plugins.autopairs',
-    require 'plugins.gitsigns',
-    require 'plugins.neogit',
-    require 'plugins.which_key',
-    require 'plugins.fzf-lua',
-    require 'plugins.lualine',
-    require 'plugins.mini',
-    require 'plugins.indent_line',
-    require 'plugins.tmux-nav',
-    require 'plugins.surround',
-    require 'plugins.dashboard',
-    require 'plugins.session',
-    require 'plugins.markdown',
-    require 'plugins.noice',
-    require 'plugins.neoscroll',
-    require 'plugins.onedark',
-    require 'plugins.todo',
-    require 'plugins.toggleterm',
     require 'plugins.code_runner',
     require 'plugins.dap',
-    require 'plugins.treesitter',
-    require 'plugins.live_preview',
-    require 'plugins.TreeSJ',
-    require 'plugins.undotree',
+    require 'plugins.dashboard',
     require 'plugins.diffview',
-    require 'plugins.oil',
+    require 'plugins.flash',
+    require 'plugins.telescope',
+    require 'plugins.gitsigns',
+    require 'plugins.highlight',
+    require 'plugins.image',
+    require 'plugins.indent_line',
+    require 'plugins.lint',
+    require 'plugins.live_preview',
+    require 'plugins.lsp',
+    require 'plugins.lualine',
+    require 'plugins.markdown',
+    require 'plugins.mason-conform',
+    require 'plugins.mini',
+    require 'plugins.neogit',
+    require 'plugins.neoscroll',
+    require 'plugins.noice',
+    require 'plugins.nui',
     require 'plugins.nvimtree',
+    require 'plugins.oil',
+    require 'plugins.onedark',
+    require 'plugins.session',
+    require 'plugins.smart-splits',
+    require 'plugins.surround',
+    require 'plugins.todo',
+    require 'plugins.toggleterm',
+    require 'plugins.treesitter',
+    require 'plugins.TreeSJ',
+    require 'plugins.trouble',
+    require 'plugins.undotree',
+    require 'plugins.which_key',
 
     rocks = {
         enabled = false,
@@ -66,6 +69,7 @@ require('lazy').setup({
     },
 }, {
     ui = {
+        backdrop = 100,
         border = 'single',
         icons = vim.g.have_nerd_font and {} or {
             cmd = '⌘',
@@ -85,25 +89,15 @@ require('lazy').setup({
     },
 })
 
--- Lazy keybind
-vim.keymap.set('n', '<leader>L', '<cmd>Lazy<CR>', { desc = '[L]azy' })
-
 local function set_tabline_colors()
-    -- Get the colors of the Normal group (editor background)
     local normal_hl = vim.api.nvim_get_hl(0, { name = 'Normal' })
-    -- Get the colors of the Visual group for a nice highlight on the active tab
     local visual_hl = vim.api.nvim_get_hl(0, { name = 'Visual' })
 
-    -- 1. TabLineFill (Unused space) - Link it directly to Normal
     vim.api.nvim_set_hl(0, 'TabLineFill', { link = 'Normal' })
-
-    -- 2. TabLine (Inactive tabs) - Background same as Normal
     vim.api.nvim_set_hl(0, 'TabLine', {
         bg = normal_hl.bg,
         ctermbg = normal_hl.ctermbg,
     })
-
-    -- 3. TabLineSel (Active tab) - Distinct background (using Visual group) and Bold
     vim.api.nvim_set_hl(0, 'TabLineSel', {
         bg = visual_hl.bg,
         ctermbg = visual_hl.ctermbg,
@@ -112,7 +106,6 @@ local function set_tabline_colors()
     })
 end
 
--- Your existing autocmds (lines 122-125) remain correct:
 vim.api.nvim_create_autocmd('ColorScheme', {
     callback = set_tabline_colors,
 })
