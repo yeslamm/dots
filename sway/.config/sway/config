@@ -6,6 +6,8 @@
 #  1. VARIABLES & DEFINITIONS
 # ==============================================================================
 
+include /etc/sway/config.d/*
+
 set $mod Mod4
 
 set $q 24
@@ -99,6 +101,7 @@ exec --no-startup-id swaync
 exec easyeffects --hide-window
 exec asusctl profile set Quiet
 exec gammastep -l 31.11167:30.94583
+exec_always --no-startup-id sh -c "pkill waybar; sleep 1; waybar"
 
 exec --no-startup-id nm-applet || notify-send "Network Applet Failed"
 exec --no-startup-id sleep 1 && blueman-applet || notify-send "Bluetooth Failed"
@@ -130,9 +133,9 @@ client.unfocused        #575759  #575759  #ffffff  #575759     #575759
 client.focused_inactive #888a85  #888a85  #2e3436  #888a85     #888a85
 client.urgent           #cc0000  #cc0000  #ffffff  #cc0000    #cc0000
 
-bar {
-    swaybar_command waybar
-}
+# bar {
+#     swaybar_command waybar
+# }
 
 # ==============================================================================
 #  5. WINDOW RULES
@@ -343,7 +346,7 @@ mode Power {
     bindsym semicolon exec asusctl battery limit 60 \
         && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Battery: Limit set to 60%", mode default
 
-    bindsym apostrophe exec asusctl battery oneshot \
+    bindsym apostrophe exec asusctl battery limit 100 \
         && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Battery: Charging to 100%", mode default
 
     bindsym Escape mode "default"
@@ -351,8 +354,3 @@ mode Power {
     bindsym XF86Launch1 mode "default"
     bindsym $mod+Escape mode "default"
 }
-# ==============================================================================
-#  11. INCLUDES
-# ==============================================================================
-
-include /etc/sway/config.d/*

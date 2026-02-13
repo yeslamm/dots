@@ -22,8 +22,8 @@ log() {
     local msg="$2"
     local timestamp
     timestamp=$(date '+%H:%M:%S')
-    echo "$timestamp [$level] $msg" >> "$LOG_FILE"
-    
+    echo "$timestamp [$level] $msg" >>"$LOG_FILE"
+
     # Optional: Also print to stderr if running in foreground
     if [[ -t 2 ]]; then
         echo "$timestamp [$level] $msg" >&2
@@ -50,7 +50,7 @@ fi
 echo $$ >"$PID_FILE"
 
 # Initialize log file
-echo "--- Idle Manager Started ($(date)) ---" > "$LOG_FILE"
+echo "--- Idle Manager Started ($(date)) ---" >"$LOG_FILE"
 
 # --- 3. State Management ---
 PAUSED=false
@@ -144,7 +144,7 @@ check_and_act() {
     if pgrep -x "swaylock" >/dev/null; then
         local current_uptime
         current_uptime=$(awk '{print int($1)}' /proc/uptime)
-        
+
         if [ -z "$LOCKED_AT" ]; then
             LOCKED_AT=$current_uptime
             log "INFO" "Sentry Armed: swaylock detected at uptime $LOCKED_AT"

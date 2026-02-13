@@ -15,14 +15,13 @@ LAYOUT=$(echo "$TREE" | jq -r '
     if ($f.layout != "none") then
         $f.layout
     else
-        # Search for the container that contains the focused node in its .nodes array
         .. | select(.nodes? // [] | any(.focused? == true)) | .layout
     end' | head -n 1)
 
 case "$LAYOUT" in
-    "splith") echo '{"text":"[H]", "class":"split-h"}' ;;
-    "splitv") echo '{"text":"[V]", "class":"split-v"}' ;;
-    "tabbed") echo '{"text":"[T]", "class":"tabbed"}' ;;
-    "stacked") echo '{"text":"[S]", "class":"stacked"}' ;;
-    *) echo '{"text":"[-]", "class":"none"}' ;;
+"splith") echo '{"text":"H", "class":"split-h"}' ;;
+"splitv") echo '{"text":"V", "class":"split-v"}' ;;
+"tabbed") echo '{"text":"T", "class":"tabbed"}' ;;
+"stacked") echo '{"text":"S", "class":"stacked"}' ;;
+*) echo '{"text":"-", "class":"none"}' ;;
 esac

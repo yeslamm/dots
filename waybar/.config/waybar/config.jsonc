@@ -29,8 +29,6 @@
         "custom/swayidle"
     ],
     "modules-right": [
-        // "custom/updates",
-        // "power-profiles-daemon",
         "tray",
         "custom/separator1",
         "custom/asus",
@@ -125,7 +123,7 @@
         "format-charging": "BATT: + {capacity}%",
         "format-discharging": "BATT: - {capacity}%",
         "format-full": "BATT: {capacity}%",
-        "format-clamped": "BATT: {capacity}%" // This will trigger at 80%
+        "format-clamped": "BATT: {capacity}%"
     },
     "memory": {
         "interval": 3,
@@ -145,7 +143,6 @@
     "cpu": {
         "interval": 3,
         "format": "CPU: {}%",
-        // "max-length": 10,
         "on-click": "gnome-system-monitor"
     },
     "network": {
@@ -174,21 +171,6 @@
         "format": "HOME: {percentage_used}%",
         "on-click": "gnome-disks"
     },
-    "power-profiles-daemon": {
-        "format": "{icon}",
-        "format-icons": {
-            "performance": " ",
-            "balanced": "⏼ ",
-            "power-saver": "󰌪 "
-        }
-    },
-    // "custom/asus": {
-    //     "format": "{}",
-    //     "exec": "asusctl profile get | grep -oP '(Quiet|Balanced|Performance)' | head -n 1",
-    //     "interval": 1,
-    //     "on-click": "asusctl profile next",
-    //     "tooltip": true
-    // },
     "custom/asus": {
         "format": "{}",
         "exec": "asusctl profile get | grep -oP '(Quiet|Balanced|Performance)' | head -n 1",
@@ -206,17 +188,5 @@
         "return-type": "json",
         "format": "{text}",
         "tooltip": true
-    },
-
-    "custom/updates": {
-        "format": "{} {icon}",
-        "return-type": "json",
-        "format-icons": {
-            "has-updates": " ",
-            "updated": ""
-        },
-        "exec-if": "which waybar-module-pacman-updates",
-        "exec": "waybar-module-pacman-updates --interval-seconds 5 --network-interval-seconds 5 --no-zero-output",
-        "on-click": "kitty -e sh -c 'sudo pacman -Syu && yay -Syua; read -p \"Press enter to exit...\"'"
     }
 }
