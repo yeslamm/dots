@@ -260,7 +260,7 @@ alias wlpa='wl-paste'
 ### System & Maintenance
 alias fetch='fastfetch'
 alias py='python3'
-alias c='gcc'
+alias c='clang'
 alias update='sudo pacman -Syu && yay -Syua'
 alias updates='(checkupdates 2>/dev/null; yay -Qua 2>/dev/null) | sort -u'
 alias bye='sudo shutdown -r now'

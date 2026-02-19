@@ -82,6 +82,6 @@ initial_window_height 800
 # background_opacity 0.6
 
 # BEGIN_KITTY_THEME
-# Adwaita darker
+# Adwaita dark
 include current-theme.conf
 # END_KITTY_THEME

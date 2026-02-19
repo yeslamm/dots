@@ -36,8 +36,8 @@ if [[ "$WPCTL_OUT" == *"[MUTED]"* ]]; then
         -h string:x-canonical-private-synchronous:volume \
         -r 9991
 else
-    # Parse percentage (multiplying 0.40 * 100)
-    VOLUME=$(echo "$WPCTL_OUT" | awk '{print int($2 * 100)}')
+    # Parse percentage (extract decimal like 0.40 and convert to integer percentage)
+    VOLUME=$(echo "$WPCTL_OUT" | grep -oP '\d+\.\d+' | awk '{print int($1 * 100)}')
 
     notify-send "Volume: ${VOLUME}%" \
         -t 1000 \

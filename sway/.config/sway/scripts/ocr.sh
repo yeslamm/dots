@@ -3,7 +3,7 @@
 # Dependencies: grim, slurp, tesseract, wl-copy, notify-send
 
 # 1. Check Deps
-for cmd in grim slurp tesseract wl-copy; do
+for cmd in grim slurp tesseract wl-copy magick; do
     if ! command -v $cmd &> /dev/null; then
         notify-send "OCR Error" "Missing dependency: $cmd" -u critical
         exit 1
@@ -19,7 +19,8 @@ if [ -z "$GEOM" ]; then
     exit 0
 fi
 
-grim -g "$GEOM" "$TEMP_IMG"
+# Capture and pre-process for better OCR accuracy
+grim -g "$GEOM" - | magick - -colorspace gray -threshold 45% -scale 200% "$TEMP_IMG"
 
 # 3. Notify "Processing..." (It can take 1-2s)
 notify-send "OCR" "Extracting text..." -t 1000 -h string:x-canonical-private-synchronous:ocr

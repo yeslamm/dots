@@ -101,7 +101,6 @@ exec --no-startup-id swaync
 exec easyeffects --hide-window
 exec asusctl profile set Quiet
 exec gammastep -l 31.11167:30.94583
-exec_always --no-startup-id sh -c "pkill waybar; sleep 1; waybar"
 
 exec --no-startup-id nm-applet || notify-send "Network Applet Failed"
 exec --no-startup-id sleep 1 && blueman-applet || notify-send "Bluetooth Failed"
@@ -127,15 +126,15 @@ hide_edge_borders smart
 gaps inner 10
 smart_gaps on
 
-# client.focused          <border> <bg>     <text>   <indicator> <child_border>
+# client.focused        <border> <bg>     <text>   <indicator> <child_border>
 client.focused          #d3d7cf  #d3d7cf  #2e3436  #d3d7cf     #d3d7cf
 client.unfocused        #575759  #575759  #ffffff  #575759     #575759
 client.focused_inactive #888a85  #888a85  #2e3436  #888a85     #888a85
 client.urgent           #cc0000  #cc0000  #ffffff  #cc0000    #cc0000
 
-# bar {
-#     swaybar_command waybar
-# }
+bar {
+    swaybar_command waybar
+}
 
 # ==============================================================================
 #  5. WINDOW RULES
@@ -183,7 +182,7 @@ bindcode $mod+Shift+$b      exec $term --title=float-term -e btop
 bindcode $mod+$t            exec $term -e watch -n 2.5 -d sensors
 
 bindcode $mod+$q            kill
-bindsym  $mod+x             exec "swaymsg -t get_tree | jq -r '.. | select(.focused? == true) | .pid' | xargs kill -9"
+bindsym  $mod+x             exec "swaymsg -t get_tree | jq -r '.. | select(.focused? == true) | .pid' | xargs kill"
 bindcode $mod+Shift+$r      reload
 bindcode Control+$mod+$r    exec $scripts/replay.sh save
 bindcode Control+$mod+Shift+$r exec $scripts/replay.sh toggle
@@ -214,14 +213,20 @@ bindcode $mod+Shift+$period move workspace to output next
 bindcode $mod+Shift+$comma  move workspace to output prev
 bindcode $mod+$grave        workspace back_and_forth
 
-bindcode $mod+$semicolon    exec $scripts/split-mgr.sh v
-bindcode $mod+$apostrophe   exec $scripts/split-mgr.sh h
-bindcode $mod+$f            floating toggle
-bindsym  F11                fullscreen
+# Layout Modes
+bindcode $mod+$w layout tabbed
+bindcode $mod+$e layout toggle split  # Toggles back to normal tiling
+bindcode $mod+$z layout stacking      # 'Z' replaces 'S' since 'S' is your Super mode
+
+bindcode $mod+$semicolon    split v
+bindcode $mod+$apostrophe   split h
+
+bindcode $mod+Shift+$f            floating toggle
+bindcode  $mod+$f                fullscreen
 floating_modifier $mod normal
 
-bindsym $mod+w              scratchpad show     
-bindsym $mod+Shift+w        move scratchpad 
+bindsym $mod+minus        scratchpad show     
+bindsym $mod+equal        move scratchpad 
 
 bindcode Control+$mod+$left  resize shrink width 40px
 bindcode Control+$mod+$down  resize grow height 40px
@@ -346,7 +351,7 @@ mode Power {
     bindsym semicolon exec asusctl battery limit 60 \
         && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Battery: Limit set to 60%", mode default
 
-    bindsym apostrophe exec asusctl battery limit 100 \
+    bindsym apostrophe exec asusctl battery oneshot \
         && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Battery: Charging to 100%", mode default
 
     bindsym Escape mode "default"

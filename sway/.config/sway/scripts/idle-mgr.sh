@@ -20,6 +20,12 @@ DEBUG=true
 log() {
     local level="$1"
     local msg="$2"
+
+    # Log Rotation: If log exceeds 1MB, restart it
+    if [ -f "$LOG_FILE" ] && [ "$(stat -c%s "$LOG_FILE")" -gt 1048576 ]; then
+        echo "$(date '+%H:%M:%S') [INFO] Log Rotated" > "$LOG_FILE"
+    fi
+
     local timestamp
     timestamp=$(date '+%H:%M:%S')
     echo "$timestamp [$level] $msg" >>"$LOG_FILE"
@@ -56,6 +62,7 @@ echo "--- Idle Manager Started ($(date)) ---" >"$LOG_FILE"
 PAUSED=false
 IDLE_PID=""
 LOCKED_AT=""
+CURRENT_POWER_SRC="NONE"
 
 update_waybar() {
     pkill -RTMIN+$WAYBAR_SIGNAL waybar 2>/dev/null || true
@@ -74,22 +81,42 @@ set_state() {
 }
 
 stop_idle() {
+    # 1. Kill the tracked PID
     if [ -n "$IDLE_PID" ]; then
-        log "DEBUG" "Stopping swayidle (PID: $IDLE_PID)"
+        log "DEBUG" "Stopping managed swayidle (PID: $IDLE_PID)"
         kill "$IDLE_PID" 2>/dev/null
         wait "$IDLE_PID" 2>/dev/null
         IDLE_PID=""
     fi
-    pkill -x swayidle 2>/dev/null || true
+    # 2. Cleanup ANY stray swayidle processes that are children of this script
+    pkill -P "$$" swayidle 2>/dev/null || true
+}
+
+is_on_ac() {
+    grep -q "1" /sys/class/power_supply/ACAD/online
 }
 
 start_idle() {
+    local on_ac
+    is_on_ac && on_ac=true || on_ac=false
+
+    # Dynamic Timeouts (Seconds)
+    # AC: 10m lock, 15m DPMS, 20m Suspend
+    # BAT: 2m lock, 4m DPMS, 6m Suspend
+    local t_dim t_lock t_dpms t_susp
+    if [ "$on_ac" = true ]; then
+        t_dim=570; t_lock=600; t_dpms=900; t_susp=1200
+    else
+        t_dim=90; t_lock=120; t_dpms=240; t_susp=360
+    fi
+
     if [ -z "$IDLE_PID" ] || ! kill -0 "$IDLE_PID" 2>/dev/null; then
-        log "DEBUG" "Starting swayidle service"
+        log "DEBUG" "Starting swayidle (Mode: $([ "$on_ac" = true ] && echo "AC" || echo "BATTERY"))"
         swayidle -w \
-            timeout 120 'swaylock -f -c 000000 -F -e -k -L' \
-            timeout 240 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
-            timeout 360 'systemctl suspend' before-sleep 'swaylock -f -c 000000 -F -e -k -L' &
+            timeout $t_dim 'brightnessctl -s set 20%' resume 'brightnessctl -r' \
+            timeout $t_lock 'swaylock -f -c 000000 -F -e -k -L' \
+            timeout $t_dpms 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
+            timeout $t_susp 'systemctl suspend' before-sleep 'swaylock -f -c 000000 -F -e -k -L' &
         IDLE_PID=$!
         set_state "ON"
     fi
@@ -140,7 +167,23 @@ should_be_inhibited() {
 }
 
 check_and_act() {
-    # --- A. Sentry Logic ---
+    # --- A. Power Source Change Check ---
+    local p_src
+    is_on_ac && p_src="AC" || p_src="BATTERY"
+    if [ "$CURRENT_POWER_SRC" != "$p_src" ]; then
+        log "INFO" "Power Source Changed: $CURRENT_POWER_SRC -> $p_src"
+        CURRENT_POWER_SRC="$p_src"
+        [ -n "$IDLE_PID" ] && stop_idle # Force restart with new timeouts
+    fi
+
+    # --- B. Manual Pause ---
+    if [ "${PAUSED}" = true ]; then
+        [ -n "$IDLE_PID" ] && stop_idle
+        set_state "PAUSED"
+        return
+    fi
+
+    # --- C. Sentry Logic ---
     if pgrep -x "swaylock" >/dev/null; then
         local current_uptime
         current_uptime=$(awk '{print int($1)}' /proc/uptime)
@@ -168,14 +211,7 @@ check_and_act() {
         fi
     fi
 
-    # --- B. Manual Pause ---
-    if [ "${PAUSED}" = true ]; then
-        [ -n "$IDLE_PID" ] && stop_idle
-        set_state "PAUSED"
-        return
-    fi
-
-    # --- C. Inhibition vs Idle ---
+    # --- D. Inhibition vs Idle ---
     if should_be_inhibited; then
         [ -n "$IDLE_PID" ] && stop_idle
         set_state "HOLD"
@@ -226,25 +262,30 @@ check_and_act
 
 # Background monitors
 (
+    trap "" SIGALRM # Prevent subshell from handling signals meant for parent
     until swaymsg -t subscribe '["window"]' --monitor | jq --unbuffered -c 'select(.change == "focus" or .change == "title")' 2>/dev/null | while read -r _; do
-        kill -SIGALRM $$ 2>/dev/null
+        kill -SIGALRM "$$" 2>/dev/null
     done; do sleep 2; done
 ) &
 
 (
+    trap "" SIGALRM
     until playerctl status --follow 2>/dev/null | while read -r _; do
         sleep 0.1
-        kill -SIGALRM $$ 2>/dev/null
+        kill -SIGALRM "$$" 2>/dev/null
     done; do sleep 5; done
 ) &
 
-(while true; do
-    if pgrep -x "swaylock" >/dev/null; then
-        sleep 1
-    else
-        sleep 10
-    fi
-    kill -SIGALRM $$ 2>/dev/null
-done) &
+(
+    trap "" SIGALRM
+    while true; do
+        if pgrep -x "swaylock" >/dev/null; then
+            sleep 1
+        else
+            sleep 10
+        fi
+        kill -SIGALRM "$$" 2>/dev/null
+    done
+) &
 
 while true; do wait || true; done
