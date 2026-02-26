@@ -7,7 +7,13 @@ STEP=5%
 
 # --- Helper Functions ---
 get_brightness() {
-    brightnessctl -m | cut -d, -f4 | tr -d '%'
+    # Get machine-readable output: device,class,curr,perc,max
+    local info
+    info=$(brightnessctl -m)
+    # Extract percentage using bash string manipulation (4th field)
+    local perc="${info#*,*,*,}"
+    perc="${perc%,*}"
+    echo "${perc%\%}"
 }
 
 # --- Main Logic ---

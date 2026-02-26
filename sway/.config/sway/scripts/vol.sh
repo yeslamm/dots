@@ -24,21 +24,23 @@ esac
 
 # --- Status Retrieval & Notification ---
 
-# Get volume status in one go
+# Get volume status and parse in one go to reduce forks
 WPCTL_OUT=$(wpctl get-volume @DEFAULT_SINK@)
 
-# Check Mute Status
-if [[ "$WPCTL_OUT" == *"[MUTED]"* ]]; then
-    # We explicitly pass "int:value:0" so the slider appears but is empty
+# Use awk to handle both volume and mute status in one pass
+read -r VOLUME MUTED <<< $(echo "$WPCTL_OUT" | awk '{
+    vol = int($2 * 100);
+    muted = ($3 == "[MUTED]" ? 1 : 0);
+    print vol, muted
+}')
+
+if [[ "$MUTED" == "1" ]]; then
     notify-send "Muted" \
         -t 1000 \
         -h int:value:0 \
         -h string:x-canonical-private-synchronous:volume \
         -r 9991
 else
-    # Parse percentage (extract decimal like 0.40 and convert to integer percentage)
-    VOLUME=$(echo "$WPCTL_OUT" | grep -oP '\d+\.\d+' | awk '{print int($1 * 100)}')
-
     notify-send "Volume: ${VOLUME}%" \
         -t 1000 \
         -h int:value:"${VOLUME}" \

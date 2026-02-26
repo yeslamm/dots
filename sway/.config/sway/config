@@ -104,7 +104,7 @@ exec gammastep -l 31.11167:30.94583
 
 exec --no-startup-id nm-applet || notify-send "Network Applet Failed"
 exec --no-startup-id sleep 1 && blueman-applet || notify-send "Bluetooth Failed"
-exec_always "killall -q waybar; sleep 0.5; waybar"
+exec_always "pkill -USR2 waybar || waybar"
 
 exec $scripts/idle-mgr.sh
 exec --no-startup-id flameshot

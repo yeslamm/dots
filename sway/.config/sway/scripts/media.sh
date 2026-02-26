@@ -66,11 +66,10 @@ STATUS=$(playerctl status 2>/dev/null)
 
 if [ "$STATUS" = "Playing" ]; then
     notify-send "Now Playing" "$NEW_METADATA" \
-        -t 2000 \
+        -t 1000 \
         -h string:x-canonical-private-synchronous:media
 elif [ "$STATUS" = "Paused" ]; then
     notify-send "Paused" "$NEW_METADATA" \
-        -t 2000 \
+        -t 1000 \
         -h string:x-canonical-private-synchronous:media
 fi
-
