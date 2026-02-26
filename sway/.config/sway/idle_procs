@@ -1,0 +1,6 @@
+# Processes that should inhibit idle even when not focused or in the background
+yt-dlp
+makepkg
+fakeroot
+pacman
+yay

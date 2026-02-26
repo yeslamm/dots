@@ -104,6 +104,7 @@ exec gammastep -l 31.11167:30.94583
 
 exec --no-startup-id nm-applet || notify-send "Network Applet Failed"
 exec --no-startup-id sleep 1 && blueman-applet || notify-send "Bluetooth Failed"
+exec_always "killall -q waybar; sleep 0.5; waybar"
 
 exec $scripts/idle-mgr.sh
 exec --no-startup-id flameshot
@@ -132,9 +133,9 @@ client.unfocused        #575759  #575759  #ffffff  #575759     #575759
 client.focused_inactive #888a85  #888a85  #2e3436  #888a85     #888a85
 client.urgent           #cc0000  #cc0000  #ffffff  #cc0000    #cc0000
 
-bar {
-    swaybar_command waybar
-}
+# bar {
+#     swaybar_command waybar
+# }
 
 # ==============================================================================
 #  5. WINDOW RULES
@@ -199,10 +200,10 @@ bindsym $mod+Shift+F9  exec $scripts/replay.sh record
 # ==============================================================================
 
 bindsym  $mod+tab           focus mode_toggle
-bindcode $mod+$left         focus left; exec $scripts/split-mgr.sh update
-bindcode $mod+$down         focus down; exec $scripts/split-mgr.sh update
-bindcode $mod+$up           focus up; exec $scripts/split-mgr.sh update
-bindcode $mod+$right        focus right; exec $scripts/split-mgr.sh update
+bindcode $mod+$left         focus left
+bindcode $mod+$down         focus down
+bindcode $mod+$up           focus up
+bindcode $mod+$right        focus right
 
 bindcode $mod+Shift+$left   move left
 bindcode $mod+Shift+$down   move down

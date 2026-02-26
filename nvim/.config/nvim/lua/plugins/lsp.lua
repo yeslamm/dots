@@ -167,7 +167,6 @@ return {
                 'shellcheck', -- Linter
                 'shfmt', -- Formatter
                 'prettier', -- Formatter
-                'markdownlint', -- Linter
                 'ruff', -- Formatter/Linter (Python)
                 'basedpyright', -- LSP (Python)
                 'stylelint',
