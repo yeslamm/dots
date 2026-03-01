@@ -1,52 +1,32 @@
 #!/bin/sh
+# sway-run.sh - Session Loader
+# Optimized for AMD RDNA 3.5 and Wayland compatibility.
 
-# ==============================================================================
-# 1. CORE WAYLAND/XDG & SESSION VARIABLES
-# ==============================================================================
+# 1. Core Session Environment
 export XDG_SESSION_TYPE=wayland
 export XDG_CURRENT_DESKTOP=sway
 export XDG_SESSION_DESKTOP=sway
 
-# Update data directories safely (including Flatpak paths)
+# 2. Path & Data Directory Management
 export XDG_DATA_DIRS="/usr/local/share:/usr/share:/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/exports/share${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}"
 
-# ==============================================================================
-# 2. TOOLKIT COMPATIBILITY & DECORATIONS
-# ==============================================================================
-
+# 3. Toolkit & Framework Compatibility
 export _JAVA_AWT_WM_NONREPARENTING=1
 export GTK_USE_PORTAL=1
 export MOZ_ENABLE_WAYLAND=1
 export QT_QPA_PLATFORM=wayland
 export QT_QPA_PLATFORMTHEME=qt5ct
 export QT6_QPA_PLATFORMTHEME=qt6ct
-
-# ==============================================================================
-# 3. UTILITIES & FRAMEWORK FIXES
-# ==============================================================================
 export XCURSOR_SIZE=24
 
+# 4. Electron & Hardware Acceleration
 export ELECTRON_OZONE_PLATFORM_HINT=auto
 export ELECTRON_ENABLE_FEATURES=VaapiVideoDecoder,UseOzonePlatform
 
-# ==============================================================================
-# 4. AMD HARDWARE ACCELERATION (RDNA 3.5 OPTIMIZED)
-# ==============================================================================
-
-# Driver selection
+# 5. AMD RDNA 3.5 Graphics Tuning
 export LIBVA_DRIVER_NAME=radeonsi
 export VDPAU_DRIVER=radeonsi
-
-# Force Vulkan (RADV)
 export AMD_VULKAN_ICD=radv
 
-# Performance Tuning
-# nggc: Enables Next Generation Geometry Culling (Performance)
-# gpl:  Enables Graphics Pipeline Library (Eliminates shader stutter)
-# export RADV_PERFTEST=nggc,gpl
-
-# Optional: Enable resizing limits fix for some Wayland games
-# export SDL_VIDEODRIVER=wayland
-
-# Launch with journal logging
+# 6. Launch with systemd-journal
 exec systemd-cat -t sway sway "$@"

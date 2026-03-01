@@ -1,46 +1,50 @@
 #!/bin/bash
-# ocr.sh - Select area, extract text, copy to clipboard.
-# Dependencies: grim, slurp, tesseract, wl-copy, notify-send
+# ocr.sh - "Elite OCR Edition"
+# Select area, pre-process for accuracy, and extract text.
 
-# 1. Check Deps
+set -euo pipefail
+
+# 1. Dependency Check
 for cmd in grim slurp tesseract wl-copy magick; do
-    if ! command -v $cmd &> /dev/null; then
+    if ! command -v "$cmd" &>/dev/null; then
         notify-send "OCR Error" "Missing dependency: $cmd" -u critical
         exit 1
     fi
 done
 
-TEMP_IMG=$(mktemp /tmp/ocr_XXXX.png)
+# 2. Cleanup on Exit
+TEMP_IMG=$(mktemp "${XDG_RUNTIME_DIR:-/tmp}/ocr_XXXX.png")
+trap 'rm -f "$TEMP_IMG"' EXIT
 
-# 2. Select Area & Capture
-# -d prevents taking a screenshot if selection is cancelled (slurp returns empty)
+# 3. Select Area & Capture
 GEOM=$(slurp -d)
-if [ -z "$GEOM" ]; then
+[[ -z "$GEOM" ]] && exit 0
+
+# Capture and pre-process (Sharpen + Grayscale + Contrast) for better OCR
+grim -g "$GEOM" - | magick - \
+    -colorspace gray \
+    -negate \
+    -sharpen 0x3 \
+    -contrast-stretch 5%x5% \
+    -scale 400% \
+    "$TEMP_IMG"
+
+# 4. Notify Processing
+notify-send "OCR" "Extracting text..." -t 800 -h string:x-canonical-private-synchronous:ocr
+
+# 5. Extract & Clean Text
+# -l eng+ara for English + Arabic support
+TEXT=$(tesseract "$TEMP_IMG" stdout -l eng+ara 2>/dev/null)
+
+# Clean: Remove form feeds, strip trailing/leading space, remove empty lines
+CLEAN_TEXT=$(echo "$TEXT" | tr -d '\f' | awk 'NF' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' || true)
+
+if [[ -z "$CLEAN_TEXT" ]]; then
+    notify-send "OCR" "No text detected." -u low -t 2000 -h string:x-canonical-private-synchronous:ocr
     exit 0
 fi
 
-# Capture and pre-process for better OCR accuracy
-grim -g "$GEOM" - | magick - -colorspace gray -threshold 45% -scale 200% "$TEMP_IMG"
-
-# 3. Notify "Processing..." (It can take 1-2s)
-notify-send "OCR" "Extracting text..." -t 1000 -h string:x-canonical-private-synchronous:ocr
-
-# 4. Extract Text
-# -l eng+ara (English + Arabic since you have ara layout)
-# 2>/dev/null suppresses tesseract version info
-TEXT=$(tesseract "$TEMP_IMG" stdout -l eng+ara 2>/dev/null)
-rm "$TEMP_IMG"
-
-# 5. Handle Result
-# tr -d '\f' removes form feed characters tesseract outputs
-CLEAN_TEXT=$(echo "$TEXT" | tr -d '\f' | sed '/^$/d')
-
-if [ -z "$CLEAN_TEXT" ]; then
-    notify-send "OCR" "No text detected." -u low -t 2000 -h string:x-canonical-private-synchronous:ocr
-    exit 1
-fi
-
-# 6. Copy & Success Notification
+# 6. Finalize
 echo -n "$CLEAN_TEXT" | wl-copy
 notify-send "OCR" "Text copied to clipboard!" \
     -t 2000 \

@@ -3,13 +3,17 @@
 # ==============================================================================
 
 # ==============================================================================
-#  1. VARIABLES & DEFINITIONS
+#  1. VARIABLES & PATHS
 # ==============================================================================
 
 include /etc/sway/config.d/*
 
 set $mod Mod4
+set $term kitty
+set $menu fuzzel
+set $scripts ~/.config/sway/scripts
 
+# Organized Keycodes
 set $q 24
 set $w 25
 set $e 26
@@ -20,7 +24,6 @@ set $u 30
 set $i 31
 set $o 32
 set $p 33
-
 set $a 38
 set $s 39
 set $d 40
@@ -30,13 +33,6 @@ set $h 43
 set $j 44
 set $k 45
 set $l 46
-
-set $left  43
-set $down  44
-set $up    45
-set $right 46
-set $l_mode 46
-
 set $z 52
 set $x 53
 set $c 54
@@ -44,19 +40,21 @@ set $v 55
 set $b 56
 set $n 57
 set $m 58
-
-set $semicolon  47
+set $semicolon 47
 set $apostrophe 48
-set $grave      49
-set $comma      59
-set $period     60
-set $slash      61
+set $grave 49
+set $comma 59
+set $period 60
+set $slash 61
 
-set $term       kitty
-set $menu       fuzzel
+set $left 43
+set $down 44
+set $up 45
+set $right 46
+set $l_mode 46
+
 set $files      exec $term -e yazi
 set $g_files    pcmanfm
-set $scripts    ~/.config/sway/scripts
 
 # ==============================================================================
 #  2. HARDWARE: INPUT & OUTPUT
@@ -67,7 +65,6 @@ output * bg ~/Pictures/darkmountain.jpg fill
 input type:keyboard {
     xkb_layout "us,ara"
     xkb_capslock disabled
-    # xkb_options "grp:alt_shift_toggle, caps:escape"
     xkb_options "grp:alt_shift_toggle"
     repeat_delay 190
     repeat_rate 60
@@ -89,26 +86,25 @@ bindgesture swipe:3:right workspace next
 seat seat0 xcursor_theme capitaine-cursors-r3 24
 seat seat0 hide_cursor when-typing enable
 mouse_warping output
-# focus_wrapping no
 
 # ==============================================================================
 #  3. AUTOSTART
 # ==============================================================================
 
-exec_always /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
-exec --no-startup-id input-remapper-control --command autoload
-exec --no-startup-id swaync
+exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+exec input-remapper-control --command autoload
+exec swaync
 exec easyeffects --hide-window
 exec asusctl profile set Quiet
 exec gammastep -l 31.11167:30.94583
 
-exec --no-startup-id nm-applet || notify-send "Network Applet Failed"
-exec --no-startup-id sleep 1 && blueman-applet || notify-send "Bluetooth Failed"
+exec nm-applet
+exec sleep 1 && blueman-applet
 exec_always "killall -q waybar; sleep 0.5; waybar"
 
 exec $scripts/idle-mgr.sh
-exec --no-startup-id flameshot
-exec --no-startup-id copyq --start-server
+exec flameshot
+exec copyq --start-server
 exec sleep 1 && firefox
 
 exec wpctl set-volume @DEFAULT_SINK@ 0.30
@@ -120,35 +116,21 @@ exec_always amixer -c 1 set 'Internal Mic Boost' 0
 # ==============================================================================
 
 xwayland enable
-
 default_border pixel 2
-# for_window [app_id=".*"] border pixel 2
 hide_edge_borders smart
 gaps inner 10
 smart_gaps on
 
-# client.focused        <border> <bg>     <text>   <indicator> <child_border>
 client.focused          #d3d7cf  #d3d7cf  #2e3436  #d3d7cf     #d3d7cf
 client.unfocused        #575759  #575759  #ffffff  #575759     #575759
 client.focused_inactive #888a85  #888a85  #2e3436  #888a85     #888a85
 client.urgent           #cc0000  #cc0000  #ffffff  #cc0000    #cc0000
 
-# bar {
-#     swaybar_command waybar
-# }
-
 # ==============================================================================
 #  5. WINDOW RULES
 # ==============================================================================
 
-# --- Specific Apps ---
-for_window [class="mpv"] inhibit_idle visible
-for_window [app_id="mpv"] inhibit_idle visible
-for_window [class="Steam"] inhibit_idle visible
-for_window [app_id="gamescope"] inhibit_idle visible
-# Inhibit idle for ANY app when it's fullscreen
-for_window [shell=".*"] inhibit_idle fullscreen
-
+# Specific Apps
 for_window [app_id="fdm"] floating enable, resize set 1100 800, move position center, move scratchpad
 for_window [app_id="org.qbittorrent.qBittorrent"] floating enable, resize set 1300 900, move position center
 for_window [class="com-abdownloadmanager-desktop-AppKt"] floating enable
@@ -158,13 +140,10 @@ for_window [app_id="com.github.hluk.copyq"] floating enable, border pixel 1
 for_window [app_id="mpv"] floating enable
 for_window [app_id="swayimg"] floating enable
 
-# --- System / Portals / Dialogs ---
+# System / Portals / Dialogs
 for_window [app_id="xdg-desktop-portal-gtk"] floating enable, sticky enable
 for_window [instance="sun-awt-X11-XDialogPeer"] floating enable
-
-# Match all X11 dialog types (Keep these, they are good for compatibility)
 for_window [window_role="pop-up|bubble|task_dialog|dialog|menu"] floating enable
-
 for_window [app_id="pavucontrol"] floating enable, border pixel 1, sticky enable
 for_window [app_id="nm-connection-editor"] floating enable, border pixel 1, sticky enable
 for_window [app_id="blueman-manager"] floating enable, border pixel 1, sticky enable
@@ -175,12 +154,12 @@ for_window [app_id="firefox" title="^Extension:.*"] floating enable, focus
 for_window [title="Picture-in-Picture"] floating enable, sticky enable
 
 # ==============================================================================
-#  6. KEYBINDINGS: LAUNCHERS & SYSTEM
+#  6. KEYBINDINGS: CORE
 # ==============================================================================
 
 bindsym $mod+Return         exec $term
 bindsym $mod+Shift+Return   exec $term --title=float-term
-bindsym $mod+space          exec --no-startup-id $menu
+bindsym $mod+space          exec $menu
 
 bindcode $mod+$y            exec $files
 bindcode $mod+Shift+$y      exec $term --title=float-term -e yazi
@@ -194,15 +173,13 @@ bindcode $mod+Shift+$r      reload
 bindcode Control+$mod+$r    exec $scripts/replay.sh save
 bindcode Control+$mod+Shift+$r exec $scripts/replay.sh toggle
 
-# --- GPU Screen Recorder Control (ShadowPlay Style) ---
-bindsym $mod+F10       exec $scripts/replay.sh save
-bindsym $mod+F9        exec $scripts/replay.sh toggle
-bindsym $mod+Shift+F9  exec $scripts/replay.sh record
-
-# bindsym  $mod+Shift+F23     nop
+# Replay & Recording
+bindsym $mod+F10            exec $scripts/replay.sh save
+bindsym $mod+F9             exec $scripts/replay.sh toggle
+bindsym $mod+Shift+F9       exec $scripts/replay.sh record
 
 # ==============================================================================
-#  7. KEYBINDINGS: NAVIGATION & LAYOUT
+#  7. NAVIGATION & LAYOUT
 # ==============================================================================
 
 bindsym  $mod+tab           focus mode_toggle
@@ -220,20 +197,19 @@ bindcode $mod+Shift+$period move workspace to output next
 bindcode $mod+Shift+$comma  move workspace to output prev
 bindcode $mod+$grave        workspace back_and_forth
 
-# Layout Modes
 bindcode $mod+$w layout tabbed
-bindcode $mod+$e layout toggle split  # Toggles back to normal tiling
-bindcode $mod+$z layout stacking      # 'Z' replaces 'S' since 'S' is your Super mode
+bindcode $mod+$e layout toggle split
+bindcode $mod+$z layout stacking
 
 bindcode $mod+$semicolon    split v
 bindcode $mod+$apostrophe   split h
 
-bindcode $mod+Shift+$f            floating toggle
-bindcode  $mod+$f                fullscreen
+bindcode $mod+Shift+$f      floating toggle
+bindcode $mod+$f            fullscreen
 floating_modifier $mod normal
 
-bindsym $mod+minus        scratchpad show     
-bindsym $mod+equal        move scratchpad 
+bindsym $mod+minus          scratchpad show     
+bindsym $mod+equal          move scratchpad 
 
 bindcode Control+$mod+$left  resize shrink width 40px
 bindcode Control+$mod+$down  resize grow height 40px
@@ -241,7 +217,7 @@ bindcode Control+$mod+$up    resize shrink height 40px
 bindcode Control+$mod+$right resize grow width 40px
 
 # ==============================================================================
-#  8. KEYBINDINGS: WORKSPACES
+#  8. WORKSPACES
 # ==============================================================================
 
 bindsym $mod+1 workspace number 1
@@ -267,48 +243,50 @@ bindsym $mod+Shift+9 move container to workspace number 9
 bindsym $mod+Shift+0 move container to workspace number 10
 
 # ==============================================================================
-#  9. KEYBINDINGS: MEDIA & UTILITIES
+#  9. UTILITIES
 # ==============================================================================
 
-bindsym --locked XF86AudioRaiseVolume exec --no-startup-id $scripts/vol.sh up
-bindsym --locked XF86AudioLowerVolume exec --no-startup-id $scripts/vol.sh down
-bindsym --locked XF86AudioMute        exec --no-startup-id $scripts/vol.sh mute
-bindcode --locked $mod+$u             exec --no-startup-id $scripts/vol.sh up
-bindcode --locked $mod+$d             exec --no-startup-id $scripts/vol.sh down
-bindcode --locked $mod+$m             exec --no-startup-id $scripts/vol.sh mute
+# Volume & Brightness
+bindsym --locked XF86AudioRaiseVolume  exec $scripts/vol.sh up
+bindsym --locked XF86AudioLowerVolume  exec $scripts/vol.sh down
+bindsym --locked XF86AudioMute         exec $scripts/vol.sh mute
+bindcode --locked $mod+$u              exec $scripts/vol.sh up
+bindcode --locked $mod+$d              exec $scripts/vol.sh down
+bindcode --locked $mod+$m              exec $scripts/vol.sh mute
 
-bindsym --locked XF86MonBrightnessUp   exec --no-startup-id $scripts/bright.sh up
-bindsym --locked XF86MonBrightnessDown exec --no-startup-id $scripts/bright.sh down
-bindcode --locked $mod+Shift+$u        exec --no-startup-id $scripts/bright.sh up
-bindcode --locked $mod+Shift+$d        exec --no-startup-id $scripts/bright.sh down
+bindsym --locked XF86MonBrightnessUp   exec $scripts/bright.sh up
+bindsym --locked XF86MonBrightnessDown exec $scripts/bright.sh down
+bindcode --locked $mod+Shift+$u        exec $scripts/bright.sh up
+bindcode --locked $mod+Shift+$d        exec $scripts/bright.sh down
 
-bindsym  XF86AudioPrev exec --no-startup-id $scripts/media.sh prev
-bindsym  mod4+F6       exec --no-startup-id $scripts/media.sh prev
-bindcode $mod+$p       exec --no-startup-id $scripts/media.sh prev
+# Media Control
+bindsym  XF86AudioPrev  exec playerctl previous
+bindsym  mod4+F6        exec playerctl previous
+bindcode $mod+$p        exec playerctl previous
 
-bindsym  XF86AudioPlay exec --no-startup-id $scripts/media.sh play-pause
-bindsym  mod4+F7       exec --no-startup-id $scripts/media.sh play-pause
-bindcode $mod+$c       exec --no-startup-id $scripts/media.sh play-pause
+bindsym  XF86AudioPlay  exec $scripts/media.sh play-pause
+bindsym  mod4+F7        exec $scripts/media.sh play-pause
+bindcode $mod+$c        exec $scripts/media.sh play-pause
 
-bindsym  XF86AudioNext exec --no-startup-id $scripts/media.sh next
-bindsym  mod4+F8       exec --no-startup-id $scripts/media.sh next
-bindcode $mod+$n       exec --no-startup-id $scripts/media.sh next
+bindsym  XF86AudioNext  exec playerctl next
+bindsym  mod4+F8        exec playerctl next
+bindcode $mod+$n        exec playerctl next
 
-bindcode $mod+Shift+$n exec swaync-client -t -sw
-bindcode $mod+Shift+$c exec swaync-client --close-latest
+bindcode $mod+Shift+$n  exec swaync-client -t -sw
+bindcode $mod+Shift+$c  exec swaync-client --close-latest
 
-bindcode $mod+$i       exec $scripts/idle-mgr.sh
-bindcode $mod+$o       exec $scripts/idle-off.sh
-bindsym Mod1+Print     exec $scripts/ocr.sh
-bindcode $mod+$v       exec copyq toggle
+bindcode $mod+$i        exec $scripts/idle-mgr.sh
+bindcode $mod+$o        exec $scripts/idle-off.sh
+bindsym  Mod1+Print     exec $scripts/ocr.sh
+bindcode $mod+$v        exec copyq toggle
 
-bindcode Control+Shift+$s exec --no-startup-id flameshot gui -c
-bindcode Control+mod1+$s  exec --no-startup-id flameshot gui -p ~/Pictures/Screenshots
-bindsym  Print            exec --no-startup-id flameshot full -c && notify-send -t 1000 "Screenshot copied"
-bindsym  Shift+Print      exec --no-startup-id flameshot full -p ~/Pictures/Screenshots && notify-send -t 1000 "Screenshot saved"
+bindcode Control+Shift+$s exec flameshot gui -c
+bindcode Control+mod1+$s  exec flameshot gui -p ~/Pictures/Screenshots
+bindsym  Print            exec flameshot full -c
+bindsym  Shift+Print      exec flameshot full -p ~/Pictures/Screenshots
 
 # ==============================================================================
-#  10. MODES
+# 10. MODES
 # ==============================================================================
 
 bindcode $mod+$s mode Super
@@ -330,7 +308,6 @@ mode Super {
 }
 
 bindcode $mod+$a mode Apps
-
 mode Apps {
     bindcode $f exec firefox, mode "default"
     bindcode $h exec heroic, mode "default"
