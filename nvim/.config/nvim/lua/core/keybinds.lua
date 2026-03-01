@@ -11,7 +11,7 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 
 -- Save and Quit
 vim.keymap.set('n', '<C-s>', '<cmd>w<CR>', { desc = 'Save' })
-vim.keymap.set('n', '<leader>Q', '<cmd>wa | qa<CR>', { desc = 'Quit All' })
+vim.keymap.set('n', '<S-q>', '<cmd>wa | qa<CR>', { desc = 'Quit All' })
 
 -- [[ Diagnostic Keymaps ]]
 vim.keymap.set('n', '<leader>f', vim.diagnostic.setqflist, { desc = 'Quickfix List' })

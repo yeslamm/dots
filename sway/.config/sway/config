@@ -104,7 +104,7 @@ exec gammastep -l 31.11167:30.94583
 
 exec --no-startup-id nm-applet || notify-send "Network Applet Failed"
 exec --no-startup-id sleep 1 && blueman-applet || notify-send "Bluetooth Failed"
-exec_always "pkill -USR2 waybar || waybar"
+exec_always "killall -q waybar; sleep 0.5; waybar"
 
 exec $scripts/idle-mgr.sh
 exec --no-startup-id flameshot
@@ -142,6 +142,13 @@ client.urgent           #cc0000  #cc0000  #ffffff  #cc0000    #cc0000
 # ==============================================================================
 
 # --- Specific Apps ---
+for_window [class="mpv"] inhibit_idle visible
+for_window [app_id="mpv"] inhibit_idle visible
+for_window [class="Steam"] inhibit_idle visible
+for_window [app_id="gamescope"] inhibit_idle visible
+# Inhibit idle for ANY app when it's fullscreen
+for_window [shell=".*"] inhibit_idle fullscreen
+
 for_window [app_id="fdm"] floating enable, resize set 1100 800, move position center, move scratchpad
 for_window [app_id="org.qbittorrent.qBittorrent"] floating enable, resize set 1300 900, move position center
 for_window [class="com-abdownloadmanager-desktop-AppKt"] floating enable
@@ -180,7 +187,6 @@ bindcode $mod+Shift+$y      exec $term --title=float-term -e yazi
 bindcode $mod+$g            exec $g_files
 bindcode $mod+$b            exec $term -e btop
 bindcode $mod+Shift+$b      exec $term --title=float-term -e btop
-bindcode $mod+$t            exec $term -e watch -n 2.5 -d sensors
 
 bindcode $mod+$q            kill
 bindsym  $mod+x             exec "swaymsg -t get_tree | jq -r '.. | select(.focused? == true) | .pid' | xargs kill"
@@ -313,6 +319,7 @@ mode Super {
     bindcode $r exec systemctl reboot, mode default
     bindcode $p exec systemctl poweroff, mode default
 
+    bindcode $t exec $term -e watch -n 2.5 -d sensors, mode default
     bindcode $g exec $scripts/toggle_gammastep.sh, mode default
     bindcode $u exec $term -e sh -c 'sudo pacman -Syu && yay -Syua; read -p "Press enter to exit..."', mode default
     bindcode $a exec $term -e sh -c 'alsamixer', mode default

@@ -110,4 +110,3 @@ vim.api.nvim_create_autocmd('ColorScheme', {
     callback = set_tabline_colors,
 })
 set_tabline_colors()
-

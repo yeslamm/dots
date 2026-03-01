@@ -1,9 +1,11 @@
 #!/bin/bash
-# idle-off.sh - Aggressive stop
+# idle-off.sh - Standardized Cleanup
 
-PID_FILE="/dev/shm/idle-mgr.pid"
-STATE_FILE="/dev/shm/idle-mgr.state"
-LOCK_FILE="/dev/shm/idle-mgr.lock"
+RUNTIME_DIR="${XDG_RUNTIME_DIR:-/tmp}"
+PID_FILE="$RUNTIME_DIR/idle-mgr.pid"
+STATE_FILE="$RUNTIME_DIR/idle-mgr.state"
+REASON_FILE="$STATE_FILE.reason"
+LOCK_FILE="$RUNTIME_DIR/idle-mgr.lock"
 WAYBAR_SIGNAL=9
 
 # 1. Kill the manager via PID file
@@ -19,7 +21,7 @@ pkill -x swayidle
 sleep 0.1
 
 # 3. Wipe state
-rm -f "$PID_FILE" "$STATE_FILE" "$LOCK_FILE"
+rm -f "$PID_FILE" "$STATE_FILE" "$REASON_FILE" "$LOCK_FILE"
 
 # 4. Refresh Waybar
 pkill -RTMIN+$WAYBAR_SIGNAL waybar
