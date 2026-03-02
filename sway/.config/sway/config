@@ -280,10 +280,10 @@ bindcode $mod+$o        exec $scripts/idle-off.sh
 bindsym  Mod1+Print     exec $scripts/ocr.sh
 bindcode $mod+$v        exec copyq toggle
 
-bindcode Control+Shift+$s exec flameshot gui -c
-bindcode Control+mod1+$s  exec flameshot gui -p ~/Pictures/Screenshots
-bindsym  Print            exec flameshot full -c
-bindsym  Shift+Print      exec flameshot full -p ~/Pictures/Screenshots
+bindcode Control+Shift+$s exec --no-startup-id flameshot gui -c
+bindcode Control+mod1+$s  exec --no-startup-id flameshot gui -p ~/Pictures/Screenshots
+bindsym  Print            exec --no-startup-id flameshot full -c && notify-send -t 1000 "Screenshot copied"
+bindsym  Shift+Print      exec --no-startup-id flameshot full -p ~/Pictures/Screenshots && notify-send -t 1000 "Screenshot saved"
 
 # ==============================================================================
 # 10. MODES

@@ -51,6 +51,7 @@ return {
                 options = {
                     icons_enabled = true,
                     theme = 'onedark',
+                    -- theme = 'vague',
                     section_separators = { left = '', right = '' },
                     component_separators = { left = '', right = '' },
                     disabled_filetypes = {

@@ -50,15 +50,19 @@ return { -- Autocompletion
             experimental = {
                 ghost_text = true,
             },
+            -- window = {
+            --     completion = cmp.config.window.bordered {
+            --         border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
+            --         winhighlight = 'Normal:Normal,FloatBorder:White',
+            --     },
+            --     documentation = cmp.config.window.bordered {
+            --         border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
+            --         winhighlight = 'Normal:Normal,FloatBorder:White',
+            --     },
+            -- },
             window = {
-                completion = cmp.config.window.bordered {
-                    border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
-                    winhighlight = 'Normal:Normal,FloatBorder:White',
-                },
-                documentation = cmp.config.window.bordered {
-                    border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
-                    winhighlight = 'Normal:Normal,FloatBorder:White',
-                },
+                completion = cmp.config.window.bordered(),
+                documentation = cmp.config.window.bordered(),
             },
 
             mapping = cmp.mapping.preset.insert {
