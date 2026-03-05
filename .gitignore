@@ -12,3 +12,6 @@ tmux/.config/tmux/plugins/
 
 # Machine-specific or private data
 gtk-3.0/.config/gtk-3.0/bookmarks
+gtk-4.0/.config/gtk-4.0/assets
+gtk-4.0/.config/gtk-4.0/gtk.css
+gtk-4.0/.config/gtk-4.0/gtk-dark.css
