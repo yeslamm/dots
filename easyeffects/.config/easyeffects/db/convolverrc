@@ -1,6 +1,0 @@
-[sie][Convolver#0]
-kernelName=Dolby_Atmos_Default
-
-[soe][Convolver#0]
-inputGain=-2
-kernelName=Dolby_Atmos_Default

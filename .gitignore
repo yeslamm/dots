@@ -1,2 +1,14 @@
-tmux/.config/tmux/plugins/
+# Backup and temporary files
 *.bak
+*#
+*~
+*.swp
+
+# State and Database files
+easyeffects/.config/easyeffects/db/
+
+# External Dependencies / Plugins
+tmux/.config/tmux/plugins/
+
+# Machine-specific or private data
+gtk-3.0/.config/gtk-3.0/bookmarks
