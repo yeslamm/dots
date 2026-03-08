@@ -33,7 +33,16 @@ return {
             -- schemastore provides schemas for the JSON language server
             'b0o/schemastore.nvim',
             -- Fidget provides a nice UI for LSP progress
-            { 'j-hui/fidget.nvim', opts = {} },
+            {
+                'j-hui/fidget.nvim',
+                opts = {
+                    notification = {
+                        window = {
+                            avoid = { 'NvimTree' },
+                        },
+                    },
+                },
+            },
         },
         config = function()
             -- This function runs when an LSP server attaches to a buffer.
@@ -99,7 +108,7 @@ return {
 
                     -- Toggle inlay hints if the server supports them
                     if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
-                        map('<leader>Th', function()
+                        map('<leader>th', function()
                             vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
                         end, 'Inlay Hints')
                     end
@@ -131,6 +140,8 @@ return {
 
             -- Define the list of LSP servers to be configured
             local servers = {
+                marksman = {},
+                texlab = {}, -- Your LaTeX code LSP (if you plan to write .tex files)
                 clangd = {},
                 bashls = {},
                 taplo = {},
@@ -157,6 +168,19 @@ return {
                         },
                     },
                 },
+                omnisharp = {
+                    cmd = { 'omnisharp' },
+                    settings = {
+                        FormattingOptions = {
+                            EnableEditorConfigSupport = true,
+                            OrganizeImports = true,
+                        },
+                        RoslynExtensionsOptions = {
+                            EnableAnalyzersSupport = true,
+                            EnableImportCompletion = true,
+                        },
+                    },
+                },
             }
 
             -- This list tells mason-tool-installer which tools to ensure are installed.
@@ -171,6 +195,8 @@ return {
                 'basedpyright', -- LSP (Python)
                 'stylelint',
                 'clang-format',
+                'netcoredbg', -- C# Debugger
+                'csharpier', -- C# Formatter (Optional but recommended)
             })
             require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 

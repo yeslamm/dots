@@ -7,6 +7,7 @@ return {
     config = function()
         require('image').setup {
             backend = 'kitty', -- since you're using kitty
+            kitty_method = 'normal',
             integrations = {
                 markdown = {
                     enabled = true,

@@ -39,3 +39,12 @@ vim.api.nvim_create_autocmd('BufReadPost', {
         end
     end,
 })
+
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = { 'markdown', 'txt' },
+    callback = function(opts)
+        -- writing experience
+        vim.opt_local.wrap = true
+        vim.opt_local.linebreak = true
+    end,
+})

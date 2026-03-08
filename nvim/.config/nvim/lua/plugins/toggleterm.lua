@@ -30,6 +30,7 @@ return {
                 python = 'python3 ' .. filename,
                 javascript = 'node ' .. filename,
                 lua = 'lua ' .. filename,
+                cs = 'dotnet run',
                 c = 'cd ' .. dir .. ' && clang -Wall -Wextra -Werror -std=c11 ' .. filename .. ' -o ' .. filename_root .. ' -lcs50 && ./' .. filename_root,
                 cpp = 'cd ' .. dir .. ' && clang++ -Wall -Wextra -Werror -std=c++17 ' .. filename .. ' -o ' .. filename_root .. ' && ./' .. filename_root,
                 sh = 'bash ' .. filename,
@@ -62,7 +63,7 @@ return {
 
         -- KEYMAPS
         vim.keymap.set('n', '<leader>r', _run_code, { noremap = true, silent = true, desc = 'Run Code' })
-        vim.keymap.set('n', '<leader>Tg', _lazygit_toggle, { noremap = true, silent = true, desc = 'Lazygit' })
+        vim.keymap.set('n', '<leader>tg', _lazygit_toggle, { noremap = true, silent = true, desc = 'Lazygit' })
         vim.keymap.set({ 'n', 'i', 't' }, '<A-`>', '<cmd>ToggleTerm<CR>', { desc = 'Terminal' })
     end,
 }

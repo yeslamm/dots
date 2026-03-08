@@ -31,6 +31,7 @@ return { -- Autoformat
             python = { 'ruff_organize_imports', 'ruff_format' },
             sh = { 'shfmt' },
             bash = { 'shfmt' },
+            cs = { 'csharpier' },
             zsh = {},
             toml = { 'taplo' },
 

@@ -2,23 +2,10 @@ return { -- Collection of various small independent plugins/modules
     {
         'echasnovski/mini.nvim',
         config = function()
-            -- mini.ai, mini.move setup
+            -- mini.ai setup
             require('mini.ai').setup { n_lines = 500 }
             -- require('mini.surround').setup() -- Disabled in favor of nvim-surround
             require('mini.tabline').setup() -- Enable minimal buffer tabline
-            require('mini.move').setup {
-                mappings = {
-                    right = '<M-l>',
-                    left = '<M-h>',
-                    down = '<M-j>',
-                    up = '<M-k>',
-                    line_left = '<M-h>',
-                    line_right = '<M-l>',
-                    line_down = '<M-j>',
-                    line_up = '<M-k>',
-                },
-                options = { reindent_linewise = true },
-            }
 
             require('mini.indentscope').setup { symbol = '│', draw = { delay = 100 } }
 

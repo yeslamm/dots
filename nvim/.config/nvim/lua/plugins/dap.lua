@@ -33,11 +33,17 @@ return {
             ensure_installed = { 'debugpy' },
         }
 
-        -- 4. Native GDB
+        -- 4. Native GDB and netcoredbg
         dap.adapters.gdb = {
             type = 'executable',
             command = 'gdb',
             args = { '--interpreter=dap', '--eval-command', 'set print pretty on' },
+        }
+
+        dap.adapters.coreclr = {
+            type = 'executable',
+            command = 'netcoredbg',
+            args = { '--interpreter=vscode' },
         }
 
         dap.configurations.c = {
@@ -51,6 +57,17 @@ return {
                 cwd = '${workspaceFolder}',
                 stopAtBeginningOfMainSubprogram = false,
                 console = 'integratedTerminal', -- Essential for CS50 input
+            },
+        }
+
+        dap.configurations.cs = {
+            {
+                type = 'coreclr',
+                name = 'launch - netcoredbg',
+                request = 'launch',
+                program = function()
+                    return vim.fn.input('Path to dll', vim.fn.getcwd() .. '/bin/Debug/', 'file')
+                end,
             },
         }
 
