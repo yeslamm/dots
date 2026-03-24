@@ -117,15 +117,21 @@ exec_always amixer -c 1 set 'Internal Mic Boost' 0
 
 xwayland enable
 default_border pixel 2
+default_floating_border normal 2
 hide_edge_borders smart
 gaps inner 10
 smart_gaps on
 
-client.focused          #d3d7cf  #d3d7cf  #2e3436  #d3d7cf     #d3d7cf
-client.unfocused        #575759  #575759  #ffffff  #575759     #575759
-client.focused_inactive #888a85  #888a85  #2e3436  #888a85     #888a85
-client.urgent           #cc0000  #cc0000  #ffffff  #cc0000    #cc0000
+# client.focused          #d3d7cf  #d3d7cf  #2e3436  #d3d7cf     #d3d7cf
+# client.unfocused        #575759  #575759  #ffffff  #575759     #575759
+# client.focused_inactive #888a85  #888a85  #2e3436  #888a85     #888a85
+# client.urgent           #cc0000  #cc0000  #ffffff  #cc0000    #cc0000
 
+# Syntax:               border   bg       text     indicator  child_border
+client.focused          #d3d7cf  #d3d7cf  #2e3436  #5294e2    #d3d7cf
+client.unfocused        #575759  #575759  #ffffff  #575759    #575759
+client.focused_inactive #888a85  #888a85  #2e3436  #5294e2    #888a85
+client.urgent           #cc0000  #cc0000  #ffffff  #cc0000    #cc0000
 # ==============================================================================
 #  5. WINDOW RULES
 # ==============================================================================
@@ -149,7 +155,6 @@ for_window [app_id="nm-connection-editor"] floating enable, sticky enable
 for_window [app_id="blueman-manager"] floating enable, sticky enable
 for_window [app_id="blueman-services"] floating enable, sticky enable
 for_window [app_id="syncthingtray"] floating enable, sticky enable
-for_window [floating] border normal 2
 
 for_window [title="float-term"] floating enable, resize set 1100 800, move position center, title_format ""
 for_window [title="Picture-in-Picture"] floating enable, sticky enable

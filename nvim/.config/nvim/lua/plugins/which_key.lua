@@ -23,7 +23,7 @@ return {
             { '<leader>b', group = 'Buffers' },
             { '<leader>c', group = 'Code' },
             { '<leader>d', group = 'Debug' },
-            { '<leader>f', group = 'Find/File' },
+            { '<leader>f', group = 'Quickfix list' },
             { '<leader>g', group = 'Git', mode = { 'n', 'v' } },
             { '<leader>gt', group = 'Toggles' },
             { '<leader>s', group = 'Search' },

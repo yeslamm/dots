@@ -23,7 +23,7 @@ LOCKED_AT=""
 CURRENT_POWER_SRC="NONE"
 LAST_CHECK_TIME=0
 # 0.2s in nanoseconds (Integer only for Bash math)
-DEBOUNCE_NSEC=200000000 
+DEBOUNCE_NSEC=200000000
 
 # --- Caching ---
 F_PATTERNS=""
@@ -44,8 +44,10 @@ if ! flock -n 8; then
             STATE=$(cat "$STATE_FILE" 2>/dev/null || echo "ON")
             if [[ "$STATE" == "PAUSED" ]]; then
                 kill -SIGUSR2 "$OLD_PID"
+                notify-send -t 1000 -h string:x-canonical-private-synchronous:state " Idle Manager: Resumed"
             else
                 kill -SIGUSR1 "$OLD_PID"
+                notify-send -t 1000 -h string:x-canonical-private-synchronous:state " Idle Manager: Paused"
             fi
         fi
     fi
@@ -89,9 +91,14 @@ start_idle() {
 
     local on_ac
     on_ac=$(grep -q "1" /sys/class/power_supply/ACAD/online 2>/dev/null && echo true || echo false)
-    
+
     local t_dim=90 t_lock=120 t_dpms=240 t_susp=360
-    [[ "$on_ac" == "true" ]] && { t_dim=570; t_lock=600; t_dpms=900; t_susp=1200; }
+    [[ "$on_ac" == "true" ]] && {
+        t_dim=570
+        t_lock=600
+        t_dpms=900
+        t_susp=1200
+    }
 
     stop_idle
     swayidle -w \
@@ -109,22 +116,34 @@ check_and_act() {
     # 1. Debounce (Prevent signal spam) - NanoSec Math
     local now
     now=$(date +%s%N)
-    if (( (now - LAST_CHECK_TIME) < DEBOUNCE_NSEC )); then return; fi
+    if (((now - LAST_CHECK_TIME) < DEBOUNCE_NSEC)); then return; fi
     LAST_CHECK_TIME=$now
 
     # 2. Power & Manual
     local p_src
     p_src=$(grep -q "1" /sys/class/power_supply/ACAD/online 2>/dev/null && echo "AC" || echo "BATTERY")
-    [[ "$CURRENT_POWER_SRC" != "$p_src" ]] && { CURRENT_POWER_SRC="$p_src"; stop_idle; }
-    [[ "$PAUSED" == "true" ]] && { stop_idle; set_state "PAUSED" "Manual Toggle"; return; }
+    [[ "$CURRENT_POWER_SRC" != "$p_src" ]] && {
+        CURRENT_POWER_SRC="$p_src"
+        stop_idle
+    }
+    [[ "$PAUSED" == "true" ]] && {
+        stop_idle
+        set_state "PAUSED" "Manual Toggle"
+        return
+    }
 
     # 3. Sentry (Lock)
     if pgrep -x "swaylock" >/dev/null; then
         local cur
         cur=$(awk '{print int($1)}' /proc/uptime)
         [[ -z "$LOCKED_AT" ]] && LOCKED_AT=$cur
-        if (( cur - LOCKED_AT >= 30 )); then systemctl suspend; return; fi
-        stop_idle; set_state "LOCKED" "Locked/Sentry"; return
+        if ((cur - LOCKED_AT >= 30)); then
+            systemctl suspend
+            return
+        fi
+        stop_idle
+        set_state "LOCKED" "Locked/Sentry"
+        return
     else
         LOCKED_AT=""
     fi
@@ -132,26 +151,32 @@ check_and_act() {
     # 4. Inhibition
     # A. Media
     if playerctl -a status 2>/dev/null | grep -q "Playing"; then
-        stop_idle; set_state "HOLD" "Media Playback"; return
+        stop_idle
+        set_state "HOLD" "Media Playback"
+        return
     fi
 
     # B. Windows (Optimized JQ)
     local win_data
     win_data=$(swaymsg -t get_tree 2>/dev/null | jq -c '.. | select(.type? == "con" or .type? == "floating_con") | {f: .focused, id: (.app_id // .window_properties.class // "unknown"), n: (.name // "")}' 2>/dev/null || true)
-    
+
     if [[ -n "$win_data" ]]; then
         if [[ -n "$F_PATTERNS" ]]; then
             local focused
             focused=$(echo "$win_data" | jq -r 'select(.f == true) | "\(.id) \(.n)"' | head -n 1 || true)
             if [[ -n "$focused" ]] && echo "$focused" | grep -Ei "$F_PATTERNS" >/dev/null; then
-                stop_idle; set_state "HOLD" "App Focus: $focused"; return
+                stop_idle
+                set_state "HOLD" "App Focus: $focused"
+                return
             fi
         fi
         if [[ -n "$NF_PATTERNS" ]]; then
             local match
             match=$(echo "$win_data" | jq -r '"\(.id) \(.n)"' | grep -Ei "$NF_PATTERNS" | head -n 1 || true)
             if [[ -n "$match" ]]; then
-                stop_idle; set_state "HOLD" "App Background: $match"; return
+                stop_idle
+                set_state "HOLD" "App Background: $match"
+                return
             fi
         fi
     fi
@@ -159,7 +184,11 @@ check_and_act() {
     # C. Audio
     local pw_node
     pw_node=$(pw-dump | jq -r '.[] | select(.type == "PipeWire:Interface:Node" and .info.state == "running" and .info.props."media.class" == "Stream/Output/Audio" and (.info.props."node.name" | test("chromium|firefox|brave|librewolf|notification"; "i") | not)) | .info.props["node.name"]' | head -n 1 || true)
-    [[ -n "$pw_node" ]] && { stop_idle; set_state "HOLD" "Audio: $pw_node"; return; }
+    [[ -n "$pw_node" ]] && {
+        stop_idle
+        set_state "HOLD" "Audio: $pw_node"
+        return
+    }
 
     start_idle
 }
@@ -185,13 +214,31 @@ load_patterns
 check_and_act
 
 # Background Monitors (The Orchestration)
-( trap "" SIGALRM; until swaymsg -t subscribe '["window"]' --monitor | jq --unbuffered -c 'select(.change == "focus")' 2>/dev/null | while read -r _; do kill -SIGALRM "$$" 2>/dev/null; done; do sleep 2; done ) &
-( trap "" SIGALRM; until playerctl status --follow 2>/dev/null | while read -r _; do kill -SIGALRM "$$" 2>/dev/null; done; do sleep 5; done ) &
-( trap "" SIGALRM; while true; do sleep 10; kill -SIGALRM "$$" 2>/dev/null; done ) &
+(
+    trap "" SIGALRM
+    until swaymsg -t subscribe '["window"]' --monitor | jq --unbuffered -c 'select(.change == "focus")' 2>/dev/null | while read -r _; do kill -SIGALRM "$$" 2>/dev/null; done; do sleep 2; done
+) &
+(
+    trap "" SIGALRM
+    until playerctl status --follow 2>/dev/null | while read -r _; do kill -SIGALRM "$$" 2>/dev/null; done; do sleep 5; done
+) &
+(
+    trap "" SIGALRM
+    while true; do
+        sleep 10
+        kill -SIGALRM "$$" 2>/dev/null
+    done
+) &
 
 # Watch patterns for changes (Optional, requires inotify-tools)
 if command -v inotifywait >/dev/null; then
-    ( trap "" SIGALRM; while inotifywait -e modify "$IDLE_APPS_FILE" "$IDLE_NF_APPS_FILE" 2>/dev/null; do load_patterns; kill -SIGALRM "$$" 2>/dev/null; done ) &
+    (
+        trap "" SIGALRM
+        while inotifywait -e modify "$IDLE_APPS_FILE" "$IDLE_NF_APPS_FILE" 2>/dev/null; do
+            load_patterns
+            kill -SIGALRM "$$" 2>/dev/null
+        done
+    ) &
 fi
 
 while true; do wait || true; done

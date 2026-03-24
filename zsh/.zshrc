@@ -320,3 +320,6 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 # ----------------------------------------------------------------------
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# To customize prompt, run `p10k configure` or edit ~/dots/zsh/.p10k.zsh.
+[[ ! -f ~/dots/zsh/.p10k.zsh ]] || source ~/dots/zsh/.p10k.zsh

@@ -50,7 +50,9 @@ return {
             require('lualine').setup {
                 options = {
                     icons_enabled = true,
-                    theme = 'onedark',
+                    -- theme = 'onedark',
+                    -- theme = 'zenbones',
+                    theme = 'vague',
                     section_separators = { left = '', right = '' },
                     component_separators = { left = '', right = '' },
                     disabled_filetypes = {
