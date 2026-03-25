@@ -174,7 +174,7 @@ bindcode $mod+$b            exec $term -e btop
 bindcode $mod+Shift+$b      exec $term --title=float-term -e btop
 
 bindcode $mod+$q            kill
-bindsym  $mod+x             exec "swaymsg -t get_tree | jq -r '.. | select(.focused? == true) | .pid' | xargs kill"
+bindcode $mod+$x exec ~/.config/sway/scripts/fuzzel-kill.sh
 bindcode $mod+Shift+$r      reload
 bindcode Control+$mod+$r    exec $scripts/replay.sh save
 bindcode Control+$mod+Shift+$r exec $scripts/replay.sh toggle
