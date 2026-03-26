@@ -281,4 +281,3 @@ conds = [
   { if = "!dir", text = "", fg = "#abb2bf" },
 ]
 # : }}}
-

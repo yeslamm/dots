@@ -1,283 +1,143 @@
-# A Fuzzel-Matched Theme for Yazi
-# Fixed: Symlink contrast adapts to selection (Dark on Blue / White on Dark)
+## Color palette
+## Check https://github.com/rebelot/kanagawa.nvim for more details
+# sumiInk0      "#16161d" dark bg
+# sumiInk3      "#181616" bg
+# sumiInk4      "#0d0c0c"
+# sumiInk6      "#54546d"
+# fujiWhite     "#c5c9c5" fg
+# oldWhite      "#7fb4ca" dark fg
+# fujiGray      "#a6a69c"
+# peachRed      "#ff5d62"
+# autumnRed     "#c4746e"
+# crystalBlue   "#8ba4b0"
+# waveRed       "#e46876"
+# carpYellow    "#e6c384"
+# springGreen   "#8a9a7b"
+# autumnGreen   "#76946a"
+# oniViolet     "#a292a3"
+# waveAqua1     "#6a9589"
+# surimiOrange  "#e46876"
+# waveAqua2     "#7aa89f"
 
-"$schema" = "https://yazi-rs.github.io/schemas/theme.json"
-
-# : Flavor {{{
-[flavor]
-dark = ""
-light = ""
-# : }}}
-
-# : App {{{
-[app]
-overall = {}
-# : }}}
-
-# : Manager {{{
-[mgr]
-cwd = { fg = "blue" }
-
-# Find / Search Highlight
-# Changed from Red (#e06c75) to Purple (#c678dd) for a smoother look
-find_keyword = { fg = "magenta", bold = true, italic = true, underline = true }
-find_position = { fg = "blue", bg = "reset", bold = true, italic = true }
-
-# OneDark Comment Grey for a darker, more integrated look
-symlink_target = { fg = "black", italic = true }
-
-# Marker
-marker_copied = { fg = "green", bg = "green" }
-marker_cut = { fg = "red", bg = "red" }
-marker_marked = { fg = "blue", bg = "blue" }
-marker_selected = { fg = "blue", bg = "blue" }
-
-# Count
-count_copied = { fg = "black", bg = "green" }
-count_cut = { fg = "black", bg = "red" }
-count_selected = { fg = "black", bg = "blue" }
-
-# Border
-border_symbol = "│"
-border_style = { fg = "white" }
-
-# Highlighting
-syntect_theme = ""
-# : }}}
-
-# : Tabs {{{
-[tabs]
-# Active: Black on Cyan 
-active = { fg = "black", bg = "blue", bold = true }
-inactive = { fg = "reset", bg = "black" }
-
-# Boxxy Separators
-sep_inner = { open = "", close = "" }
-sep_outer = { open = "", close = "" }
-# : }}}
-
-# : Mode {{{
-[mode]
-# Normal Mode: Cyan 
-normal_main = { fg = "black", bg = "blue", bold = true }
-normal_alt = { fg = "blue", bg = "black" }
-
-# Select Mode: Purple
-select_main = { fg = "black", bg = "magenta", bold = true }
-select_alt = { fg = "magenta", bg = "black" }
-
-# Unset Mode: Red
-unset_main = { fg = "black", bg = "red", bold = true }
-unset_alt = { fg = "red", bg = "black" }
-# : }}}
-
-# : Indicator of hovered file {{{
 [indicator]
 # Selection Bar: Directory Blue Background (#61afef) with Dark Text (#282928)
-current = { bg = "blue", fg = "black", bold = true }
-parent = { bg = "blue", fg = "black", bold = true }
-
-# Boxxy Style: Solid vertical bar
 padding = { open = "█", close = "" }
-# : }}}
 
-# : Status bar {{{
+
+[mgr]
+marker_copied = { fg = "#8a9a7b", bg = "#8a9a7b" }
+marker_cut = { fg = "#e46876", bg = "#e46876" }
+marker_marked = { fg = "#a292a3", bg = "#a292a3" }
+marker_selected = { fg = "#e46876", bg = "#e46876" }
+
+cwd = { fg = "#e6c384" }
+hovered = { reversed = true }
+preview_hovered = { reversed = true }
+
+find_keyword = { fg = "#e46876", bg = "#181616" }
+find_position = {}
+
+tab_active = { reversed = true }
+tab_inactive = {}
+tab_width = 1
+
+count_copied = { fg = "#282c34", bg = "#98c379" }
+count_cut = { fg = "#282c34", bg = "#e06c75" }
+count_selected = { fg = "#282c34", bg = "#61afef" }
+
+
+border_symbol = "│"
+border_style = { fg = "#c5c9c5" }
+
+
+[mode]
+normal_main = { fg = "#181616", bg = "#8ba4b0" }
+normal_alt = { fg = "#8ba4b0", bg = "#0d0c0c" }
+select_main = { fg = "#181616", bg = "#a292a3" }
+select_alt = { fg = "#a292a3", bg = "#0d0c0c" }
+unset_main = { fg = "#181616", bg = "#e6c384" }
+unset_alt = { fg = "#e6c384", bg = "#0d0c0c" }
+
+
 [status]
-overall = {}
 sep_left = { open = "", close = "" }
 sep_right = { open = "", close = "" }
+overall = { fg = "#7fb4ca", bg = "#16161d" }
 
-# Permissions
-perm_sep = { fg = "white" }
-perm_type = { fg = "blue" }
-perm_read = { fg = "green" }
-perm_write = { fg = "red" }
-perm_exec = { fg = "blue" }
+progress_label = { fg = "#8ba4b0", bg = "#0d0c0c", bold = true }
+progress_normal = { fg = "#0d0c0c", bg = "#181616" }
+progress_error = { fg = "#0d0c0c", bg = "#181616" }
 
-# Progress
-progress_label = { bold = true }
-progress_normal = { fg = "black", bg = "blue" }
-progress_error = { fg = "black", bg = "red" }
-# : }}}
+perm_type = { fg = "#8a9a7b" }
+perm_read = { fg = "#e6c384" }
+perm_write = { fg = "#ff5d62" }
+perm_exec = { fg = "#7aa89f" }
+perm_sep = { fg = "#a292a3" }
 
-# : Which {{{
-[which]
-cols = 3
-mask = { bg = "black" }
-cand = { fg = "blue" }
-rest = { fg = "white" }
-desc = { fg = "magenta" }
-separator = "  "
-separator_style = { fg = "white" }
-# : }}}
 
-# : Confirmation {{{
-[confirm]
-border = { fg = "blue" }
-title = { fg = "blue" }
-body = { fg = "reset" }
-list = {}
-btn_yes = { reversed = true }
-btn_no = {}
-btn_labels = ["  [Y]es  ", "  (N)o  "]
-# : }}}
-
-# : Spotter {{{
-[spot]
-border = { fg = "blue" }
-title = { fg = "blue" }
-tbl_col = { fg = "blue" }
-tbl_cell = { fg = "black", bg = "blue" }
-# : }}}
-
-# : Notification {{{
-[notify]
-title_info = { fg = "green" }
-title_warn = { fg = "yellow" }
-title_error = { fg = "red" }
-
-icon_info = ""
-icon_warn = ""
-icon_error = ""
-# : }}}
-
-# : Picker {{{
 [pick]
-border = { fg = "blue" }
-active = { fg = "blue", bold = true }
-inactive = { fg = "reset" }
-# : }}}
+border = { fg = "#8ea4a2" }
+active = { fg = "#a292a3", bold = true }
+inactive = {}
 
-# : Input {{{
 [input]
-border = { fg = "blue" }
-title = { fg = "reset" }
-value = { fg = "reset" }
+border = { fg = "#8ea4a2" }
+title = {}
+value = {}
 selected = { reversed = true }
-# : }}}
 
-# : Completion {{{
-[cmp]
-border = { fg = "blue" }
-active = { fg = "black", bg = "blue" }
-inactive = { fg = "reset" }
+[completion]
+border = { fg = "#8ea4a2" }
+active = { reversed = true }
+inactive = {}
 
-icon_file = ""
-icon_folder = ""
-icon_command = ""
-# : }}}
-
-# : Task manager {{{
 [tasks]
-border = { fg = "blue" }
-title = { fg = "reset" }
-hovered = { fg = "blue", bold = true }
-# : }}}
+border = { fg = "#8ea4a2" }
+title = {}
+hovered = { fg = "#a292a3" }
 
-# : Help menu {{{
+[which]
+cols = 2
+separator = "  "
+separator_style = { fg = "#a6a69c" }
+mask = { bg = "#16161d" }
+rest = { fg = "#a6a69c" }
+cand = { fg = "#8ba4b0" }
+desc = { fg = "#54546d" }
+
 [help]
-on = { fg = "blue" }
-run = { fg = "magenta" }
-desc = { fg = "reset" }
+on = { fg = "#7aa89f" }
+run = { fg = "#a292a3" }
+desc = {}
 hovered = { reversed = true, bold = true }
-footer = { fg = "black", bg = "reset" }
-# : }}}
+footer = { fg = "#181616", bg = "#c5c9c5" }
 
-# : File-specific styles {{{
+[notify]
+title_info = { fg = "#8a9a7b" }
+title_warn = { fg = "#e6c384" }
+title_error = { fg = "#ff5d62" }
+
 [filetype]
 rules = [
-  # Directories -> Fuzzel Cyan/Blue
-  { mime = "inode/directory", fg = "blue" },
+  # images
+  { mime = "image/*", fg = "#e6c384" },
 
-  # Image
-  { mime = "image/*", fg = "yellow" },
-  # Media
-  { mime = "{audio,video}/*", fg = "magenta" },
-  # Archive
-  { mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "red" },
-  # Document
-  { mime = "application/{pdf,doc,rtf}", fg = "cyan" },
-  # Fallback
-  { url = "*/", fg = "reset" },
-]
-# : }}}
+  # media
+  { mime = "{audio,video}/*", fg = "#a292a3" },
 
-# : Icons {{{
-[icon]
-globs = []
-dirs = [
-  { name = ".config", text = "", fg = "blue" },
-  { name = ".git", text = "", fg = "blue" },
-  { name = "Desktop", text = "", fg = "blue" },
-  { name = "Documents", text = "", fg = "blue" },
-  { name = "Downloads", text = "", fg = "blue" },
-  { name = "Pictures", text = "", fg = "blue" },
-  { name = "Videos", text = "", fg = "blue" },
+  # archives
+  { mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "#e46876" },
+
+  # documents
+  { mime = "application/{pdf,doc,rtf,vnd.*}", fg = "#6a9589" },
+
+  # broken links
+  { name = "*", is = "orphan", fg = "#c4746e" },
+
+  # executables
+  { name = "*", is = "exec", fg = "#76946a" },
+
+  # fallback
+  { name = "*", fg = "#c5c9c5" },
+  { name = "*/", fg = "#8ba4b0" },
 ]
-files = [
-  { name = ".bashrc", text = "", fg = "green" },
-  { name = ".zshrc", text = "", fg = "green" },
-  { name = ".gitconfig", text = "", fg = "red" },
-  { name = "dockerfile", text = "󰡨", fg = "blue" },
-  { name = "makefile", text = "", fg = "white" },
-  { name = "readme.md", text = "󰂺", fg = "reset" },
-  { name = "license", text = "", fg = "yellow" },
-]
-exts = [
-  { name = "zip", text = "", fg = "yellow" },
-  { name = "rar", text = "", fg = "yellow" },
-  { name = "7z", text = "", fg = "yellow" },
-  { name = "tar", text = "", fg = "yellow" },
-  { name = "gz", text = "", fg = "yellow" },
-  { name = "xz", text = "", fg = "yellow" },
-  { name = "py", text = "", fg = "yellow" },
-  { name = "js", text = "", fg = "yellow" },
-  { name = "ts", text = "", fg = "cyan" },
-  { name = "html", text = "", fg = "red" },
-  { name = "css", text = "", fg = "blue" },
-  { name = "scss", text = "", fg = "magenta" },
-  { name = "json", text = "", fg = "yellow" },
-  { name = "md", text = "", fg = "reset" },
-  { name = "txt", text = "󰈙", fg = "green" },
-  { name = "pdf", text = "", fg = "red" },
-  { name = "doc", text = "󰈬", fg = "blue" },
-  { name = "docx", text = "󰈬", fg = "blue" },
-  { name = "xls", text = "󰈛", fg = "green" },
-  { name = "xlsx", text = "󰈛", fg = "green" },
-  { name = "ppt", text = "󰈧", fg = "red" },
-  { name = "pptx", text = "󰈧", fg = "red" },
-  { name = "mp3", text = "", fg = "blue" },
-  { name = "wav", text = "", fg = "blue" },
-  { name = "flac", text = "", fg = "blue" },
-  { name = "mp4", text = "", fg = "yellow" },
-  { name = "mkv", text = "", fg = "yellow" },
-  { name = "avi", text = "", fg = "yellow" },
-  { name = "jpg", text = "", fg = "magenta" },
-  { name = "jpeg", text = "", fg = "magenta" },
-  { name = "png", text = "", fg = "magenta" },
-  { name = "gif", text = "", fg = "magenta" },
-  { name = "svg", text = "󰜫", fg = "yellow" },
-  { name = "go", text = "", fg = "blue" },
-  { name = "rs", text = "", fg = "yellow" },
-  { name = "c", text = "", fg = "blue" },
-  { name = "cpp", text = "", fg = "blue" },
-  { name = "h", text = "", fg = "magenta" },
-  { name = "sh", text = "", fg = "white" },
-  { name = "bash", text = "", fg = "green" },
-  { name = "zsh", text = "", fg = "green" },
-  { name = "fish", text = "", fg = "white" },
-  { name = "lua", text = "", fg = "blue" },
-  { name = "vim", text = "", fg = "green" },
-  { name = "conf", text = "", fg = "white" },
-  { name = "ini", text = "", fg = "white" },
-  { name = "yaml", text = "", fg = "white" },
-  { name = "yml", text = "", fg = "white" },
-  { name = "toml", text = "", fg = "red" },
-]
-conds = [
-  # Fallback Directory Icon -> Fuzzel Match
-  { if = "dir", text = "", fg = "blue" },
-  { if = "exec", text = "", fg = "green" },
-  { if = "!dir", text = "", fg = "reset" },
-]
-# : }}}
