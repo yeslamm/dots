@@ -60,7 +60,7 @@ set $g_files    pcmanfm
 #  2. HARDWARE: INPUT & OUTPUT
 # ==============================================================================
 
-output * bg ~/Pictures/darkmountain.jpg fill
+output * bg ~/Pictures/dark-arch.jpg fill
 
 input type:keyboard {
     xkb_layout "us,ara"
