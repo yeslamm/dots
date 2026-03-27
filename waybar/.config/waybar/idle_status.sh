@@ -25,18 +25,18 @@ REASON=""
 
 case "$STATE" in
 "ON")
-    echo '{"text":"IDLE: ON","class":"idle-active", "tooltip": "Idle management is active."}'
+    jq -nc --arg t "IDLE: ON" --arg d "Idle management is active." '{"text":$t, "class":"idle-active", "tooltip":$d}'
     ;;
 "HOLD")
-    echo "{\"text\":\"IDLE: HOLD\",\"class\":\"idle-inhibited\", \"tooltip\": \"Inhibited by: $REASON\"}"
+    jq -nc --arg t "IDLE: HOLD" --arg d "Inhibited by: $REASON" '{"text":$t, "class":"idle-inhibited", "tooltip":$d}'
     ;;
 "PAUSED")
-    echo '{"text":"IDLE: PAUSE","class":"idle-paused", "tooltip": "Idle management is manually paused."}'
+    jq -nc --arg t "IDLE: PAUSE" --arg d "Idle management is manually paused." '{"text":$t, "class":"idle-paused", "tooltip":$d}'
     ;;
 "LOCKED")
-    echo '{"text":"IDLE: LCKD","class":"idle-locked", "tooltip": "Locked. Will re-suspend in < 30s if not unlocked."}'
+    jq -nc --arg t "IDLE: LCKD" --arg d "Locked. Will re-suspend in < 30s if not unlocked." '{"text":$t, "class":"idle-locked", "tooltip":$d}'
     ;;
 *)
-    echo '{"text":"IDLE: OFF","class":"idle-stopped", "tooltip": "Initializing..."}'
+    jq -nc --arg t "IDLE: OFF" --arg d "Initializing..." '{"text":$t, "class":"idle-stopped", "tooltip":$d}'
     ;;
 esac

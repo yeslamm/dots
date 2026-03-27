@@ -29,11 +29,24 @@ DEBOUNCE_NSEC=200000000
 F_PATTERNS=""
 NF_PATTERNS=""
 
+# --- Logging & Maintenance ---
 log() {
     local timestamp
     timestamp=$(date '+%H:%M:%S')
+    # Auto-rotate log if it exceeds 1MB
+    if [[ -f "$LOG_FILE" ]] && [[ $(stat -c%s "$LOG_FILE" 2>/dev/null || echo 0) -gt 1048576 ]]; then
+        mv "$LOG_FILE" "$LOG_FILE.old"
+    fi
     echo "$timestamp [$1] $2" >>"$LOG_FILE"
 }
+
+# --- Dependency Check ---
+for cmd in jq pw-dump swaymsg playerctl fuser inotifywait; do
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+        notify-send -u critical "Idle Manager" "Missing dependency: $cmd"
+        exit 1
+    fi
+done
 
 # --- Singleton & Process Control ---
 exec 8>"$LOCK_FILE"
@@ -149,7 +162,15 @@ check_and_act() {
     fi
 
     # 4. Inhibition
-    # A. Windows & Wayland Inhibitors (Optimized JQ)
+    # A. Webcam Check (Universal meeting protection)
+    # Check if any process is using the camera devices (/dev/video*)
+    if fuser /dev/video* >/dev/null 2>&1; then
+        stop_idle
+        set_state "HOLD" "Webcam Active (Meeting?)"
+        return
+    fi
+
+    # B. Windows & Wayland Inhibitors
     local win_data
     win_data=$(swaymsg -t get_tree 2>/dev/null | jq -c '.. | select(.type? == "con" or .type? == "floating_con") | {f: .focused, id: (.app_id // .window_properties.class // "unknown"), n: (.name // ""), i: .idle_inhibitors?.application?}' 2>/dev/null || true)
 
@@ -190,14 +211,16 @@ check_and_act() {
         return
     fi
 
-    # C. Audio
-    local pw_node
-    pw_node=$(pw-dump | jq -r '.[] | select(.type == "PipeWire:Interface:Node" and .info.state == "running" and .info.props."media.class" == "Stream/Output/Audio" and (.info.props."node.name" | test("chromium|firefox|brave|librewolf|notification"; "i") | not)) | .info.props["node.name"]' | head -n 1 || true)
-    [[ -n "$pw_node" ]] && {
-        stop_idle
-        set_state "HOLD" "Audio: $pw_node"
-        return
-    }
+    # C. Audio (Universal State-Based Inhibition via pw-dump)
+    if grep -qv "closed" /proc/asound/card*/pcm*/sub*/status 2>/dev/null; then
+        local node_name
+        node_name=$(pw-dump | jq -r '.[] | select(.type == "PipeWire:Interface:Node" and .info.state == "running" and .info.props."media.class" == "Stream/Output/Audio" and (.info.props."node.name" | test("notification|alert|event|easyeffects"; "i") | not)) | .info.props["node.name"]' | head -n 1 || true)
+        if [[ -n "$node_name" ]]; then
+            stop_idle
+            set_state "HOLD" "Audio: $node_name"
+            return
+        fi
+    fi
 
 
     start_idle

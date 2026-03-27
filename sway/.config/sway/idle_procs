@@ -4,3 +4,5 @@ makepkg
 fakeroot
 pacman
 yay
+mpv
+vlc
