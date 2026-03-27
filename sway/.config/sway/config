@@ -176,13 +176,6 @@ bindcode $mod+Shift+$b      exec $term --title=float-term -e btop
 bindcode $mod+$q            kill
 bindcode $mod+$x exec ~/.config/sway/scripts/fuzzel-kill.sh
 bindcode $mod+Shift+$r      reload
-bindcode Control+$mod+$r    exec $scripts/replay.sh save
-bindcode Control+$mod+Shift+$r exec $scripts/replay.sh toggle
-
-# Replay & Recording
-bindsym $mod+F10            exec $scripts/replay.sh save
-bindsym $mod+F9             exec $scripts/replay.sh toggle
-bindsym $mod+Shift+F9       exec $scripts/replay.sh record
 
 # ==============================================================================
 #  7. NAVIGATION & LAYOUT

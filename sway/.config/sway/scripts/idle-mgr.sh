@@ -149,21 +149,23 @@ check_and_act() {
     fi
 
     # 4. Inhibition
-    # A. Media
-    if playerctl -a status 2>/dev/null | grep -q "Playing"; then
-        stop_idle
-        set_state "HOLD" "Media Playback"
-        return
-    fi
-
-    # B. Windows (Optimized JQ)
+    # A. Windows & Wayland Inhibitors (Optimized JQ)
     local win_data
-    win_data=$(swaymsg -t get_tree 2>/dev/null | jq -c '.. | select(.type? == "con" or .type? == "floating_con") | {f: .focused, id: (.app_id // .window_properties.class // "unknown"), n: (.name // "")}' 2>/dev/null || true)
+    win_data=$(swaymsg -t get_tree 2>/dev/null | jq -c '.. | select(.type? == "con" or .type? == "floating_con") | {f: .focused, id: (.app_id // .window_properties.class // "unknown"), n: (.name // ""), i: .idle_inhibitors?.application?}' 2>/dev/null || true)
 
     if [[ -n "$win_data" ]]; then
+        # Check for Wayland-native idle inhibitors (e.g. Firefox/MPV/Games)
+        if echo "$win_data" | grep -q '"i":"enabled"'; then
+            local inhibitor_app
+            inhibitor_app=$(echo "$win_data" | jq -r 'select(.i == "enabled") | "\(.id) [\(.n)]"' | head -n 1 || true)
+            stop_idle
+            set_state "HOLD" "Wayland Protocol: $inhibitor_app"
+            return
+        fi
+
         if [[ -n "$F_PATTERNS" ]]; then
             local focused
-            focused=$(echo "$win_data" | jq -r 'select(.f == true) | "\(.id) \(.n)"' | head -n 1 || true)
+            focused=$(echo "$win_data" | jq -r 'select(.f == true) | "\(.id) [\(.n)]"' | head -n 1 || true)
             if [[ -n "$focused" ]] && echo "$focused" | grep -Ei "$F_PATTERNS" >/dev/null; then
                 stop_idle
                 set_state "HOLD" "App Focus: $focused"
@@ -172,13 +174,20 @@ check_and_act() {
         fi
         if [[ -n "$NF_PATTERNS" ]]; then
             local match
-            match=$(echo "$win_data" | jq -r '"\(.id) \(.n)"' | grep -Ei "$NF_PATTERNS" | head -n 1 || true)
+            match=$(echo "$win_data" | jq -r 'select(.id != "unknown") | "\(.id) [\(.n)]"' | grep -Ei "$NF_PATTERNS" | head -n 1 || true)
             if [[ -n "$match" ]]; then
                 stop_idle
                 set_state "HOLD" "App Background: $match"
                 return
             fi
         fi
+    fi
+
+    # B. Media (Playerctl)
+    if playerctl -a status 2>/dev/null | grep -q "Playing"; then
+        stop_idle
+        set_state "HOLD" "Media Playback"
+        return
     fi
 
     # C. Audio
@@ -189,6 +198,7 @@ check_and_act() {
         set_state "HOLD" "Audio: $pw_node"
         return
     }
+
 
     start_idle
 }
