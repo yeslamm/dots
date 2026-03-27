@@ -124,12 +124,6 @@ prepend_previewers = [
   { url = "*.md", run = "glow" },
   { mime = "audio/*", run = "mediainfo" },
   { mime = "video/*", run = "mediainfo" },
-  { mime = "application/*zip", run = "ouch" },
-  { mime = "application/x-tar", run = "ouch" },
-  { mime = "application/x-bzip2", run = "ouch" },
-  { mime = "application/x-7z-compressed", run = "ouch" },
-  { mime = "application/x-rar", run = "ouch" },
-  { mime = "application/x-xz", run = "ouch" },
 ]
 fetchers = [
   # Mimetype
