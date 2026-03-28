@@ -209,8 +209,8 @@ bindcode $mod+Shift+$f      floating toggle
 bindcode $mod+$f            fullscreen
 floating_modifier $mod normal
 
-bindsym $mod+$s          scratchpad show     
-bindsym $mod+Shift+$s          move scratchpad 
+bindcode $mod+$s          scratchpad show     
+bindcode $mod+Shift+$s          move scratchpad 
 
 bindcode Control+$mod+$left  resize shrink width 40px
 bindcode Control+$mod+$down  resize grow height 40px
@@ -279,7 +279,7 @@ bindcode $mod+Shift+$c  exec swaync-client --close-latest
 bindcode $mod+$i        exec $scripts/idle-mgr.sh
 bindcode $mod+$o        exec $scripts/idle-off.sh
 bindsym  Mod1+Print     exec $scripts/ocr.sh
-bindcode $mod+$v        exec env CLIPHIST_PREVIEW_WIDTH=160 cliphist list | sed 's/\t/ /g' | fuzzel --dmenu --prompt="CLIP: " --line-height 16 -w 155 -l 30 | cliphist decode | wl-copy
+bindcode $mod+$v        exec env CLIPHIST_PREVIEW_WIDTH=150 cliphist list | fuzzel --dmenu --tabs=4 --prompt="CLIP: " --line-height 16 -w 155 -l 30 | cliphist decode | wl-copy
 bindcode $mod+Shift+$v  exec rm ~/.cache/cliphist/db && cliphist wipe && notify-send -t 1000 "Clipboard Cleared"
 
 bindcode Control+Shift+$s exec --no-startup-id flameshot gui -c
