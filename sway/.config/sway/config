@@ -98,13 +98,15 @@ exec easyeffects --hide-window
 exec asusctl profile set Quiet
 exec gammastep -l 31.11167:30.94583
 
-exec nm-applet
+exec nm-applet --indicator
 exec sleep 1 && blueman-applet
-exec_always "killall -q waybar; sleep 0.5; waybar"
+exec_always "pkill -x waybar; sleep 0.5; waybar"
 
+exec wl-paste --type text --watch cliphist store
+exec wl-paste --type image --watch cliphist store
 exec $scripts/idle-mgr.sh
 exec flameshot
-exec copyq --start-server
+# exec copyq --start-server
 exec sleep 1 && firefox
 
 exec wpctl set-volume @DEFAULT_SINK@ 0.30
@@ -277,7 +279,7 @@ bindcode $mod+Shift+$c  exec swaync-client --close-latest
 bindcode $mod+$i        exec $scripts/idle-mgr.sh
 bindcode $mod+$o        exec $scripts/idle-off.sh
 bindsym  Mod1+Print     exec $scripts/ocr.sh
-bindcode $mod+$v        exec copyq toggle
+bindcode $mod+$v        exec cliphist list | sed 's/\t/ /g' | fuzzel --dmenu --prompt="CLIP: " --line-height 16 -w 55 -l 14 | cliphist decode | wl-copy
 
 bindcode Control+Shift+$s exec --no-startup-id flameshot gui -c
 bindcode Control+mod1+$s  exec --no-startup-id flameshot gui -p ~/Pictures/Screenshots

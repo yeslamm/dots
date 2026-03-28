@@ -1,16 +1,42 @@
 #!/bin/bash
+# fuzzel-kill.sh - "Elite Grouped Task Manager" v2.4
+# Groups child processes, normalizes CPU, and prioritizes Memory view.
+
+set -euo pipefail
+
+# 1. Get total core count for normalization
+CORES=$(nproc)
 
 # Define processes that should NEVER show up in the kill menu
-PROTECTED="sway|waybar|pipewire|wireplumber|dbus|systemd|fuzzel|bash|ssh|polkit"
+PROTECTED="sway|waybar|pipewire|wireplumber|dbus|systemd|fuzzel|bash|ssh|polkit|idle-mgr.sh|grep|ps|awk|sort"
 
-# 1. Get user processes (quoted "$USER" to fix SC2086)
-# 2. Filter OUT protected processes using awk (fixes SC2009)
-# 3. Sort and remove duplicates
-# 4. Pipe to Fuzzel
-SELECTED_APP=$(ps -u "$USER" -o comm= | awk -v pat="^(${PROTECTED})$" '$0 !~ pat' | sort -u | fuzzel --dmenu --prompt="KILL: ")
+# 2. Generate Grouped Process List
+# Memory is now shown before CPU. Sorted by Memory usage (Field 6)
+PROCESS_LIST=$(ps -u "$USER" -o pcpu,pmem,comm --no-headers | awk -v pat="^(${PROTECTED})$" -v cores="$CORES" \
+    '$3 !~ pat { 
+        cpu[$3]+=$1; 
+        mem[$3]+=$2; 
+        count[$3]++ 
+    } 
+    END { 
+        for (name in cpu) 
+            printf "%-20s | %2d procs | %5.1f%% MEM | %5.1f%% CPU\n", name, count[name], mem[name], cpu[name]/cores 
+    }' | sort -hr -k 6)
 
-if [ -n "$SELECTED_APP" ]; then
-    # Use SIGTERM (-15) to allow graceful exit (saving state, closing files)
-    pkill -15 -x "$SELECTED_APP"
-    notify-send -t 2000 "Process Termination Sent" "Requesting exit for: $SELECTED_APP"
+# 3. Select Application
+SELECTED=$(echo "$PROCESS_LIST" | fuzzel --dmenu --prompt="KILL APP: " -w 70 -l 15 --font="Iosevka Nerd Font:size=9")
+
+if [[ -n "$SELECTED" ]]; then
+    # Robust extraction of name and count
+    APP_NAME=$(echo "$SELECTED" | cut -d'|' -f1 | xargs)
+    COUNT=$(echo "$SELECTED" | cut -d'|' -f2 | awk '{print $1}')
+
+    # 4. Confirmation Prompt
+    CONFIRM=$(echo -e "NO\nYES" | fuzzel --dmenu --prompt="Kill $APP_NAME and all $COUNT processes? " -w 35 -l 2)
+
+    if [[ "$CONFIRM" == "YES" ]]; then
+        # Try SIGTERM first for a clean exit
+        pkill -15 -x "$APP_NAME" 2>/dev/null
+        notify-send -t 2000 -h string:x-canonical-private-synchronous:kill "Termination signal sent to $APP_NAME ($COUNT processes)"
+    fi
 fi

@@ -17,13 +17,11 @@ TEMP_IMG=$(mktemp "${XDG_RUNTIME_DIR:-/tmp}/ocr_XXXX.png")
 trap 'rm -f "$TEMP_IMG"' EXIT
 
 # 3. Select Area & Capture
-GEOM=$(slurp -d)
-[[ -z "$GEOM" ]] && exit 0
+GEOM=$(slurp -d 2>/dev/null) || exit 0
 
 # Capture and pre-process (Sharpen + Grayscale + Contrast) for better OCR
 grim -g "$GEOM" - | magick - \
     -colorspace gray \
-    -negate \
     -sharpen 0x3 \
     -contrast-stretch 5%x5% \
     -scale 400% \
@@ -34,10 +32,11 @@ notify-send "OCR" "Extracting text..." -t 800 -h string:x-canonical-private-sync
 
 # 5. Extract & Clean Text
 # -l eng+ara for English + Arabic support
-TEXT=$(tesseract "$TEMP_IMG" stdout -l eng+ara 2>/dev/null)
+TEXT=$(tesseract "$TEMP_IMG" stdout -l eng+ara 2>/dev/null || echo "")
 
 # Clean: Remove form feeds, strip trailing/leading space, remove empty lines
-CLEAN_TEXT=$(echo "$TEXT" | tr -d '\f' | awk 'NF' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' || true)
+# Using perl or more robust sed for multi-line cleanup if needed, but keeping it bash-friendly.
+CLEAN_TEXT=$(echo "$TEXT" | tr -d '\f' | sed '/^[[:space:]]*$/d; s/^[[:space:]]*//; s/[[:space:]]*$//' | paste -sd " " - || true)
 
 if [[ -z "$CLEAN_TEXT" ]]; then
     notify-send "OCR" "No text detected." -u low -t 2000 -h string:x-canonical-private-synchronous:ocr
