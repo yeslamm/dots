@@ -122,6 +122,14 @@ start_idle() {
 check_and_act() {
     local now
     now=$(date +%s%N)
+    
+    # Wake Detection: If the time jump is > 5s, we likely just woke from suspend.
+    # Reset LOCKED_AT to prevent an immediate re-suspend loop.
+    if (((now - LAST_CHECK_TIME) > 5000000000)); then
+        log "INFO" "Wake detected (Time jump: $(( (now - LAST_CHECK_TIME) / 1000000000 ))s). Resetting Sentry."
+        LOCKED_AT=""
+    fi
+
     if (((now - LAST_CHECK_TIME) < DEBOUNCE_NSEC)); then return; fi
     LAST_CHECK_TIME=$now
 
@@ -146,7 +154,9 @@ check_and_act() {
         cur=$(awk '{print int($1)}' /proc/uptime)
         [[ -z "$LOCKED_AT" ]] && LOCKED_AT=$cur
         if ((cur - LOCKED_AT >= 30)); then
+            log "SENTRY" "Locked for >30s, suspending system."
             systemctl suspend
+            LOCKED_AT="" # Reset after triggering to prevent loop if suspend fails
             return
         fi
         stop_idle
