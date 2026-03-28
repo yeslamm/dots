@@ -209,8 +209,8 @@ bindcode $mod+Shift+$f      floating toggle
 bindcode $mod+$f            fullscreen
 floating_modifier $mod normal
 
-bindsym $mod+minus          scratchpad show     
-bindsym $mod+equal          move scratchpad 
+bindsym $mod+$s          scratchpad show     
+bindsym $mod+Shift+$s          move scratchpad 
 
 bindcode Control+$mod+$left  resize shrink width 40px
 bindcode Control+$mod+$down  resize grow height 40px
@@ -280,7 +280,7 @@ bindcode $mod+$i        exec $scripts/idle-mgr.sh
 bindcode $mod+$o        exec $scripts/idle-off.sh
 bindsym  Mod1+Print     exec $scripts/ocr.sh
 bindcode $mod+$v        exec env CLIPHIST_PREVIEW_WIDTH=160 cliphist list | sed 's/\t/ /g' | fuzzel --dmenu --prompt="CLIP: " --line-height 16 -w 155 -l 30 | cliphist decode | wl-copy
-bindcode $mod+Shift+$v  exec rm ~/.cache/cliphist/db && cliphist wipe && notify-send -t 1000 "Clipboard Cleared", mode default
+bindcode $mod+Shift+$v  exec rm ~/.cache/cliphist/db && cliphist wipe && notify-send -t 1000 "Clipboard Cleared"
 
 bindcode Control+Shift+$s exec --no-startup-id flameshot gui -c
 bindcode Control+mod1+$s  exec --no-startup-id flameshot gui -p ~/Pictures/Screenshots
@@ -291,7 +291,7 @@ bindsym  Shift+Print      exec --no-startup-id flameshot full -p ~/Pictures/Scre
 # 10. MODES
 # ==============================================================================
 
-bindcode $mod+$s mode Super
+bindcode $mod+Escape mode Super
 mode Super {
     bindcode $s exec "swaylock -f -c 000000 -F -e -k -L && systemctl suspend", mode default
     bindcode $l_mode exec $scripts/lock-ns.sh, mode default
@@ -306,7 +306,7 @@ mode Super {
 
     bindsym Escape mode default
     bindsym Return mode default
-    bindcode $mod+$s mode default
+    bindcode $mod+Escape mode default
 }
 
 bindcode $mod+$a mode Apps
@@ -321,7 +321,7 @@ mode Apps {
 }
 
 bindsym XF86Launch1 mode Power
-bindsym $mod+Escape mode Power
+bindsym $mod+Shift+Escape mode Power
 mode Power {
     bindcode $q exec asusctl profile set Quiet \
         && pkill -RTMIN+8 waybar \
@@ -344,5 +344,5 @@ mode Power {
     bindsym Escape mode "default"
     bindsym Return mode "default"
     bindsym XF86Launch1 mode "default"
-    bindsym $mod+Escape mode "default"
+    bindsym $mod+Shift+Escape mode "default"
 }
