@@ -1,5 +1,5 @@
 #!/bin/bash
-# idle-mgr.sh - "Hardened Edition v1.6"
+# idle-mgr.sh - "Hardened Edition v1.6" (Definitive)
 # Optimized for event-driven reliability and high efficiency.
 
 set -euo pipefail
@@ -23,7 +23,7 @@ IDLE_PID=""
 LOCKED_AT=""
 CURRENT_POWER_SRC="NONE"
 LAST_CHECK_TIME=0
-DEBOUNCE_NSEC=300000000  # 0.3s Debounce (Snappy Response)
+DEBOUNCE_NSEC=300000000 # 0.3s Debounce (Snappy Response)
 
 # --- Caching ---
 F_PATTERNS=""
@@ -104,7 +104,10 @@ start_idle() {
 
     local t_dim=90 t_lock=120 t_dpms=240 t_susp=360
     [[ "$on_ac" == "true" ]] && {
-        t_dim=570; t_lock=600; t_dpms=900; t_susp=1200
+        t_dim=570
+        t_lock=600
+        t_dpms=900
+        t_susp=1200
     }
 
     stop_idle
@@ -122,11 +125,11 @@ start_idle() {
 check_and_act() {
     local now
     now=$(date +%s%N)
-    
-    # Wake Detection: If the time jump is > 5s, we likely just woke from suspend.
+
+    # Wake Detection: If the time jump is > 5s (and not the first run), we likely just woke from suspend.
     # Reset LOCKED_AT to prevent an immediate re-suspend loop.
-    if (((now - LAST_CHECK_TIME) > 5000000000)); then
-        log "INFO" "Wake detected (Time jump: $(( (now - LAST_CHECK_TIME) / 1000000000 ))s). Resetting Sentry."
+    if [[ "$LAST_CHECK_TIME" -ne 0 ]] && (((now - LAST_CHECK_TIME) > 5000000000)); then
+        log "INFO" "Wake detected (Time jump: $(((now - LAST_CHECK_TIME) / 1000000000))s). Resetting Sentry."
         LOCKED_AT=""
     fi
 
