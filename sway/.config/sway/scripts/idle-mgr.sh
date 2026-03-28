@@ -1,10 +1,10 @@
 #!/bin/bash
-# idle-mgr.sh - "Definitive Edition v1.3" (Hardened & Bug-Fixed)
-# Standardized paths, integer-based debounce, and performance-tuned.
+# idle-mgr.sh - "Hardened Edition v1.6"
+# Optimized for event-driven reliability and high efficiency.
 
 set -euo pipefail
 
-# --- Environment & Paths (Standardized) ---
+# --- Environment & Paths ---
 RUNTIME_DIR="${XDG_RUNTIME_DIR:-/tmp}"
 LOCK_FILE="$RUNTIME_DIR/idle-mgr.lock"
 PID_FILE="$RUNTIME_DIR/idle-mgr.pid"
@@ -16,24 +16,23 @@ IDLE_APPS_FILE="$HOME/.config/sway/idle_apps"
 IDLE_NF_APPS_FILE="$HOME/.config/sway/idle_nf_apps"
 WAYBAR_SIGNAL=9
 
-# --- State ---
+# --- State & Flags ---
 PAUSED=false
+NEEDS_CHECK=true
 IDLE_PID=""
 LOCKED_AT=""
 CURRENT_POWER_SRC="NONE"
 LAST_CHECK_TIME=0
-# 0.2s in nanoseconds (Integer only for Bash math)
-DEBOUNCE_NSEC=200000000
+DEBOUNCE_NSEC=300000000  # 0.3s Debounce (Snappy Response)
 
 # --- Caching ---
 F_PATTERNS=""
 NF_PATTERNS=""
 
-# --- Logging & Maintenance ---
+# --- Logging ---
 log() {
     local timestamp
     timestamp=$(date '+%H:%M:%S')
-    # Auto-rotate log if it exceeds 1MB
     if [[ -f "$LOG_FILE" ]] && [[ $(stat -c%s "$LOG_FILE" 2>/dev/null || echo 0) -gt 1048576 ]]; then
         mv "$LOG_FILE" "$LOG_FILE.old"
     fi
@@ -94,12 +93,10 @@ stop_idle() {
         kill "$IDLE_PID" 2>/dev/null && wait "$IDLE_PID" 2>/dev/null || true
         IDLE_PID=""
     fi
-    # Only kill swayidle processes that are direct children of THIS script
     pkill -P "$$" swayidle 2>/dev/null || true
 }
 
 start_idle() {
-    # If already running, don't restart (prevents screen flicker)
     pgrep -x swayidle >/dev/null && [[ "$(cat "$STATE_FILE" 2>/dev/null)" == "ON" ]] && return
 
     local on_ac
@@ -107,10 +104,7 @@ start_idle() {
 
     local t_dim=90 t_lock=120 t_dpms=240 t_susp=360
     [[ "$on_ac" == "true" ]] && {
-        t_dim=570
-        t_lock=600
-        t_dpms=900
-        t_susp=1200
+        t_dim=570; t_lock=600; t_dpms=900; t_susp=1200
     }
 
     stop_idle
@@ -126,26 +120,27 @@ start_idle() {
 # --- Core Logic ---
 
 check_and_act() {
-    # 1. Debounce (Prevent signal spam) - NanoSec Math
     local now
     now=$(date +%s%N)
     if (((now - LAST_CHECK_TIME) < DEBOUNCE_NSEC)); then return; fi
     LAST_CHECK_TIME=$now
 
-    # 2. Power & Manual
+    # Power Source Switch Detection
     local p_src
     p_src=$(grep -q "1" /sys/class/power_supply/ACAD/online 2>/dev/null && echo "AC" || echo "BATTERY")
     [[ "$CURRENT_POWER_SRC" != "$p_src" ]] && {
         CURRENT_POWER_SRC="$p_src"
         stop_idle
     }
-    [[ "$PAUSED" == "true" ]] && {
+
+    # Manual Pause
+    if [[ "$PAUSED" == "true" ]]; then
         stop_idle
         set_state "PAUSED" "Manual Toggle"
         return
-    }
+    fi
 
-    # 3. Sentry (Lock)
+    # Sentry (Lock) - Kept above inhibitors as requested
     if pgrep -x "swaylock" >/dev/null; then
         local cur
         cur=$(awk '{print int($1)}' /proc/uptime)
@@ -161,29 +156,18 @@ check_and_act() {
         LOCKED_AT=""
     fi
 
-    # 4. Inhibition
-    # A. Webcam Check (Universal meeting protection)
-    # Check if any process is using the camera devices (/dev/video*)
+    # 1. Webcam (Universal Meeting Protection)
     if fuser /dev/video* >/dev/null 2>&1; then
         stop_idle
-        set_state "HOLD" "Webcam Active (Meeting?)"
+        set_state "HOLD" "Webcam Active"
         return
     fi
 
-    # B. Windows & Wayland Inhibitors
+    # 2. Window Patterns (Focused or Background Apps)
     local win_data
-    win_data=$(swaymsg -t get_tree 2>/dev/null | jq -c '.. | select(.type? == "con" or .type? == "floating_con") | {f: .focused, id: (.app_id // .window_properties.class // "unknown"), n: (.name // ""), i: .idle_inhibitors?.application?}' 2>/dev/null || true)
+    win_data=$(swaymsg -t get_tree 2>/dev/null | jq -c '.. | select(.type? == "con" or .type? == "floating_con") | {f: .focused, id: (.app_id // .window_properties.class // "unknown"), n: (.name // "")}' 2>/dev/null || true)
 
     if [[ -n "$win_data" ]]; then
-        # Check for Wayland-native idle inhibitors (e.g. Firefox/MPV/Games)
-        if echo "$win_data" | grep -q '"i":"enabled"'; then
-            local inhibitor_app
-            inhibitor_app=$(echo "$win_data" | jq -r 'select(.i == "enabled") | "\(.id) [\(.n)]"' | head -n 1 || true)
-            stop_idle
-            set_state "HOLD" "Wayland Protocol: $inhibitor_app"
-            return
-        fi
-
         if [[ -n "$F_PATTERNS" ]]; then
             local focused
             focused=$(echo "$win_data" | jq -r 'select(.f == true) | "\(.id) [\(.n)]"' | head -n 1 || true)
@@ -204,24 +188,23 @@ check_and_act() {
         fi
     fi
 
-    # B. Media (Playerctl)
+    # 3. Media (MPRIS Control)
     if playerctl -a status 2>/dev/null | grep -q "Playing"; then
         stop_idle
         set_state "HOLD" "Media Playback"
         return
     fi
 
-    # C. Audio (Universal State-Based Inhibition via pw-dump)
+    # 4. Audio (Raw PipeWire/ALSA Stream)
     if grep -qv "closed" /proc/asound/card*/pcm*/sub*/status 2>/dev/null; then
         local node_name
         node_name=$(pw-dump | jq -r '.[] | select(.type == "PipeWire:Interface:Node" and .info.state == "running" and .info.props."media.class" == "Stream/Output/Audio" and (.info.props."node.name" | test("notification|alert|event|easyeffects"; "i") | not)) | .info.props["node.name"]' | head -n 1 || true)
         if [[ -n "$node_name" ]]; then
             stop_idle
-            set_state "HOLD" "Audio: $node_name"
+            set_state "HOLD" "Audio Stream Active"
             return
         fi
     fi
-
 
     start_idle
 }
@@ -232,21 +215,27 @@ cleanup() {
     local exit_code=$?
     log "INFO" "Shutdown initiated (Code: $exit_code)"
     stop_idle
-    pkill -P "$$" 2>/dev/null || true
+    # Surgical Cleanup: Kill only jobs started by this shell instance
+    local pids
+    pids=$(jobs -p)
+    if [[ -n "$pids" ]]; then
+        # shellcheck disable=SC2086
+        kill $pids 2>/dev/null || true
+    fi
     rm -f "$PID_FILE" "$STATE_FILE" "$REASON_FILE" "$LOCK_FILE"
     update_waybar
     exit "$exit_code"
 }
 
-trap "PAUSED=true; check_and_act" SIGUSR1
-trap "PAUSED=false; check_and_act" SIGUSR2
-trap "check_and_act" SIGALRM
+# Traps now only set a flag for the main loop
+trap "PAUSED=true; NEEDS_CHECK=true" SIGUSR1
+trap "PAUSED=false; NEEDS_CHECK=true" SIGUSR2
+trap "NEEDS_CHECK=true" SIGALRM
 trap cleanup EXIT INT TERM
 
 load_patterns
-check_and_act
 
-# Background Monitors (The Orchestration)
+# Background Monitors (Event Sources)
 (
     trap "" SIGALRM
     until swaymsg -t subscribe '["window"]' --monitor | jq --unbuffered -c 'select(.change == "focus")' 2>/dev/null | while read -r _; do kill -SIGALRM "$$" 2>/dev/null; done; do sleep 2; done
@@ -258,12 +247,12 @@ check_and_act
 (
     trap "" SIGALRM
     while true; do
-        sleep 10
+        sleep 2 # Throttled to 2s for battery efficiency (fallback heartbeat)
         kill -SIGALRM "$$" 2>/dev/null
     done
 ) &
 
-# Watch patterns for changes (Optional, requires inotify-tools)
+# Optional: Watch patterns for changes
 if command -v inotifywait >/dev/null; then
     (
         trap "" SIGALRM
@@ -274,4 +263,12 @@ if command -v inotifywait >/dev/null; then
     ) &
 fi
 
-while true; do wait || true; done
+# --- The Main Event Loop ---
+log "INFO" "Idle Manager v1.6 Started"
+while true; do
+    if [[ "$NEEDS_CHECK" == "true" ]]; then
+        NEEDS_CHECK=false
+        check_and_act
+    fi
+    sleep 0.1
+done
