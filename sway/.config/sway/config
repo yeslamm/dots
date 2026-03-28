@@ -291,7 +291,7 @@ bindsym  Shift+Print      exec --no-startup-id flameshot full -p ~/Pictures/Scre
 # 10. MODES
 # ==============================================================================
 
-bindcode $mod+Escape mode Super
+bindsym $mod+Escape mode Super
 mode Super {
     bindcode $s exec "swaylock -f -c 000000 -F -e -k -L && systemctl suspend", mode default
     bindcode $l_mode exec $scripts/lock-ns.sh, mode default
