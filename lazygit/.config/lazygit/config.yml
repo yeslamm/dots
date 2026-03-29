@@ -1,0 +1,38 @@
+gui:
+  theme:
+    # 1. The Default Canvas (Letting the terminal's black shine through)
+    defaultFgColor:
+      - default
+      - default
+
+    # 2. Window Borders (Clear visual hierarchy)
+    activeBorderColor:
+      - cyan    # Cyan pops beautifully against black without being as harsh as pure white
+      - bold
+    inactiveBorderColor:
+      - default # Fades into the background so only your active panel grabs attention
+    searchingActiveBorderColor:
+      - magenta # A distinct color so you know when you're in search mode
+      - bold
+
+    # 3. The Selected Line (The "Reverse" trick)
+    selectedLineBgColor:
+      - reverse # Pro-tip: Instead of a clunky color block, 'reverse' simply flips the text and background colors. It looks incredibly sharp on a black terminal.
+    inactiveViewSelectedLineBgColor:
+      - default # Removes the highlight when you click away, reducing visual clutter
+
+    # 4. Git Status Colors (Keeping the classics, but ensuring they are readable)
+    unstagedChangesColor:
+      - red
+    optionsTextColor:
+      - blue      # Keeps the bottom keybinding menu visible but out of the way
+
+    # 5. Advanced Git Operations
+    cherryPickedCommitBgColor:
+      - cyan
+    cherryPickedCommitFgColor:
+      - black
+    markedBaseCommitBgColor:
+      - yellow
+    markedBaseCommitFgColor:
+      - black

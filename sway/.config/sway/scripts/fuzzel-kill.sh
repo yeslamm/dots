@@ -1,5 +1,5 @@
 #!/bin/bash
-# fuzzel-kill.sh - "Elite Grouped Task Manager" v2.4
+# fuzzel-kill.sh - "Elite Grouped Task Manager" v2.5 (No Confirmation)
 # Groups child processes, normalizes CPU, and prioritizes Memory view.
 
 set -euo pipefail
@@ -24,19 +24,15 @@ PROCESS_LIST=$(ps -u "$USER" -o pcpu,pmem,comm --no-headers | awk -v pat="^(${PR
     }' | sort -hr -k 6)
 
 # 3. Select Application
-SELECTED=$(echo "$PROCESS_LIST" | fuzzel --dmenu --prompt="KILL APP: " -w 70 -l 15 --font="Iosevka Nerd Font:size=9")
+SELECTED=$(echo "$PROCESS_LIST" | fuzzel --dmenu --prompt="KILL: " -w 58 -l 15)
 
 if [[ -n "$SELECTED" ]]; then
     # Robust extraction of name and count
     APP_NAME=$(echo "$SELECTED" | cut -d'|' -f1 | xargs)
     COUNT=$(echo "$SELECTED" | cut -d'|' -f2 | awk '{print $1}')
 
-    # 4. Confirmation Prompt
-    CONFIRM=$(echo -e "NO\nYES" | fuzzel --dmenu --prompt="Kill $APP_NAME and all $COUNT processes? " -w 35 -l 2)
-
-    if [[ "$CONFIRM" == "YES" ]]; then
-        # Try SIGTERM first for a clean exit
-        pkill -15 -x "$APP_NAME" 2>/dev/null
-        notify-send -t 2000 -h string:x-canonical-private-synchronous:kill "Termination signal sent to $APP_NAME ($COUNT processes)"
-    fi
+    # 4. Immediate Action (No Confirmation)
+    # Try SIGTERM first for a clean exit
+    pkill -15 -x "$APP_NAME" 2>/dev/null || true
+    notify-send -t 2000 -h string:x-canonical-private-synchronous:kill "Termination signal sent to $APP_NAME ($COUNT processes)"
 fi
