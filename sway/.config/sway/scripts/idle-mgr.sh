@@ -156,8 +156,8 @@ check_and_act() {
         local cur
         cur=$(awk '{print int($1)}' /proc/uptime)
         [[ -z "$LOCKED_AT" ]] && LOCKED_AT=$cur
-        if ((cur - LOCKED_AT >= 30)); then
-            log "SENTRY" "Locked for >30s, suspending system."
+        if ((cur - LOCKED_AT >= 60)); then
+            log "SENTRY" "Locked for >60s, suspending system."
             systemctl suspend
             LOCKED_AT="" # Reset after triggering to prevent loop if suspend fails
             return

@@ -114,7 +114,7 @@ exec wl-paste --type image --watch cliphist store
 exec $scripts/idle-mgr.sh
 exec flameshot
 # exec copyq --start-server
-exec sleep 1 && firefox
+exec sh -c 'sleep 1 && firefox'
 
 exec wpctl set-volume @DEFAULT_SINK@ 0.30
 exec_always wpctl set-volume @DEFAULT_SOURCE@ 0.40
@@ -286,7 +286,6 @@ bindcode $mod+Shift+$c  exec swaync-client --close-latest
 
 bindcode $mod+$i        exec $scripts/idle-mgr.sh
 bindcode $mod+$o        exec $scripts/idle-off.sh
-bindsym  Mod1+Print     exec $scripts/ocr.sh
 bindcode $mod+$v        exec copyq toggle
 
 bindcode Control+Shift+$s exec --no-startup-id flameshot gui -c
@@ -310,6 +309,7 @@ mode Super {
     bindcode $g exec $scripts/toggle_gammastep.sh, mode default
     bindcode $u exec $term -e sh -c 'sudo pacman -Syu && yay -Syua; read -p "Press enter to exit..."', mode default
     bindcode $a exec $term -e sh -c 'alsamixer', mode default
+    bindcode $v exec pavucontrol, mode "default"
 
     bindsym Escape mode default
     bindsym Return mode default
@@ -320,7 +320,6 @@ bindcode $mod+$a mode Apps
 mode Apps {
     bindcode $f exec firefox, mode "default"
     bindcode $h exec heroic, mode "default"
-    bindcode $v exec pavucontrol, mode "default"
 
     bindsym Escape mode "default"
     bindsym Return mode "default"
