@@ -1,32 +1,18 @@
 :root {
-    /* Dark theme with exact #282928 background */
-    --cc-bg: #282928;
-    --noti-border-color: #d3d7cf;
-    --noti-bg: 40, 41, 40;
+    --cc-bg: #1b1e20;
+    --noti-bg: 35, 38, 41;
     --noti-bg-alpha: 1;
-    --noti-bg-darker: #1f1f1e;
-    --noti-bg-hover: #353533;
-    --noti-bg-focus: #454541;
-    --noti-close-bg: #2d2d2b;
-    --noti-close-bg-hover: #40403d;
+    --noti-border-color: #aaaaaa;
+    --bg-selected: #3daee9;
+    --volume-progress: #3daee9;
+    --noti-bg-hover: #31363b;
+    --noti-bg-focus: #4d545b;
     --text-color: #ffffff;
     --text-color-disabled: #8b8f93;
-    --bg-selected: #00afff;
-
-    --volume-slider-bg: rgba(40, 41, 40, 0.8);
-    --volume-progress: #00afff;
-
-    --notification-icon-size: 48px;
-    --notification-app-icon-size: 24px;
-    --notification-group-icon-size: 28px;
-    --mpris-album-art-overlay: rgba(0, 0, 0, 0.7);
-    --mpris-button-hover: rgba(0, 0, 0, 0.6);
-    --mpris-album-art-icon-size: 96px;
-    --widget-volume-row-icon-size: 24px;
 }
 
 .notification-row .notification-background .notification {
-    border: 1px solid #d3d7cf;
+    border: 1px solid var(--noti-border-color);
     border-radius: 0;
     background: rgba(var(--noti-bg), var(--noti-bg-alpha));
     transition: background 0.15s ease-in-out;
@@ -35,7 +21,7 @@
 .widget-volume progressbar trough progress,
 .widget-volume progressbar progress {
     background-image: none;
-    background-color: #00afff;
+    background-color: var(--volume-progress);
 }
 
 .notification-icon {
@@ -48,7 +34,6 @@
     -gtk-icon-size: 16px;
 }
 
-/* Generic version (affects all big images) */
 .notification-content .image {
     margin-left: 5px;
     max-width: 200px;
@@ -100,7 +85,7 @@
     background: var(--cc-bg);
     color: var(--text-color);
     border-radius: 0;
-    border: 1px solid #d3d7cf;
+    border: 1px solid var(--noti-border-color);
 }
 
 .widget-volume {
@@ -108,7 +93,7 @@
     margin: 12px;
     border-radius: 0;
     background: rgba(var(--noti-bg), 0.95);
-    border: 1px solid #d3d7cf;
+    border: 1px solid var(--noti-border-color);
 }
 
 .widget-volume label {
@@ -124,31 +109,29 @@
 }
 
 .widget-volume progressbar trough {
-    background: rgba(50, 51, 50, 0.6);
+    background: rgba(23, 23, 23, 0.6);
     border-radius: 0;
-    border: 1px solid #d3d7cf;
+    border: 1px solid var(--noti-border-color);
     min-height: 8px;
 }
 
 .widget-volume progressbar progress {
-    background: #00afff;
+    background: var(--volume-progress);
     border-radius: 0;
     box-shadow: none;
 }
 
-/* Apply background to all widgets */
 .widget-mpris,
 .widget-buttons-grid,
 .per-app-volume,
 .widget-slider,
 .widget-backlight {
     background: var(--cc-bg) !important;
-    border: 1px solid #d3d7cf;
+    border: 1px solid var(--noti-border-color);
     border-radius: 0;
     color: var(--text-color);
 }
 
-/* Hide the Close Button (Error-Free Version) */
 .notification-row .close-button {
     background: transparent;
     border: none;
@@ -160,7 +143,6 @@
     padding: 0;
 }
 
-/* Also hide the 'X' icon inside it */
 .notification-row .close-button image {
     opacity: 0;
 }

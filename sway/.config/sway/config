@@ -7,6 +7,7 @@
 # ==============================================================================
 
 include /etc/sway/config.d/*
+exec dbus-update-activation-environment --systemd QT_QPA_PLATFORMTHEME ELECTRON_OZONE_PLATFORM_HINT
 
 set $mod Mod4
 set $term kitty
@@ -60,7 +61,7 @@ set $g_files    pcmanfm
 #  2. HARDWARE: INPUT & OUTPUT
 # ==============================================================================
 
-output * bg ~/Pictures/dark-arch.jpg fill
+output * bg ~/Pictures/arch-tweaking.jpg fill
 
 input type:keyboard {
     xkb_layout "us,ara"
@@ -83,8 +84,14 @@ input type:touchpad {
 bindgesture swipe:3:left workspace prev
 bindgesture swipe:3:right workspace next
 
-seat seat0 xcursor_theme capitaine-cursors-r3 24
-seat seat0 hide_cursor when-typing enable
+exec_always {
+    gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors-r3'
+    gsettings set org.gnome.desktop.interface cursor-size 24
+    dbus-update-activation-environment --systemd XCURSOR_THEME XCURSOR_SIZE
+}
+
+seat * xcursor_theme capitaine-cursors-r3 24
+seat * hide_cursor when-typing enable
 mouse_warping output
 
 # ==============================================================================
@@ -121,19 +128,20 @@ xwayland enable
 default_border pixel 2
 default_floating_border normal 2
 hide_edge_borders smart
-gaps inner 10
+gaps inner 8
 smart_gaps on
 
-# client.focused          #d3d7cf  #d3d7cf  #2e3436  #d3d7cf     #d3d7cf
-# client.unfocused        #575759  #575759  #ffffff  #575759     #575759
-# client.focused_inactive #888a85  #888a85  #2e3436  #888a85     #888a85
+# Syntax:               border   bg       text     indicator  child_border
+# client.focused          #d3d7cf  #d3d7cf  #2e3436  #5294e2    #d3d7cf
+# client.unfocused        #575759  #575759  #ffffff  #575759    #575759
+# client.focused_inactive #888a85  #888a85  #2e3436  #5294e2    #888a85
 # client.urgent           #cc0000  #cc0000  #ffffff  #cc0000    #cc0000
 
-# Syntax:               border   bg       text     indicator  child_border
-client.focused          #d3d7cf  #d3d7cf  #2e3436  #5294e2    #d3d7cf
-client.unfocused        #575759  #575759  #ffffff  #575759    #575759
-client.focused_inactive #888a85  #888a85  #2e3436  #5294e2    #888a85
-client.urgent           #cc0000  #cc0000  #ffffff  #cc0000    #cc0000
+# Syntax:                border   bg       text     indicator child_border
+client.focused           #aaaaaa  #31363b  #ffffff  #ffffff   #aaaaaa
+client.unfocused         #222222  #1b1b1b  #666666  #1b1b1b   #222222
+client.focused_inactive  #2a2a2a  #2a2a2a  #aaaaaa  #1b1b1b   #2a2a2a
+client.urgent            #ee6666  #31363b  #ffffff  #ee6666   #ee6666
 # ==============================================================================
 #  5. WINDOW RULES
 # ==============================================================================
@@ -144,7 +152,7 @@ for_window [app_id="org.qbittorrent.qBittorrent"] floating enable, resize set 13
 for_window [class="com-abdownloadmanager-desktop-AppKt"] floating enable
 for_window [app_id="FileRoller"] floating enable
 for_window [app_id="org.strawberrymusicplayer.strawberry"] floating enable
-for_window [app_id="com.github.hluk.copyq"] floating enable
+for_window [app_id="com.github.hluk.copyq"] floating enable, resize set 1800 1100, move position center
 for_window [app_id="mpv"] floating enable
 for_window [app_id="swayimg"] floating enable
 
@@ -279,8 +287,7 @@ bindcode $mod+Shift+$c  exec swaync-client --close-latest
 bindcode $mod+$i        exec $scripts/idle-mgr.sh
 bindcode $mod+$o        exec $scripts/idle-off.sh
 bindsym  Mod1+Print     exec $scripts/ocr.sh
-bindcode $mod+$v        exec env CLIPHIST_PREVIEW_WIDTH=150 cliphist list | fuzzel --dmenu --tabs=4 --prompt="CLIP: " --line-height 16 -w 155 -l 30 | cliphist decode | wl-copy
-bindcode $mod+Shift+$v  exec rm ~/.cache/cliphist/db && cliphist wipe && notify-send -t 1000 "Clipboard Cleared"
+bindcode $mod+$v        exec copyq toggle
 
 bindcode Control+Shift+$s exec --no-startup-id flameshot gui -c
 bindcode Control+mod1+$s  exec --no-startup-id flameshot gui -p ~/Pictures/Screenshots
@@ -295,7 +302,7 @@ bindsym $mod+Escape mode Super
 mode Super {
     bindcode $s exec "swaylock -f -c 000000 -F -e -k -L && systemctl suspend", mode default
     bindcode $l_mode exec $scripts/lock-ns.sh, mode default
-    bindcode $e exec swaymsg exit, mode default
+    bindcode $e exec "$scripts/idle-off.sh && swaymsg exit", mode default
     bindcode $r exec systemctl reboot, mode default
     bindcode $p exec systemctl poweroff, mode default
 

@@ -30,7 +30,7 @@ return {
                 python = 'python3 ' .. filename,
                 javascript = 'node ' .. filename,
                 lua = 'lua ' .. filename,
-                cs = 'dotnet run',
+                cs = 'dotnet watch',
                 c = 'cd ' .. dir .. ' && clang -Wall -Wextra -Werror -std=c11 ' .. filename .. ' -o ' .. filename_root .. ' -lcs50 && ./' .. filename_root,
                 cpp = 'cd ' .. dir .. ' && clang++ -Wall -Wextra -Werror -std=c++17 ' .. filename .. ' -o ' .. filename_root .. ' && ./' .. filename_root,
                 sh = 'bash ' .. filename,

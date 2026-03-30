@@ -16,7 +16,6 @@ export GTK_USE_PORTAL=1
 export MOZ_ENABLE_WAYLAND=1
 export QT_QPA_PLATFORM=wayland
 export QT_QPA_PLATFORMTHEME=qt5ct
-export QT6_QPA_PLATFORMTHEME=qt6ct
 export XCURSOR_SIZE=24
 
 # 4. Electron & Hardware Acceleration
