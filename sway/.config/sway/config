@@ -11,6 +11,7 @@ exec dbus-update-activation-environment --systemd QT_QPA_PLATFORMTHEME ELECTRON_
 
 set $mod Mod4
 set $term kitty
+set $f_term $term --title=float-term
 set $menu fuzzel
 set $scripts ~/.config/sway/scripts
 
@@ -61,7 +62,7 @@ set $g_files    pcmanfm
 #  2. HARDWARE: INPUT & OUTPUT
 # ==============================================================================
 
-output * bg ~/Pictures/dark-arch.jpg fill
+output * bg ~/Pictures/arch-loops.jpg fill
 
 input type:keyboard {
     xkb_layout "us,ara"
@@ -112,29 +113,33 @@ exec_always "pkill -x waybar; sleep 0.5; waybar"
 exec copyq --start-server
 exec $scripts/idle-mgr.sh
 exec flameshot
-# exec copyq --start-server
 exec sh -c 'sleep 1 && firefox'
 
 exec wpctl set-volume @DEFAULT_SINK@ 0.30
-exec_always wpctl set-volume @DEFAULT_SOURCE@ 0.40
-exec_always amixer -c 1 set 'Internal Mic Boost' 0
+exec wpctl set-volume @DEFAULT_SOURCE@ 0.40
+exec amixer -c 1 set 'Internal Mic Boost' 0
 
 # ==============================================================================
 #  4. APPEARANCE & THEME
 # ==============================================================================
 
 xwayland enable
-default_border pixel 2
-default_floating_border normal 2
+default_border pixel 4
+default_floating_border normal 4
 hide_edge_borders smart
-gaps inner 4
+gaps inner 8
 smart_gaps on
 
+font pango:JetBrains Mono 12
+titlebar_border_thickness 0
+titlebar_padding 4 2
+title_align center
+
 # Syntax:                border   bg       text     indicator  child_border
-client.focused           #8b939c  #232527  #ffffff  #ffffff    #8b939c
+client.focused           #4b5055  #4b5055  #ffffff  #ffffff    #8b939c
 client.unfocused         #17181a  #17181a  #8a8f93  #17181a    #17181a
-client.focused_inactive  #45494d  #232527  #8a8f93  #45494d    #45494d
-client.urgent            #d93a49  #232527  #ffffff  #d93a49    #d93a49
+client.focused_inactive  #4b5055  #4b5055  #ffffff  #45494d    #45494d
+client.urgent            #232527  #232527  #ffffff  #d93a49    #d93a49
 # ==============================================================================
 #  5. WINDOW RULES
 # ==============================================================================
@@ -153,11 +158,7 @@ for_window [app_id="swayimg"] floating enable
 for_window [app_id="xdg-desktop-portal-gtk"] floating enable, sticky enable
 for_window [instance="sun-awt-X11-XDialogPeer"] floating enable
 for_window [window_role="pop-up|bubble|task_dialog|dialog|menu"] floating enable
-for_window [app_id="pavucontrol"] floating enable, sticky enable
-for_window [app_id="nm-connection-editor"] floating enable, sticky enable
-for_window [app_id="blueman-manager"] floating enable, sticky enable
-for_window [app_id="blueman-services"] floating enable, sticky enable
-for_window [app_id="syncthingtray"] floating enable, sticky enable
+for_window [app_id="pavucontrol|nm-connection-editor|blueman-manager|blueman-services|syncthingtray"] floating enable, sticky enable
 
 for_window [title="float-term"] floating enable, resize set 1100 800, move position center, title_format ""
 for_window [title="Picture-in-Picture"] floating enable, sticky enable
@@ -167,17 +168,17 @@ for_window [title="Picture-in-Picture"] floating enable, sticky enable
 # ==============================================================================
 
 bindsym $mod+Return         exec $term
-bindsym $mod+Shift+Return   exec $term --title=float-term
+bindsym $mod+Shift+Return   exec $f_term
 bindsym $mod+space          exec $menu
 
 bindcode $mod+$y            exec $files
-bindcode $mod+Shift+$y      exec $term --title=float-term -e yazi
+bindcode $mod+Shift+$y      exec $f_term -e yazi
 bindcode $mod+$g            exec $g_files
 bindcode $mod+$b            exec $term -e btop
-bindcode $mod+Shift+$b      exec $term --title=float-term -e btop
+bindcode $mod+Shift+$b      exec $f_term -e btop
 
 bindcode $mod+$q            kill
-bindcode $mod+$x exec ~/.config/sway/scripts/fuzzel-kill.sh
+bindcode $mod+$x            exec $scripts/fuzzel-kill.sh
 bindcode $mod+Shift+$r      reload
 
 # ==============================================================================
@@ -302,7 +303,7 @@ mode Super {
     bindcode $g exec $scripts/toggle_gammastep.sh, mode default
     bindcode $u exec $term -e sh -c 'sudo pacman -Syu && yay -Syua; read -p "Press enter to exit..."', mode default
     bindcode $a exec $term -e sh -c 'alsamixer', mode default
-    bindcode $v exec pavucontrol, mode "default"
+    bindcode $v exec pavucontrol, mode default
 
     bindsym Escape mode default
     bindsym Return mode default
