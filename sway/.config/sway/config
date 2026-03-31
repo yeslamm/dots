@@ -61,7 +61,7 @@ set $g_files    pcmanfm
 #  2. HARDWARE: INPUT & OUTPUT
 # ==============================================================================
 
-output * bg ~/Pictures/arch-tweaking.jpg fill
+output * bg ~/Pictures/dark-arch.jpg fill
 
 input type:keyboard {
     xkb_layout "us,ara"
@@ -109,8 +109,7 @@ exec nm-applet --indicator
 exec sleep 1 && blueman-applet
 exec_always "pkill -x waybar; sleep 0.5; waybar"
 
-exec wl-paste --type text --watch cliphist store
-exec wl-paste --type image --watch cliphist store
+exec copyq --start-server
 exec $scripts/idle-mgr.sh
 exec flameshot
 # exec copyq --start-server
@@ -128,20 +127,14 @@ xwayland enable
 default_border pixel 2
 default_floating_border normal 2
 hide_edge_borders smart
-gaps inner 8
+gaps inner 4
 smart_gaps on
 
-# Syntax:               border   bg       text     indicator  child_border
-# client.focused          #d3d7cf  #d3d7cf  #2e3436  #5294e2    #d3d7cf
-# client.unfocused        #575759  #575759  #ffffff  #575759    #575759
-# client.focused_inactive #888a85  #888a85  #2e3436  #5294e2    #888a85
-# client.urgent           #cc0000  #cc0000  #ffffff  #cc0000    #cc0000
-
-# Syntax:                border   bg       text     indicator child_border
-client.focused           #aaaaaa  #31363b  #ffffff  #ffffff   #aaaaaa
-client.unfocused         #222222  #1b1b1b  #666666  #1b1b1b   #222222
-client.focused_inactive  #2a2a2a  #2a2a2a  #aaaaaa  #1b1b1b   #2a2a2a
-client.urgent            #ee6666  #31363b  #ffffff  #ee6666   #ee6666
+# Syntax:                border   bg       text     indicator  child_border
+client.focused           #8b939c  #232527  #ffffff  #ffffff    #8b939c
+client.unfocused         #17181a  #17181a  #8a8f93  #17181a    #17181a
+client.focused_inactive  #45494d  #232527  #8a8f93  #45494d    #45494d
+client.urgent            #d93a49  #232527  #ffffff  #d93a49    #d93a49
 # ==============================================================================
 #  5. WINDOW RULES
 # ==============================================================================

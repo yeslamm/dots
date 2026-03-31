@@ -26,4 +26,4 @@ rm -f "$PID_FILE" "$STATE_FILE" "$REASON_FILE" "$LOCK_FILE"
 # 4. Refresh Waybar
 pkill -RTMIN+$WAYBAR_SIGNAL waybar
 
-notify-send -t 1000 -h string:x-canonical-private-synchronous:state "Idle Manager: Fully Stopped"
+notify-send -t 1000 -h string:x-canonical-private-synchronous:state " Idle Manager: Fully Stopped"

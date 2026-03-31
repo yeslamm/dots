@@ -1,14 +1,14 @@
 :root {
-    --cc-bg: #1b1e20;
-    --noti-bg: 35, 38, 41;
+    --cc-bg: #1e2022;
+    --noti-bg: 35, 37, 39;
     --noti-bg-alpha: 1;
-    --noti-border-color: #aaaaaa;
-    --bg-selected: #3daee9;
-    --volume-progress: #3daee9;
-    --noti-bg-hover: #31363b;
-    --noti-bg-focus: #4d545b;
+    --noti-border-color: #8b939c;
+    --bg-selected: #3995e5;
+    --volume-progress: #3995e5;
+    --noti-bg-hover: #2e3033;
+    --noti-bg-focus: #393b3f;
     --text-color: #ffffff;
-    --text-color-disabled: #8b8f93;
+    --text-color-disabled: #8a8f93;
 }
 
 .notification-row .notification-background .notification {
