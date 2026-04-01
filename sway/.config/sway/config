@@ -130,7 +130,7 @@ hide_edge_borders smart
 gaps inner 8
 smart_gaps on
 
-font pango:JetBrains Mono 12
+font pango:JetBrains Mono 11
 titlebar_border_thickness 0
 titlebar_padding 4 2
 title_align center
