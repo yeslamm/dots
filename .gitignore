@@ -4,14 +4,12 @@
 *~
 *.swp
 
-# State and Database files
-easyeffects/.config/easyeffects/db/
-
 # External Dependencies / Plugins
 tmux/.config/tmux/plugins/
+yazi/.config/yazi/plugins/
 
-# Machine-specific or private data
-gtk-3.0/.config/gtk-3.0/bookmarks
-gtk-4.0/.config/gtk-4.0/assets
-gtk-4.0/.config/gtk-4.0/gtk.css
-gtk-4.0/.config/gtk-4.0/gtk-dark.css
+# Machine-specific or private data (Safety Nets)
+gtk-3.0/
+gtk-4.0/
+qt5ct/
+qt6ct/
