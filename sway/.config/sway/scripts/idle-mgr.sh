@@ -10,10 +10,10 @@ LOCK_FILE="$RUNTIME_DIR/idle-mgr.lock"
 PID_FILE="$RUNTIME_DIR/idle-mgr.pid"
 STATE_FILE="$RUNTIME_DIR/idle-mgr.state"
 REASON_FILE="$STATE_FILE.reason"
-LOG_FILE="/tmp/idle-mgr.log"
+LOG_FILE="$RUNTIME_DIR/idle-mgr.log"
 
 IDLE_APPS_FILE="$HOME/.config/sway/idle_apps"
-IDLE_NF_APPS_FILE="$HOME/.config/sway/idle_nf_apps"
+IDLE_PROCS_FILE="$HOME/.config/sway/idle_procs"
 WAYBAR_SIGNAL=9
 
 # --- State & Flags ---
@@ -85,7 +85,7 @@ set_state() {
 
 load_patterns() {
     [[ -f "$IDLE_APPS_FILE" ]] && F_PATTERNS=$(grep -vE '^#|^$' "$IDLE_APPS_FILE" | tr '\n' '|' | sed 's/|$//' || true)
-    [[ -f "$IDLE_NF_APPS_FILE" ]] && NF_PATTERNS=$(grep -vE '^#|^$' "$IDLE_NF_APPS_FILE" | tr '\n' '|' | sed 's/|$//' || true)
+    [[ -f "$IDLE_PROCS_FILE" ]] && NF_PATTERNS=$(grep -vE '^#|^$' "$IDLE_PROCS_FILE" | tr '\n' '|' | sed 's/|$//' || true)
 }
 
 stop_idle() {
@@ -176,28 +176,24 @@ check_and_act() {
         return
     fi
 
-    # 2. Window Patterns (Focused or Background Apps)
-    local win_data
-    win_data=$(swaymsg -t get_tree 2>/dev/null | jq -c '.. | select(.type? == "con" or .type? == "floating_con") | {f: .focused, id: (.app_id // .window_properties.class // "unknown"), n: (.name // "")}' 2>/dev/null || true)
-
-    if [[ -n "$win_data" ]]; then
-        if [[ -n "$F_PATTERNS" ]]; then
-            local focused
-            focused=$(echo "$win_data" | jq -r 'select(.f == true) | "\(.id) [\(.n)]"' | head -n 1 || true)
-            if [[ -n "$focused" ]] && echo "$focused" | grep -Ei "$F_PATTERNS" >/dev/null; then
-                stop_idle
-                set_state "HOLD" "App Focus: $focused"
-                return
-            fi
+    # 2. Window Patterns (Focused or Background Processes)
+    if [[ -n "$F_PATTERNS" ]]; then
+        local focused
+        focused=$(cat "$RUNTIME_DIR/focused_app" 2>/dev/null || echo "unknown")
+        if [[ "$focused" != "unknown" ]] && echo "$focused" | grep -Ei "$F_PATTERNS" >/dev/null; then
+            stop_idle
+            set_state "HOLD" "App Focus: $focused"
+            return
         fi
-        if [[ -n "$NF_PATTERNS" ]]; then
+    fi
+
+    if [[ -n "$NF_PATTERNS" ]]; then
+        if pgrep -f -i "$NF_PATTERNS" >/dev/null; then
             local match
-            match=$(echo "$win_data" | jq -r 'select(.id != "unknown") | "\(.id) [\(.n)]"' | grep -Ei "$NF_PATTERNS" | head -n 1 || true)
-            if [[ -n "$match" ]]; then
-                stop_idle
-                set_state "HOLD" "App Background: $match"
-                return
-            fi
+            match=$(pgrep -f -i -a "$NF_PATTERNS" | head -n 1 | awk '{print $2}')
+            stop_idle
+            set_state "HOLD" "Process Active: $match"
+            return
         fi
     fi
 
@@ -235,7 +231,7 @@ cleanup() {
         # shellcheck disable=SC2086
         kill $pids 2>/dev/null || true
     fi
-    rm -f "$PID_FILE" "$STATE_FILE" "$REASON_FILE" "$LOCK_FILE"
+    rm -f "$PID_FILE" "$STATE_FILE" "$REASON_FILE" "$LOCK_FILE" "$RUNTIME_DIR/focused_app"
     update_waybar
     exit "$exit_code"
 }
@@ -251,7 +247,10 @@ load_patterns
 # Background Monitors (Event Sources)
 (
     trap "" SIGALRM
-    until swaymsg -t subscribe '["window"]' --monitor | jq --unbuffered -c 'select(.change == "focus")' 2>/dev/null | while read -r _; do kill -SIGALRM "$$" 2>/dev/null; done; do sleep 2; done
+    until swaymsg -t subscribe '["window"]' --monitor | jq --unbuffered -r 'select(.change == "focus") | .container.app_id // .container.window_properties.class // "unknown"' 2>/dev/null | while read -r app; do
+        echo -n "$app" > "$RUNTIME_DIR/focused_app"
+        kill -SIGALRM "$$" 2>/dev/null
+    done; do sleep 2; done
 ) &
 (
     trap "" SIGALRM
@@ -269,7 +268,7 @@ load_patterns
 if command -v inotifywait >/dev/null; then
     (
         trap "" SIGALRM
-        while inotifywait -e modify "$IDLE_APPS_FILE" "$IDLE_NF_APPS_FILE" 2>/dev/null; do
+        while inotifywait -e modify "$IDLE_APPS_FILE" "$IDLE_PROCS_FILE" 2>/dev/null; do
             load_patterns
             kill -SIGALRM "$$" 2>/dev/null
         done

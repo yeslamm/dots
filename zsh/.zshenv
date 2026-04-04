@@ -3,6 +3,7 @@
 # export XDG_SESSION_TYPE=wayland
 # export XDG_CURRENT_DESKTOP="sway"
 # export XDG_SESSION_DESKTOP="sway"
+export XDG_DATA_HOME="$HOME/.local/share"
 #
 # export QT_QPA_PLATFORM=wayland
 # export QT_QPA_PLATFORMTHEME="qt5ct"

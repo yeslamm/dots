@@ -12,15 +12,16 @@ if [ -f "$PID_FILE" ]; then
 fi
 
 cleanup() {
-    # Kill the temporary swayidle
-    [ -n "${TEMP_SWAYIDLE_PID:-}" ] && kill "$TEMP_SWAYIDLE_PID" 2>/dev/null
+    # Surgical Cleanup: Kill only swayidle started by this script
+    [ -n "${TEMP_SWAYIDLE_PID:-}" ] && kill "$TEMP_SWAYIDLE_PID" 2>/dev/null && wait "$TEMP_SWAYIDLE_PID" 2>/dev/null || true
+    pkill -P "$$" swayidle 2>/dev/null || true
     
     # Ensure display is back on
     swaymsg "output * dpms on"
     
     # 2. Force Resume the manager
     if [ -f "$PID_FILE" ]; then
-        LIVE_PID=$(cat "$PID_FILE")
+        LIVE_PID=$(cat "$PID_FILE" 2>/dev/null || true)
         [ -n "$LIVE_PID" ] && kill -SIGUSR2 "$LIVE_PID" 2>/dev/null
     fi
 }

@@ -103,7 +103,6 @@ exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec input-remapper-control --command autoload
 exec swaync
 exec easyeffects --hide-window
-exec asusctl profile set Quiet
 exec gammastep -l 31.11167:30.94583
 
 exec nm-applet --indicator
@@ -135,11 +134,11 @@ titlebar_border_thickness 0
 titlebar_padding 4 2
 title_align center
 
-# Syntax:                border   bg       text     indicator  child_border
-client.focused           #4b5055  #4b5055  #ffffff  #ffffff    #8b939c
-client.unfocused         #17181a  #17181a  #8a8f93  #17181a    #17181a
-client.focused_inactive  #4b5055  #4b5055  #ffffff  #45494d    #45494d
-client.urgent            #232527  #232527  #ffffff  #d93a49    #d93a49
+# Syntax:                border     bg         text       indicator  child_border
+client.focused           #565c61    #565c61    #ffffff    #aaaaaa    #565c61
+client.focused_inactive  #3f4447    #2b2e30    #cccccc    #45494d    #17181a
+client.unfocused         #17181a    #17181a    #8a8f93    #17181a    #17181a  
+client.urgent            #232527    #232527    #ffffff    #d93a49    #d93a49
 # ==============================================================================
 #  5. WINDOW RULES
 # ==============================================================================
@@ -162,6 +161,7 @@ for_window [app_id="pavucontrol|nm-connection-editor|blueman-manager|blueman-ser
 
 for_window [title="float-term"] floating enable, resize set 1100 800, move position center, title_format ""
 for_window [title="Picture-in-Picture"] floating enable, sticky enable
+for_window [app_id="firefox" title="^Extension:.*"] floating enable
 
 # ==============================================================================
 #  6. KEYBINDINGS: CORE
@@ -310,29 +310,16 @@ mode Super {
     bindcode $mod+Escape mode default
 }
 
-bindcode $mod+$a mode Apps
-mode Apps {
-    bindcode $f exec firefox, mode "default"
-    bindcode $h exec heroic, mode "default"
-
-    bindsym Escape mode "default"
-    bindsym Return mode "default"
-    bindcode $mod+$a mode "default"
-}
-
-bindsym XF86Launch1 mode Power
-bindsym $mod+Shift+Escape mode Power
-mode Power {
-    bindcode $q exec asusctl profile set Quiet \
-        && pkill -RTMIN+8 waybar \
-        && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Profile: Quiet", mode "default"
+bindsym XF86Launch1 mode Asus
+bindcode $mod+$a mode Asus
+mode Asus {
+    bindsym 1 exec powerprofilesctl set power-saver \
+        && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Profile: power-saver", mode "default"
     
-    bindcode $b exec asusctl profile set Balanced \
-        && pkill -RTMIN+8 waybar \
+    bindsym 2 exec powerprofilesctl set balanced \
         && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Profile: Balanced", mode "default"
     
-    bindcode $p exec asusctl profile set Performance \
-        && pkill -RTMIN+8 waybar \
+    bindsym 3 exec powerprofilesctl set performance \
         && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Profile: Performance", mode "default"
 
     bindsym semicolon exec asusctl battery limit 60 \
@@ -344,5 +331,5 @@ mode Power {
     bindsym Escape mode "default"
     bindsym Return mode "default"
     bindsym XF86Launch1 mode "default"
-    bindsym $mod+Shift+Escape mode "default"
+    bindcode $mod+$a mode "default"
 }

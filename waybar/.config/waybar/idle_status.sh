@@ -7,14 +7,14 @@ STATE_FILE="$RUNTIME_DIR/idle-mgr.state"
 
 # Use bash builtins to avoid forking 'cat' or 'kill' unnecessarily
 if [[ ! -f "$PID_FILE" ]]; then
-    echo '{"text":"IDLE: OFF","class":"idle-stopped", "tooltip": "Idle manager is not running."}'
+    printf '{"text":"IDLE: OFF","class":"idle-stopped", "tooltip": "Idle manager is not running."}\n'
     exit 0
 fi
 
 # Reading file into variable via builtin
 PID=$(<"$PID_FILE")
 if [[ -z "$PID" ]] || ! kill -0 "$PID" 2>/dev/null; then
-    echo '{"text":"IDLE: OFF","class":"idle-stopped", "tooltip": "Idle manager is not running."}'
+    printf '{"text":"IDLE: OFF","class":"idle-stopped", "tooltip": "Idle manager is not running."}\n'
     exit 0
 fi
 
@@ -23,20 +23,23 @@ STATE=$(<"$STATE_FILE")
 REASON=""
 [[ -f "${STATE_FILE}.reason" ]] && REASON=$(<"${STATE_FILE}.reason")
 
+# Escape reason for JSON (minimalist)
+REASON="${REASON//\"/\\\"}"
+
 case "$STATE" in
 "ON")
-    jq -nc --arg t "IDLE: ON" --arg d "Idle management is active." '{"text":$t, "class":"idle-active", "tooltip":$d}'
+    printf '{"text":"IDLE: ON", "class":"idle-active", "tooltip":"Idle management is active."}\n'
     ;;
 "HOLD")
-    jq -nc --arg t "IDLE: HOLD" --arg d "Inhibited by: $REASON" '{"text":$t, "class":"idle-inhibited", "tooltip":$d}'
+    printf '{"text":"IDLE: HOLD", "class":"idle-inhibited", "tooltip":"Inhibited by: %s"}\n' "$REASON"
     ;;
 "PAUSED")
-    jq -nc --arg t "IDLE: PAUSE" --arg d "Idle management is manually paused." '{"text":$t, "class":"idle-paused", "tooltip":$d}'
+    printf '{"text":"IDLE: PAUSE", "class":"idle-paused", "tooltip":"Idle management is manually paused."}\n'
     ;;
 "LOCKED")
-    jq -nc --arg t "IDLE: LCKD" --arg d "Locked. Will re-suspend in < 30s if not unlocked." '{"text":$t, "class":"idle-locked", "tooltip":$d}'
+    printf '{"text":"IDLE: LCKD", "class":"idle-locked", "tooltip":"Locked. Will re-suspend in < 30s if not unlocked."}\n'
     ;;
 *)
-    jq -nc --arg t "IDLE: OFF" --arg d "Initializing..." '{"text":$t, "class":"idle-stopped", "tooltip":$d}'
+    printf '{"text":"IDLE: OFF", "class":"idle-stopped", "tooltip":"Initializing..."}\n'
     ;;
 esac

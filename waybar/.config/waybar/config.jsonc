@@ -30,7 +30,8 @@
     "modules-right": [
         "tray",
         "custom/separator1",
-        "custom/asus",
+        // "custom/asus",
+        "power-profiles-daemon",
         "custom/separator1",
         "pulseaudio",
         "custom/separator1",
@@ -91,8 +92,8 @@
         "format": "BRIGHT: {percent}%",
         // Signal 11 for Brightness
         "signal": 11,
-        "on-scroll-up": "brightnessctl -d amdgpu_bl1 set +1% && pkill -RTMIN+11 waybar",
-        "on-scroll-down": "brightnessctl -d amdgpu_bl1 set 1%- && pkill -RTMIN+11 waybar",
+        "on-scroll-up": "brightnessctl -d amdgpu_bl1 set +2% && pkill -RTMIN+11 waybar",
+        "on-scroll-down": "brightnessctl -d amdgpu_bl1 set 2%- && pkill -RTMIN+11 waybar",
         "on-click": "brightnessctl -d amdgpu_bl1 set 85% && pkill -RTMIN+11 waybar",
         "on-click-right": "brightnessctl -d amdgpu_bl1 set 70% && pkill -RTMIN+11 waybar",
         "on-click-middle": "brightnessctl -d amdgpu_bl1 set 50% && pkill -RTMIN+11 waybar",
@@ -134,7 +135,7 @@
     "cpu": {
         "interval": 3,
         "format": "CPU: {}%",
-        "on-click": "gnome-system-monitor"
+        "on-click": "missioncenter"
     },
     "network": {
         "interface": "wlan0",
@@ -167,6 +168,11 @@
         "exec": "asusctl profile get | grep -oP '(Quiet|Balanced|Performance)' | head -n 1",
         "signal": 8,
         "on-click": "asusctl profile next && pkill -RTMIN+8 waybar",
+        "tooltip": true
+    },
+    "power-profiles-daemon": {
+        "format": "{profile}",
+        "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
         "tooltip": true
     },
     "sway/mode": {
