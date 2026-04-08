@@ -1,38 +1,36 @@
-#!/bin/bash
-# fuzzel-kill.sh - "Elite Grouped Task Manager" v2.5 (No Confirmation)
-# Groups child processes, normalizes CPU, and prioritizes Memory view.
+#!/usr/bin/env bash
+# fuzzel-kill.sh - Dual-mode app killer (TERM or KILL)
 
 set -euo pipefail
 
-# 1. Get total core count for normalization
-CORES=$(nproc)
+# Take the first argument, default to "TERM" if none is provided
+MODE=${1:-TERM}
 
-# Define processes that should NEVER show up in the kill menu
+# Apps to NEVER show in the menu
 PROTECTED="sway|waybar|pipewire|wireplumber|dbus|systemd|fuzzel|bash|ssh|polkit|idle-mgr.sh|grep|ps|awk|sort"
 
-# 2. Generate Grouped Process List
-# Memory is now shown before CPU. Sorted by Memory usage (Field 6)
-PROCESS_LIST=$(ps -u "$USER" -o pcpu,pmem,comm --no-headers | awk -v pat="^(${PROTECTED})$" -v cores="$CORES" \
-    '$3 !~ pat { 
-        cpu[$3]+=$1; 
-        mem[$3]+=$2; 
-        count[$3]++ 
-    } 
-    END { 
-        for (name in cpu) 
-            printf "%-20s | %2d procs | %5.1f%% MEM | %5.1f%% CPU\n", name, count[name], mem[name], cpu[name]/cores 
-    }' | sort -hr -k 6)
+# Get a simple, unique list of running applications
+# shellcheck disable=SC2009
+PROCESS_LIST=$(ps -u "$USER" -o comm= | grep -vE "^(${PROTECTED})$" | sort -u)
 
-# 3. Select Application
-SELECTED=$(echo "$PROCESS_LIST" | fuzzel --dmenu --prompt="KILL: " -w 58 -l 15)
+# Change the prompt text so you know which mode you are in
+if [[ "$MODE" == "KILL" ]]; then
+    PROMPT="SIGKILL: "
+else
+    PROMPT="SIGTERM: "
+fi
 
-if [[ -n "$SELECTED" ]]; then
-    # Robust extraction of name and count
-    APP_NAME=$(echo "$SELECTED" | cut -d'|' -f1 | xargs)
-    COUNT=$(echo "$SELECTED" | cut -d'|' -f2 | awk '{print $1}')
+# Select Application
+APP_NAME=$(echo "$PROCESS_LIST" | fuzzel --dmenu --prompt="$PROMPT" -w 30 -l 15)
 
-    # 4. Immediate Action (No Confirmation)
-    # Try SIGTERM first for a clean exit
-    pkill -15 -x "$APP_NAME" 2>/dev/null || true
-    notify-send -t 2000 -h string:x-canonical-private-synchronous:kill "Termination signal sent to $APP_NAME ($COUNT processes)"
+if [[ -n "$APP_NAME" ]]; then
+    if [[ "$MODE" == "KILL" ]]; then
+        # Ruthless immediate kill
+        pkill -9 -x "$APP_NAME" 2>/dev/null || true
+        notify-send -u critical -t 2000 -h string:x-canonical-private-synchronous:kill "Force Killed: $APP_NAME"
+    else
+        # Polite close
+        pkill -15 -x "$APP_NAME" 2>/dev/null || true
+        notify-send -t 2000 -h string:x-canonical-private-synchronous:kill "Sent Close Signal: $APP_NAME"
+    fi
 fi

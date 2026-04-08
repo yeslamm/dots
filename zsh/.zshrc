@@ -137,6 +137,9 @@ export XDG_DATA_DIRS=$XDG_DATA_DIRS:/var/lib/flatpak/exports/share:/home/r3d/.lo
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
 
+# Amdsmi
+export PATH="${PATH}:/opt/rocm/bin"
+
 
 # ----------------------------------------------------------------------
 # ⌨️ Zsh Functions

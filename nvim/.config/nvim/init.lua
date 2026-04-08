@@ -90,24 +90,24 @@ require('lazy').setup({
     },
 })
 
--- local function set_tabline_colors()
---     local normal_hl = vim.api.nvim_get_hl(0, { name = 'Normal' })
---     local visual_hl = vim.api.nvim_get_hl(0, { name = 'Visual' })
---
---     vim.api.nvim_set_hl(0, 'TabLineFill', { link = 'Normal' })
---     vim.api.nvim_set_hl(0, 'TabLine', {
---         bg = normal_hl.bg,
---         ctermbg = normal_hl.ctermbg,
---     })
---     vim.api.nvim_set_hl(0, 'TabLineSel', {
---         bg = visual_hl.bg,
---         ctermbg = visual_hl.ctermbg,
---         fg = normal_hl.fg,
---         bold = true,
---     })
--- end
---
--- vim.api.nvim_create_autocmd('ColorScheme', {
---     callback = set_tabline_colors,
--- })
--- set_tabline_colors()
+local function set_tabline_colors()
+    local normal_hl = vim.api.nvim_get_hl(0, { name = 'Normal' })
+    local visual_hl = vim.api.nvim_get_hl(0, { name = 'Visual' })
+
+    vim.api.nvim_set_hl(0, 'TabLineFill', { link = 'Normal' })
+    vim.api.nvim_set_hl(0, 'TabLine', {
+        bg = normal_hl.bg,
+        ctermbg = normal_hl.ctermbg,
+    })
+    vim.api.nvim_set_hl(0, 'TabLineSel', {
+        bg = visual_hl.bg,
+        ctermbg = visual_hl.ctermbg,
+        fg = normal_hl.fg,
+        bold = true,
+    })
+end
+
+vim.api.nvim_create_autocmd('ColorScheme', {
+    callback = set_tabline_colors,
+})
+set_tabline_colors()

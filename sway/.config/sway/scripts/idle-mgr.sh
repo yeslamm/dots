@@ -248,7 +248,7 @@ load_patterns
 (
     trap "" SIGALRM
     until swaymsg -t subscribe '["window"]' --monitor | jq --unbuffered -r 'select(.change == "focus") | .container.app_id // .container.window_properties.class // "unknown"' 2>/dev/null | while read -r app; do
-        echo -n "$app" > "$RUNTIME_DIR/focused_app"
+        echo -n "$app" >"$RUNTIME_DIR/focused_app"
         kill -SIGALRM "$$" 2>/dev/null
     done; do sleep 2; done
 ) &

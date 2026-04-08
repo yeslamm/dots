@@ -7,7 +7,7 @@
 # ==============================================================================
 
 include /etc/sway/config.d/*
-exec dbus-update-activation-environment --systemd QT_QPA_PLATFORMTHEME ELECTRON_OZONE_PLATFORM_HINT
+exec dbus-update-activation-environment --systemd QT_QPA_PLATFORMTHEME QT_QPA_PLATFORM ELECTRON_OZONE_PLATFORM_HINT ELECTRON_ENABLE_FEATURES MOZ_ENABLE_WAYLAND _JAVA_AWT_WM_NONREPARENTING LIBVA_DRIVER_NAME VDPAU_DRIVER AMD_VULKAN_ICD
 
 set $mod Mod4
 set $term kitty
@@ -135,7 +135,7 @@ titlebar_padding 4 2
 title_align center
 
 # Syntax:                border     bg         text       indicator  child_border
-client.focused           #565c61    #565c61    #ffffff    #aaaaaa    #565c61
+client.focused           #60686e    #60686e    #ffffff    #aaaaaa    #60686e
 client.focused_inactive  #3f4447    #2b2e30    #cccccc    #45494d    #17181a
 client.unfocused         #17181a    #17181a    #8a8f93    #17181a    #17181a  
 client.urgent            #232527    #232527    #ffffff    #d93a49    #d93a49
@@ -178,7 +178,8 @@ bindcode $mod+$b            exec $term -e btop
 bindcode $mod+Shift+$b      exec $f_term -e btop
 
 bindcode $mod+$q            kill
-bindcode $mod+$x            exec $scripts/fuzzel-kill.sh
+bindcode $mod+$x            exec $scripts/fuzzel-kill.sh TERM
+bindcode $mod+Shift+$x      exec $scripts/fuzzel-kill.sh KILL
 bindcode $mod+Shift+$r      reload
 
 # ==============================================================================
@@ -293,11 +294,13 @@ bindsym  Shift+Print      exec --no-startup-id flameshot full -p ~/Pictures/Scre
 
 bindsym $mod+Escape mode Super
 mode Super {
-    bindcode $s exec "swaylock -f -c 000000 -F -e -k -L && systemctl suspend", mode default
+
     bindcode $l_mode exec $scripts/lock-ns.sh, mode default
-    bindcode $e exec "$scripts/idle-off.sh && swaymsg exit", mode default
-    bindcode $r exec systemctl reboot, mode default
-    bindcode $p exec systemctl poweroff, mode default
+    bindcode $s exec "swaylock -f -c 000000 -F -e -k -L && systemctl suspend", mode default
+    
+    bindcode $e exec $scripts/powermenu.sh logout, mode default
+    bindcode $r exec $scripts/powermenu.sh reboot, mode default
+    bindcode $p exec $scripts/powermenu.sh poweroff, mode default
 
     bindcode $t exec $term -e watch -n 2.5 -d sensors, mode default
     bindcode $g exec $scripts/toggle_gammastep.sh, mode default
