@@ -9,51 +9,12 @@
 include /etc/sway/config.d/*
 exec dbus-update-activation-environment --systemd QT_QPA_PLATFORMTHEME QT_QPA_PLATFORM ELECTRON_OZONE_PLATFORM_HINT ELECTRON_ENABLE_FEATURES MOZ_ENABLE_WAYLAND _JAVA_AWT_WM_NONREPARENTING LIBVA_DRIVER_NAME VDPAU_DRIVER AMD_VULKAN_ICD
 
+
 set $mod Mod4
 set $term kitty
 set $f_term $term --title=float-term
 set $menu fuzzel
 set $scripts ~/.config/sway/scripts
-
-# Organized Keycodes
-set $q 24
-set $w 25
-set $e 26
-set $r 27
-set $t 28
-set $y 29
-set $u 30
-set $i 31
-set $o 32
-set $p 33
-set $a 38
-set $s 39
-set $d 40
-set $f 41
-set $g 42
-set $h 43
-set $j 44
-set $k 45
-set $l 46
-set $z 52
-set $x 53
-set $c 54
-set $v 55
-set $b 56
-set $n 57
-set $m 58
-set $semicolon 47
-set $apostrophe 48
-set $grave 49
-set $comma 59
-set $period 60
-set $slash 61
-
-set $left 43
-set $down 44
-set $up 45
-set $right 46
-set $l_mode 46
 
 set $files      exec $term -e yazi
 set $g_files    pcmanfm
@@ -62,7 +23,7 @@ set $g_files    pcmanfm
 #  2. HARDWARE: INPUT & OUTPUT
 # ==============================================================================
 
-output * bg ~/Pictures/arch-loops.jpg fill
+output * bg ~/Pictures/archlogosquares.jpg fill
 
 input type:keyboard {
     xkb_layout "us,ara"
@@ -112,7 +73,6 @@ exec_always "pkill -x waybar; sleep 0.5; waybar"
 exec copyq --start-server
 exec $scripts/idle-mgr.sh
 exec flameshot
-exec sh -c 'sleep 1 && firefox'
 
 exec wpctl set-volume @DEFAULT_SINK@ 0.30
 exec wpctl set-volume @DEFAULT_SOURCE@ 0.40
@@ -125,7 +85,7 @@ exec amixer -c 1 set 'Internal Mic Boost' 0
 xwayland enable
 default_border pixel 4
 default_floating_border normal 4
-hide_edge_borders smart
+smart_borders on
 gaps inner 8
 smart_gaps on
 
@@ -137,8 +97,9 @@ title_align center
 # Syntax:                border     bg         text       indicator  child_border
 client.focused           #60686e    #60686e    #ffffff    #aaaaaa    #60686e
 client.focused_inactive  #3f4447    #2b2e30    #cccccc    #45494d    #17181a
-client.unfocused         #17181a    #17181a    #8a8f93    #17181a    #17181a  
+client.unfocused         #17181a    #17181a    #8a8f93    #17181a    #17181a
 client.urgent            #232527    #232527    #ffffff    #d93a49    #d93a49
+
 # ==============================================================================
 #  5. WINDOW RULES
 # ==============================================================================
@@ -167,172 +128,199 @@ for_window [app_id="firefox" title="^Extension:.*"] floating enable
 #  6. KEYBINDINGS: CORE
 # ==============================================================================
 
-bindsym $mod+Return         exec $term
-bindsym $mod+Shift+Return   exec $f_term
-bindsym $mod+space          exec $menu
+bindsym $mod+Return             exec $term
+bindsym $mod+Shift+Return       exec $f_term
+bindsym $mod+space              exec $menu
 
-bindcode $mod+$y            exec $files
-bindcode $mod+Shift+$y      exec $f_term -e yazi
-bindcode $mod+$g            exec $g_files
-bindcode $mod+$b            exec $term -e btop
-bindcode $mod+Shift+$b      exec $f_term -e btop
+bindsym --to-code {
+    $mod+y        exec $files
+    $mod+Shift+y  exec $f_term -e yazi
+    $mod+g        exec $g_files
+    $mod+b        exec $term -e btop
+    $mod+Shift+b  exec $f_term -e btop
 
-bindcode $mod+$q            kill
-bindcode $mod+$x            exec $scripts/fuzzel-kill.sh TERM
-bindcode $mod+Shift+$x      exec $scripts/fuzzel-kill.sh KILL
-bindcode $mod+Shift+$r      reload
+    $mod+q        kill
+    $mod+x        exec $scripts/fuzzel-kill.sh TERM
+    $mod+Shift+x  exec $scripts/fuzzel-kill.sh KILL
+    $mod+Shift+r  reload
+}
 
 # ==============================================================================
 #  7. NAVIGATION & LAYOUT
 # ==============================================================================
 
-bindsym  $mod+tab           focus mode_toggle
-bindcode $mod+$left         focus left
-bindcode $mod+$down         focus down
-bindcode $mod+$up           focus up
-bindcode $mod+$right        focus right
+bindsym  $mod+tab               focus mode_toggle
 
-bindcode $mod+Shift+$left   move left
-bindcode $mod+Shift+$down   move down
-bindcode $mod+Shift+$up     move up
-bindcode $mod+Shift+$right  move right
+bindsym --to-code {
+    $mod+h        focus left
+    $mod+j        focus down
+    $mod+k        focus up
+    $mod+l        focus right
 
-bindcode $mod+Shift+$period move workspace to output next
-bindcode $mod+Shift+$comma  move workspace to output prev
-bindcode $mod+$grave        workspace back_and_forth
+    $mod+Shift+h  move left
+    $mod+Shift+j  move down
+    $mod+Shift+k  move up
+    $mod+Shift+l  move right
 
-bindcode $mod+$w layout tabbed
-bindcode $mod+$e layout toggle split
-bindcode $mod+$z layout stacking
+    $mod+Shift+period  move workspace to output next
+    $mod+Shift+comma   move workspace to output prev
+    $mod+grave         workspace back_and_forth
 
-bindcode $mod+$semicolon    split v
-bindcode $mod+$apostrophe   split h
+    $mod+w             layout tabbed
+    $mod+e             layout toggle split
+    $mod+z             layout stacking
 
-bindcode $mod+Shift+$f      floating toggle
-bindcode $mod+$f            fullscreen
+    $mod+semicolon     split v
+    $mod+apostrophe    split h
+
+    $mod+Shift+f       floating toggle
+    $mod+f             fullscreen
+    
+    $mod+s             scratchpad show
+    $mod+Shift+s       move scratchpad
+
+    Control+$mod+h  resize shrink width 40px
+    Control+$mod+j  resize grow height 40px
+    Control+$mod+k  resize shrink height 40px
+    Control+$mod+l  resize grow width 40px
+}
+
 floating_modifier $mod normal
-
-bindcode $mod+$s          scratchpad show     
-bindcode $mod+Shift+$s          move scratchpad 
-
-bindcode Control+$mod+$left  resize shrink width 40px
-bindcode Control+$mod+$down  resize grow height 40px
-bindcode Control+$mod+$up    resize shrink height 40px
-bindcode Control+$mod+$right resize grow width 40px
 
 # ==============================================================================
 #  8. WORKSPACES
 # ==============================================================================
 
-bindsym $mod+1 workspace number 1
-bindsym $mod+2 workspace number 2
-bindsym $mod+3 workspace number 3
-bindsym $mod+4 workspace number 4
-bindsym $mod+5 workspace number 5
-bindsym $mod+6 workspace number 6
-bindsym $mod+7 workspace number 7
-bindsym $mod+8 workspace number 8
-bindsym $mod+9 workspace number 9
-bindsym $mod+0 workspace number 10
+bindsym --to-code {
+    $mod+1 workspace number 1
+    $mod+2 workspace number 2
+    $mod+3 workspace number 3
+    $mod+4 workspace number 4
+    $mod+5 workspace number 5
+    $mod+6 workspace number 6
+    $mod+7 workspace number 7
+    $mod+8 workspace number 8
+    $mod+9 workspace number 9
 
-bindsym $mod+Shift+1 move container to workspace number 1
-bindsym $mod+Shift+2 move container to workspace number 2
-bindsym $mod+Shift+3 move container to workspace number 3
-bindsym $mod+Shift+4 move container to workspace number 4
-bindsym $mod+Shift+5 move container to workspace number 5
-bindsym $mod+Shift+6 move container to workspace number 6
-bindsym $mod+Shift+7 move container to workspace number 7
-bindsym $mod+Shift+8 move container to workspace number 8
-bindsym $mod+Shift+9 move container to workspace number 9
-bindsym $mod+Shift+0 move container to workspace number 10
+    $mod+Shift+1 move container to workspace number 1
+    $mod+Shift+2 move container to workspace number 2
+    $mod+Shift+3 move container to workspace number 3
+    $mod+Shift+4 move container to workspace number 4
+    $mod+Shift+5 move container to workspace number 5
+    $mod+Shift+6 move container to workspace number 6
+    $mod+Shift+7 move container to workspace number 7
+    $mod+Shift+8 move container to workspace number 8
+    $mod+Shift+9 move container to workspace number 9
+}
 
 # ==============================================================================
-#  9. UTILITIES
+#  9. UTILITIES & HARDWARE
 # ==============================================================================
 
-# Volume & Brightness
-bindsym --locked XF86AudioRaiseVolume  exec $scripts/vol.sh up
-bindsym --locked XF86AudioLowerVolume  exec $scripts/vol.sh down
-bindsym --locked XF86AudioMute         exec $scripts/vol.sh mute
-bindcode --locked $mod+$u              exec $scripts/vol.sh up
-bindcode --locked $mod+$d              exec $scripts/vol.sh down
-bindcode --locked $mod+$m              exec $scripts/vol.sh mute
+# Hardware keys (Native Support)
+bindsym --locked {
+    XF86MonBrightnessDown exec $scripts/bright.sh down
+    XF86MonBrightnessUp   exec $scripts/bright.sh up
+    XF86AudioRaiseVolume  exec $scripts/vol.sh up
+    XF86AudioLowerVolume  exec $scripts/vol.sh down
+    XF86AudioMute         exec $scripts/vol.sh mute
+    XF86AudioPlay         exec $scripts/media.sh play-pause
+    XF86AudioNext         exec playerctl next
+    XF86AudioPrev         exec playerctl previous
+}
 
-bindsym --locked XF86MonBrightnessUp   exec $scripts/bright.sh up
-bindsym --locked XF86MonBrightnessDown exec $scripts/bright.sh down
-bindcode --locked $mod+Shift+$u        exec $scripts/bright.sh up
-bindcode --locked $mod+Shift+$d        exec $scripts/bright.sh down
+# Universal Controls (Mnemonic & Right-Hand Zone)
+bindsym --to-code --locked {
+    $mod+minus        exec $scripts/vol.sh down
+    $mod+equal        exec $scripts/vol.sh up
+    $mod+0            exec $scripts/vol.sh mute
 
-# Media Control
-bindsym  XF86AudioPrev  exec playerctl previous
-bindsym  mod4+F6        exec playerctl previous
-bindcode $mod+$p        exec playerctl previous
+    $mod+bracketleft  exec $scripts/bright.sh down
+    $mod+bracketright exec $scripts/bright.sh up
 
-bindsym  XF86AudioPlay  exec $scripts/media.sh play-pause
-bindsym  mod4+F7        exec $scripts/media.sh play-pause
-bindcode $mod+$c        exec $scripts/media.sh play-pause
+    $mod+comma        exec playerctl previous
+    $mod+period       exec playerctl next
+    $mod+slash        exec $scripts/media.sh play-pause
+}
 
-bindsym  XF86AudioNext  exec playerctl next
-bindsym  mod4+F8        exec playerctl next
-bindcode $mod+$n        exec playerctl next
+# Desktop Utilities
+bindsym --to-code {
+    $mod+Shift+n  exec swaync-client -t -sw
+    $mod+Shift+c  exec swaync-client --close-latest
+    $mod+i        exec $scripts/idle-mgr.sh
+    $mod+o        exec $scripts/idle-off.sh
+    $mod+v        exec copyq toggle
+}
 
-bindcode $mod+Shift+$n  exec swaync-client -t -sw
-bindcode $mod+Shift+$c  exec swaync-client --close-latest
-
-bindcode $mod+$i        exec $scripts/idle-mgr.sh
-bindcode $mod+$o        exec $scripts/idle-off.sh
-bindcode $mod+$v        exec copyq toggle
-
-bindcode Control+Shift+$s exec --no-startup-id flameshot gui -c
-bindcode Control+mod1+$s  exec --no-startup-id flameshot gui -p ~/Pictures/Screenshots
-bindsym  Print            exec --no-startup-id flameshot full -c && notify-send -t 1000 "Screenshot copied"
-bindsym  Shift+Print      exec --no-startup-id flameshot full -p ~/Pictures/Screenshots && notify-send -t 1000 "Screenshot saved"
+# Screenshots
+bindsym --to-code Control+Shift+s exec --no-startup-id flameshot gui -c
+bindsym --to-code Control+Mod1+s  exec --no-startup-id flameshot gui -p ~/Pictures/Screenshots
+bindsym Print                     exec --no-startup-id flameshot full -c && notify-send -t 1000 "Screenshot copied"
+bindsym Shift+Print               exec --no-startup-id flameshot full -p ~/Pictures/Screenshots && notify-send -t 1000 "Screenshot saved"
 
 # ==============================================================================
 # 10. MODES
 # ==============================================================================
 
+# -- Super Mode --
 bindsym $mod+Escape mode Super
+
 mode Super {
+    bindsym --to-code {
+        # System States (Lock, Suspend, Exit, Reboot, Poweroff)
+        l exec $scripts/lock-ns.sh, mode default
+        s exec "swaylock -f -c 000000 -F -e -k -L && systemctl suspend", mode default
+        e exec $scripts/powermenu.sh logout, mode default
+        r exec $scripts/powermenu.sh reboot, mode default
+        p exec $scripts/powermenu.sh poweroff, mode default
 
-    bindcode $l_mode exec $scripts/lock-ns.sh, mode default
-    bindcode $s exec "swaylock -f -c 000000 -F -e -k -L && systemctl suspend", mode default
-    
-    bindcode $e exec $scripts/powermenu.sh logout, mode default
-    bindcode $r exec $scripts/powermenu.sh reboot, mode default
-    bindcode $p exec $scripts/powermenu.sh poweroff, mode default
+        # Network & Bluetooth
+        w exec "rfkill toggle wifi && notify-send -t 1500 'WiFi Toggled'", mode default
+        Shift+w exec nm-connection-editor, mode default
+        b exec "rfkill toggle bluetooth && notify-send -t 1500 'Bluetooth Toggled'", mode default
+        Shift+b exec blueman-manager, mode default
 
-    bindcode $t exec $term -e watch -n 2.5 -d sensors, mode default
-    bindcode $g exec $scripts/toggle_gammastep.sh, mode default
-    bindcode $u exec $term -e sh -c 'sudo pacman -Syu && yay -Syua; read -p "Press enter to exit..."', mode default
-    bindcode $a exec $term -e sh -c 'alsamixer', mode default
-    bindcode $v exec pavucontrol, mode default
+        # Hardware & System
+        t exec $term -e watch -n 2.5 -d sensors, mode default
+        g exec $scripts/toggle_gammastep.sh, mode default
+        u exec $term -e sh -c 'sudo pacman -Syu && yay -Syua; read -p "Press enter to exit..."', mode default
+        a exec $term -e sh -c 'alsamixer', mode default
+        v exec pavucontrol, mode default
+    }
 
+    # Exit mode
     bindsym Escape mode default
     bindsym Return mode default
-    bindcode $mod+Escape mode default
+    bindsym $mod+Escape mode default
 }
 
+# -- Asus Mode --
 bindsym XF86Launch1 mode Asus
-bindcode $mod+$a mode Asus
+bindsym --to-code $mod+a mode Asus
+
 mode Asus {
-    bindsym 1 exec powerprofilesctl set power-saver \
-        && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Profile: power-saver", mode "default"
-    
-    bindsym 2 exec powerprofilesctl set balanced \
-        && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Profile: Balanced", mode "default"
-    
-    bindsym 3 exec powerprofilesctl set performance \
-        && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Profile: Performance", mode "default"
+    bindsym --to-code {
+        # Power Profiles (Saver, Balanced, Performance)
+        s exec powerprofilesctl set power-saver \
+            && notify-send -t 1500 -h string:x-canonical-private-synchronous:asus "Profile: Power Saver", mode "default"
 
-    bindsym semicolon exec asusctl battery limit 60 \
-        && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Battery: Limit set to 60%", mode default
+        b exec powerprofilesctl set balanced \
+            && notify-send -t 1500 -h string:x-canonical-private-synchronous:asus "Profile: Balanced", mode "default"
 
-    bindsym apostrophe exec asusctl battery oneshot \
-        && notify-send -t 1000 -h string:x-canonical-private-synchronous:asus " Battery: Charging to 100%", mode default
+        p exec powerprofilesctl set performance \
+            && notify-send -t 1500 -h string:x-canonical-private-synchronous:asus "Profile: Performance", mode "default"
 
+        # Battery Charging (Limit, Full)
+        l exec asusctl battery limit 60 \
+            && notify-send -t 1500 -h string:x-canonical-private-synchronous:asus "Battery: Limit set to 60%", mode default
+
+        f exec asusctl battery oneshot \
+            && notify-send -t 1500 -h string:x-canonical-private-synchronous:asus "Battery: Charging to 100%", mode default
+    }
+
+    # Exit mode
     bindsym Escape mode "default"
     bindsym Return mode "default"
     bindsym XF86Launch1 mode "default"
-    bindcode $mod+$a mode "default"
+    bindsym --to-code $mod+a mode "default"
 }
