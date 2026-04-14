@@ -1,7 +1,6 @@
 fakeroot
 makepkg
 pacman
-# Processes that should inhibit idle even when not focused or in the background
 qbittorrent
 transmission
 yay

@@ -1,7 +1,7 @@
 #!/bin/bash
 # idle-off.sh - Standardized Cleanup
 
-RUNTIME_DIR="${XDG_RUNTIME_DIR:-/tmp}"
+RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 PID_FILE="$RUNTIME_DIR/idle-mgr.pid"
 STATE_FILE="$RUNTIME_DIR/idle-mgr.state"
 REASON_FILE="$STATE_FILE.reason"
@@ -17,6 +17,7 @@ fi
 # 2. Aggressive cleanup of any stragglers
 pkill -f "idle-mgr.sh"
 pkill -x swayidle
+killall wayland-pipewire-idle-inhibit 2>/dev/null || true
 
 sleep 0.1
 

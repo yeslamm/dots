@@ -1,18 +1,4 @@
 {
-    // "ipc": true,
-    // "layer": "top",
-    // "mode": "hide",
-    // "start_hidden": true,
-    // "exclusive": false,
-    // "modifier-reset": "press",
-    // "fixed-height": true,
-    // "spacing": 4,
-    // "modes": {
-    //     "invisible": {
-    //         "layer": "bottom",
-    //         "passthrough": true
-    //     }
-    // },
     "height": 28,
     "position": "top",
     "modules-left": [
@@ -30,7 +16,6 @@
     "modules-right": [
         "tray",
         "custom/separator1",
-        // "custom/asus",
         "power-profiles-daemon",
         "custom/separator1",
         "pulseaudio",
@@ -57,25 +42,6 @@
         "icon-size": 16,
         "spacing": 16
     },
-    // "pulseaudio": {
-    //     "format": "VOL: {volume}%",
-    //     "format-muted": "vol: Muted",
-    //     "on-scroll-up": "pamixer --increase 1",
-    //     "on-scroll-down": "pamixer --decrease 1",
-    //     "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
-    //     "on-click-right": "playerctl play-pause",
-    //     "on-click-middle": "pavucontrol"
-    // },
-    // "backlight": {
-    //     "device": "amdgpu_bl1",
-    //     "format": "BRIGHT: {percent}%",
-    //     "on-scroll-up": "brightnessctl -d amdgpu_bl1 set +1%",
-    //     "on-scroll-down": "brightnessctl -d amdgpu_bl1 set 1%-",
-    //     "on-click": "brightnessctl -d amdgpu_bl1 set 85%",
-    //     "on-click-right": "brightnessctl -d amdgpu_bl1 set 70%",
-    //     "on-click-middle": "brightnessctl -d amdgpu_bl1 set 50%",
-    //     "tooltip": false
-    // },
     "pulseaudio": {
         "format": "VOL: {volume}%",
         "format-muted": "vol: Muted",
@@ -107,6 +73,7 @@
         "max-length": 25
     },
     "battery": {
+        "bat": "BAT1",
         "interval": 1,
         "states": {
             "clamped": 70
