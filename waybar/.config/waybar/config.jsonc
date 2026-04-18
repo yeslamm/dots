@@ -4,6 +4,7 @@
     "modules-left": [
         "sway/workspaces",
         "sway/mode",
+        "sway/scratchpad",
         "custom/separator0",
         "memory",
         "custom/separator0",
@@ -17,6 +18,7 @@
     ],
     "modules-center": ["clock"],
     "modules-right": [
+        "privacy",
         "tray",
         "custom/separator1",
         "power-profiles-daemon",
@@ -132,5 +134,27 @@
         "tooltip-format": "{}",
         "signal": 12,
         "on-click": "pkill -SIGRTMIN+1 idle-mgr.sh"
+    },
+    "privacy": {
+        "icon-spacing": 18,
+        "icon-size": 14,
+        "transition-duration": 0,
+        "modules": [
+            {
+                "type": "screenshare",
+                "icon-name": "screen-shared-symbolic"
+            },
+            {
+                "type": "audio-in",
+                "icon-name": "audio-input-microphone-symbolic"
+            }
+        ]
+    },
+    "sway/scratchpad": {
+        "format": "{icon} {count}",
+        "show-empty": false,
+        "format-icons": ["", ""],
+        "tooltip": true,
+        "tooltip-format": "{app}: {title}"
     }
 }

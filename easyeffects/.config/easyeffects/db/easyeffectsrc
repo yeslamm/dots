@@ -13,6 +13,7 @@ visiblePage=pluginsPage
 visiblePlugin=gate#0
 
 [StreamOutputs]
+linkToVirtualSource=true
 mostUsedPresets=Bass_Enhancing_Perfect_EQ
 outputDevice=alsa_output.pci-0000_63_00.6.analog-stereo
 plugins=equalizer#0,convolver#0
@@ -29,7 +30,8 @@ channels=right
 frequency=1005
 
 [Window]
-height=1172
+height=1148
 showTrayIcon=false
+visiblePage=inputPage
 visiblePipeWirePage=testSignalsPage
-width=1920
+width=940

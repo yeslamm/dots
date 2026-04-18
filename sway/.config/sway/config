@@ -13,7 +13,7 @@ exec dbus-update-activation-environment --systemd QT_QPA_PLATFORM QT_QPA_PLATFOR
 set {
     $mod Mod4
     $term kitty
-    $f_term $term --title=float-term
+    $f_term $term --class=float-term
     $menu fuzzel
     $scripts ~/.config/sway/scripts
     $files      exec $term -e yazi
@@ -121,7 +121,8 @@ for_window [app_id="(?i).*(pavucontrol|nm-connection-editor|blueman-manager|blue
 for_window [class="(?i).*(pavucontrol|nm-connection-editor|blueman-manager|blueman-services|syncthingtray).*"] floating enable, sticky enable
 
 # Custom App Rules
-for_window [title="float-term"] floating enable, resize set 1100 800, move position center, title_format ""
+for_window [app_id="float-term"] floating enable, resize set 1100 800, move position center, border pixel 4
+for_window [title="^float-term$"] floating enable, resize set 1100 800, move position center, border pixel 4
 for_window [title="Picture-in-Picture"] floating enable, sticky enable
 for_window [app_id="firefox" title="^Extension:.*"] floating enable
 
@@ -293,7 +294,7 @@ bindsym $mod+Escape mode Super
 mode Super {
     # System States (Lock, Suspend, Exit, Reboot, Poweroff)
     bindsym --to-code l exec $scripts/lock-ns.sh, mode default
-    bindsym --to-code s exec "swaylock -c 000000 -F -e -k -L && systemctl suspend", mode default
+    bindsym --to-code s exec "swaylock -f -c 000000 -F -e -k -L && systemctl suspend", mode default
     bindsym --to-code e exec $scripts/powermenu.sh logout, mode default
     bindsym --to-code r exec $scripts/powermenu.sh reboot, mode default
     bindsym --to-code p exec $scripts/powermenu.sh poweroff, mode default
