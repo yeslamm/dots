@@ -24,16 +24,6 @@
     background-color: var(--volume-progress);
 }
 
-.notification-icon {
-    min-width: 8px;
-    min-height: 8px;
-    margin: 0px 0px 0px 8px;
-}
-
-.notification-content .app-icon {
-    -gtk-icon-size: 16px;
-}
-
 .notification-content .image {
     margin-left: 5px;
     max-width: 200px;
@@ -70,7 +60,6 @@
     background: transparent;
     border: none;
     color: var(--text-color);
-    transition: background 0.15s ease-in-out;
     border-radius: 0;
 }
 

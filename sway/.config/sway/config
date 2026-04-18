@@ -6,6 +6,10 @@
 #  1. VARIABLES & PATHS
 # ==============================================================================
 
+include /etc/sway/config.d/*
+
+exec dbus-update-activation-environment --systemd QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME ELECTRON_OZONE_PLATFORM_HINT ELECTRON_ENABLE_FEATURES LIBVA_DRIVER_NAME VDPAU_DRIVER AMD_VULKAN_ICD XCURSOR_THEME XCURSOR_SIZE
+
 set {
     $mod Mod4
     $term kitty
@@ -15,8 +19,6 @@ set {
     $files      exec $term -e yazi
     $g_files    pcmanfm
 }
-
-exec dbus-update-activation-environment --systemd QT_QPA_PLATFORMTHEME QT_QPA_PLATFORM ELECTRON_OZONE_PLATFORM_HINT ELECTRON_ENABLE_FEATURES MOZ_ENABLE_WAYLAND _JAVA_AWT_WM_NONREPARENTING LIBVA_DRIVER_NAME VDPAU_DRIVER AMD_VULKAN_ICD
 
 # ==============================================================================
 #  2. HARDWARE: INPUT & OUTPUT
@@ -56,7 +58,6 @@ mouse_warping output
 exec {
     gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors-r3'
     gsettings set org.gnome.desktop.interface cursor-size 24
-    dbus-update-activation-environment --systemd XCURSOR_THEME XCURSOR_SIZE
     /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
     input-remapper-control --command autoload
     swaync
@@ -66,7 +67,6 @@ exec {
     sh -c 'sleep 1 && blueman-applet'
     copyq --start-server
     $scripts/idle-mgr.sh
-    flameshot
     wpctl set-volume @DEFAULT_SINK@ 0.30
     wpctl set-volume @DEFAULT_SOURCE@ 0.40
     amixer -c 1 set 'Internal Mic Boost' 0
@@ -101,7 +101,7 @@ bar {
 #  5. WINDOW RULES
 # ==============================================================================
 
-# Specific Apps
+# Specific Apps (Strict matches for predictable apps)
 for_window [app_id="fdm"] floating enable, resize set 1100 800, move position center, move scratchpad
 for_window [app_id="org.qbittorrent.qBittorrent"] floating enable, resize set 1300 900, move position center
 for_window [class="com-abdownloadmanager-desktop-AppKt"] floating enable
@@ -111,11 +111,14 @@ for_window [app_id="com.github.hluk.copyq"] floating enable, resize set 1800 110
 for_window [app_id="mpv"] floating enable
 for_window [app_id="swayimg"] floating enable
 
-# System / Portals / Dialogs
+# System / Portals / General Dialogs
 for_window [app_id="xdg-desktop-portal-gtk"] floating enable
 for_window [instance="sun-awt-X11-XDialogPeer"] floating enable
 for_window [window_role="^(pop-up|bubble|task_dialog|dialog|menu)$"] floating enable
-for_window [app_id="^(pavucontrol|nm-connection-editor|blueman-manager|blueman-services|syncthingtray)$"] floating enable, sticky enable
+
+# Troublemakers (Loose regex combo for XWayland fallbacks & unpredictable naming)
+for_window [app_id="(?i).*(pavucontrol|nm-connection-editor|blueman-manager|blueman-services|syncthingtray).*"] floating enable, sticky enable
+for_window [class="(?i).*(pavucontrol|nm-connection-editor|blueman-manager|blueman-services|syncthingtray).*"] floating enable, sticky enable
 
 # Custom App Rules
 for_window [title="float-term"] floating enable, resize set 1100 800, move position center, title_format ""
@@ -125,12 +128,12 @@ for_window [app_id="firefox" title="^Extension:.*"] floating enable
 # IDLE INHIBITORS
 for_window [all] inhibit_idle fullscreen
 
-for_window [app_id="^(mpv|vlc|okular|org.pwmt.zathura|org.qbittorrent.qBittorrent|transmission-gtk)$"] inhibit_idle focus, mark --add implicit
-for_window [class="^(Steam|gamescope|.*\.exe)$"] inhibit_idle focus, mark --add implicit
+# 1. Media, Readers, Torrents, and Gaming (Bulletproof Wayland & XWayland catch-all)
+for_window [app_id="(?i).*(mpv|vlc|okular|zathura|qbittorrent|transmission|steam|gamescope|\.exe).*"] inhibit_idle focus
+for_window [class="(?i).*(mpv|vlc|okular|zathura|qbittorrent|transmission|steam|gamescope|\.exe).*"] inhibit_idle focus
 
-bindsym $mod+m mark --toggle explicit
-for_window [con_mark="explicit"] inhibit_idle visible
-for_window [con_mark="implicit"] inhibit_idle visible
+# 2. Terminal Tasks (These inhibit based on the window title, not the app_id)
+for_window [title="(?i).*(pacman|yay|makepkg|yt-dlp).*"] inhibit_idle focus
 
 # ==============================================================================
 #  6. KEYBINDINGS: CORE
@@ -182,6 +185,7 @@ bindsym --to-code $mod+semicolon     split v
 bindsym --to-code $mod+apostrophe    split h
 bindsym --to-code $mod+Shift+f       floating toggle
 bindsym --to-code $mod+f             fullscreen
+bindsym --to-code $mod+c             move position center
 floating_modifier $mod normal
     
 # Scratchpad
@@ -252,14 +256,36 @@ bindsym --to-code $mod+o        exec $scripts/idle-off.sh
 bindsym --to-code $mod+v        exec copyq toggle
     
 # Screenshots
-bindsym --to-code Control+Shift+s exec --no-startup-id flameshot gui -c
-bindsym --to-code Control+Mod1+s  exec --no-startup-id flameshot gui -p ~/Pictures/Screenshots
-bindsym Print                     exec --no-startup-id flameshot full -c && notify-send -t 1000 "Screenshot copied"
-bindsym Shift+Print               exec --no-startup-id flameshot full -p ~/Pictures/Screenshots && notify-send -t 1000 "Screenshot saved"
+# -- 1. Fast Clipboard Snips (Copy) --
+# Logic: Base = Copy | Shift = Fullscreen | Alt (Mod1) = Window
+bindsym --to-code Print               exec $scripts/screenshot.sh region-copy
+bindsym --to-code Shift+Print         exec $scripts/screenshot.sh grim-copy
+bindsym --release --to-code Mod1+Print          exec $scripts/screenshot.sh window-copy
+
+# -- 2. Archiving (Save to Disk) --
+# Logic: Control = Save
+bindsym --to-code Control+Print       exec $scripts/screenshot.sh region-save
+bindsym --to-code Control+Shift+Print exec $scripts/screenshot.sh grim-save
+bindsym --release --to-code Control+Mod1+Print  exec $scripts/screenshot.sh window-save
 
 # ==============================================================================
 # 10. MODES
 # ==============================================================================
+# -- 3. The Power Editor Mode (Satty) --
+# Logic: Enter mode, then press single letter for capture type
+set $satty_mode "Satty"
+bindsym --to-code $mod+Print mode $satty_mode
+
+mode $satty_mode {
+    bindsym --to-code r exec swaymsg 'mode "default"' && $scripts/screenshot.sh region
+    bindsym --to-code f exec swaymsg 'mode "default"' && $scripts/screenshot.sh fullscreen
+    bindsym --to-code w exec swaymsg 'mode "default"' && $scripts/screenshot.sh window
+
+    # Exit keys
+    bindsym Escape mode "default"
+    bindsym Return mode "default"
+    bindsym $mod+Print mode "default"
+}
 
 # -- Super Mode --
 bindsym $mod+Escape mode Super
@@ -267,15 +293,15 @@ bindsym $mod+Escape mode Super
 mode Super {
     # System States (Lock, Suspend, Exit, Reboot, Poweroff)
     bindsym --to-code l exec $scripts/lock-ns.sh, mode default
-    bindsym --to-code s exec "swaylock -f -c 000000 -F -e -k -L && systemctl suspend", mode default
+    bindsym --to-code s exec "swaylock -c 000000 -F -e -k -L && systemctl suspend", mode default
     bindsym --to-code e exec $scripts/powermenu.sh logout, mode default
     bindsym --to-code r exec $scripts/powermenu.sh reboot, mode default
     bindsym --to-code p exec $scripts/powermenu.sh poweroff, mode default
 
     # Network & Bluetooth
-    bindsym --to-code w exec "rfkill toggle wifi && notify-send -t 1500 'WiFi Toggled'", mode default
+    bindsym --to-code w exec $scripts/wifi-toggle.sh, mode default
     bindsym --to-code Shift+w exec nm-connection-editor, mode default
-    bindsym --to-code b exec "rfkill toggle bluetooth && notify-send -t 1500 'Bluetooth Toggled'", mode default
+    bindsym --to-code b exec $scripts/bt-toggle.sh, mode default
     bindsym --to-code Shift+b exec blueman-manager, mode default
 
     # Hardware & System

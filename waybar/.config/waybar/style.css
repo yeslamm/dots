@@ -61,7 +61,9 @@
 #cpu,
 #temperature,
 #network,
-#sway-language {
+#sway-language,
+#custom-fan,
+#custom-idle {
     background: rgba(46, 52, 64, 0);
     color: #ffffff;
     padding: 0px 0px;
@@ -75,6 +77,7 @@
 }
 
 #pulseaudio,
+#wireplumber,
 #backlight {
     background: rgba(46, 52, 64, 0);
     color: #ffffff;
@@ -83,6 +86,7 @@
 }
 
 #battery {
+    color: #ffffff;
     padding: 0px 0px;
     margin-right: 8px;
 }

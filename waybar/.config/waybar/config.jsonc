@@ -11,30 +11,32 @@
         "custom/separator0",
         "temperature",
         "custom/separator0",
-        "custom/swayidle"
+        "custom/fan",
+        "custom/separator0",
+        "custom/idle"
     ],
+    "modules-center": ["clock"],
     "modules-right": [
         "tray",
         "custom/separator1",
         "power-profiles-daemon",
         "custom/separator1",
-        "pulseaudio",
+        "sway/language",
+        "custom/separator1",
+        "wireplumber",
         "custom/separator1",
         "backlight",
         "custom/separator1",
-        "sway/language",
-        "custom/separator1",
         "battery"
     ],
-    "modules-center": ["clock"],
 
     "custom/separator0": {
-        "format": " / ",
+        "format": "   ",
         "tooltip": false
     },
 
     "custom/separator1": {
-        "format": " \\ ",
+        "format": "   ",
         "tooltip": false
     },
 
@@ -42,27 +44,27 @@
         "icon-size": 16,
         "spacing": 16
     },
-    "pulseaudio": {
-        "format": "VOL: {volume}%",
-        "format-muted": "vol: Muted",
-        // Signal 10 for Volume
-        "signal": 10,
-        "on-scroll-up": "pamixer --increase 1 && pkill -RTMIN+10 waybar",
-        "on-scroll-down": "pamixer --decrease 1 && pkill -RTMIN+10 waybar",
-        "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle && pkill -RTMIN+10 waybar",
-        "on-click-right": "playerctl play-pause",
+
+    "wireplumber": {
+        "format": "{volume}%",
+        "format-muted": "Muted",
+        // Using your custom scripts so you get the notify-send popups!
+        "on-scroll-up": "~/.config/sway/scripts/vol.sh up",
+        "on-scroll-down": "~/.config/sway/scripts/vol.sh down",
+        "on-click": "~/.config/sway/scripts/vol.sh mute",
+        // Using your media script for right click
+        "on-click-right": "~/.config/sway/scripts/media.sh",
         "on-click-middle": "pavucontrol"
     },
+
     "backlight": {
         "device": "amdgpu_bl1",
-        "format": "BRIGHT: {percent}%",
-        // Signal 11 for Brightness
-        "signal": 11,
-        "on-scroll-up": "brightnessctl -d amdgpu_bl1 set +2% && pkill -RTMIN+11 waybar",
-        "on-scroll-down": "brightnessctl -d amdgpu_bl1 set 2%- && pkill -RTMIN+11 waybar",
-        "on-click": "brightnessctl -d amdgpu_bl1 set 85% && pkill -RTMIN+11 waybar",
-        "on-click-right": "brightnessctl -d amdgpu_bl1 set 70% && pkill -RTMIN+11 waybar",
-        "on-click-middle": "brightnessctl -d amdgpu_bl1 set 50% && pkill -RTMIN+11 waybar",
+        "format": "{percent}%",
+        "on-scroll-up": "~/.config/sway/scripts/bright.sh up",
+        "on-scroll-down": "~/.config/sway/scripts/bright.sh down",
+        "on-click": "brightnessctl -d amdgpu_bl1 set 85%",
+        "on-click-right": "brightnessctl -d amdgpu_bl1 set 70%",
+        "on-click-middle": "brightnessctl -d amdgpu_bl1 set 50%",
         "tooltip": false
     },
     "clock": {
@@ -78,64 +80,42 @@
         "states": {
             "clamped": 70
         },
-        "format": "BATT: {capacity}%",
-        "format-charging": "BATT: + {capacity}%",
-        "format-discharging": "BATT: - {capacity}%",
-        "format-full": "BATT: {capacity}%",
-        "format-clamped": "BATT: {capacity}%"
+        "format": "{capacity}%",
+        "format-charging": "+ {capacity}%",
+        "format-discharging": "- {capacity}%",
+        "format-full": "{capacity}%",
+        "format-clamped": "{capacity}%"
     },
     "memory": {
         "interval": 3,
-        "format": "MEM: {used:0.2f}G",
-        "on-click": "kitty -e btop",
+        "format": "{used:0.2f}G",
+        "on-click": "$TERMINAL -e btop",
         "tooltip": false
     },
     "temperature": {
         "interval": 3,
         "tooltip": false,
-        "thermal-zone": 0,
-        "format": "TEMP: {temperatureC}°C",
-        "critical-threshold": 80,
-        "format-critical": "temp: CRIT {temperatureC}°C",
-        "on-click": "kitty -e watch -d sensors"
+        "hwmon-path": "/sys/class/hwmon/hwmon6/temp1_input",
+        "format": "{temperatureC}°C",
+        "critical-threshold": 100,
+        "format-critical": "CRIT {temperatureC}°C",
+        "on-click": "$TERMINAL -e watch -d sensors"
     },
     "cpu": {
         "interval": 3,
-        "format": "CPU: {}%",
+        "format": "{}%",
         "on-click": "missioncenter"
     },
-    "network": {
-        "interface": "wlan0",
-        "format": "{bandwidthUpBits} ",
-        "interval": 3,
-        "tooltip-format": "{ifname}",
-        "tooltip": false,
-        "tooltip-format-ethernet": "{ifname}",
-        "format-disconnected": " Offline  ",
-        "on-click": "nmgui"
-    },
-    "sway/window": {
-        "format": "{title}",
-        "max-length": 50,
-        "tooltip": true
-    },
     "sway/language": {
-        "format": "LANG: {short} {variant}",
+        "format": "{short} {variant}",
         "tooltip": false
     },
-
-    "disk": {
-        "path": "/home",
-        "interval": 30,
-        "format": "HOME: {percentage_used}%",
-        "on-click": "gnome-disks"
-    },
-    "custom/asus": {
-        "format": "{}",
-        "exec": "asusctl profile get | grep -oP '(Quiet|Balanced|Performance)' | head -n 1",
-        "signal": 8,
-        "on-click": "asusctl profile next && pkill -RTMIN+8 waybar",
-        "tooltip": true
+    "custom/fan": {
+        "format": "{} RPM",
+        "exec": "sensors | awk '/cpu_fan/ {print $2}'",
+        "interval": 3,
+        "tooltip": false,
+        "on-click": "$TERMINAL -e watch -d sensors"
     },
     "power-profiles-daemon": {
         "format": "{profile}",
@@ -145,12 +125,12 @@
     "sway/mode": {
         "format": "{}"
     },
-    "custom/swayidle": {
-        "exec": "~/.config/waybar/idle_status.sh",
-        "interval": "once",
-        "signal": 9,
-        "return-type": "json",
-        "format": "{text}",
-        "tooltip": true
+    "custom/idle": {
+        "format": "{}",
+        "exec": "head -n 1 /run/user/$(id -u)/idle-mgr.state 2>/dev/null || echo 'OFF'",
+        "tooltip": true,
+        "tooltip-format": "{}",
+        "signal": 12,
+        "on-click": "pkill -SIGRTMIN+1 idle-mgr.sh"
     }
 }
