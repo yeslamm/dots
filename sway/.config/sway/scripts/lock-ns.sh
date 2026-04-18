@@ -4,7 +4,6 @@
 
 RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 PID_FILE="$RUNTIME_DIR/idle-mgr.pid"
-WAYBAR_SIGNAL=12
 
 # 1. Force Pause the manager
 if [ -f "$PID_FILE" ]; then
@@ -16,10 +15,10 @@ cleanup() {
     # Surgical Cleanup: Kill only swayidle started by this script
     [ -n "${TEMP_SWAYIDLE_PID:-}" ] && kill "$TEMP_SWAYIDLE_PID" 2>/dev/null && wait "$TEMP_SWAYIDLE_PID" 2>/dev/null || true
     pkill -P "$$" swayidle 2>/dev/null || true
-    
+
     # Ensure display is back on
     swaymsg "output * dpms on"
-    
+
     # 2. Force Resume the manager
     if [ -f "$PID_FILE" ]; then
         LIVE_PID=$(cat "$PID_FILE" 2>/dev/null || true)
@@ -35,7 +34,7 @@ swayidle -w \
     resume 'swaymsg "output * dpms on"' &
 TEMP_SWAYIDLE_PID=$!
 
-# Run swaylock synchronously (WITHOUT -f). 
+# Run swaylock synchronously (WITHOUT -f).
 # The script blocks here until you unlock.
 swaylock -c 000000 -F -e -k -L
 

@@ -82,15 +82,15 @@ track_state() {
         # UI Labels: ON, HOLD, PAUSE, LOCK
         local display_state
         case "$new_state" in
-            "ON")     display_state="ON"    ;;
-            "HOLD")   display_state="HOLD"  ;;
-            "PAUSED") display_state="PAUSE" ;;
-            "LOCKED") display_state="LOCK"  ;;
-            *)        display_state="$new_state" ;;
+        "ON") display_state="ON" ;;
+        "HOLD") display_state="HOLD" ;;
+        "PAUSED") display_state="PAUSE" ;;
+        "LOCKED") display_state="LOCK" ;;
+        *) display_state="$new_state" ;;
         esac
 
         # Write state for Waybar
-        printf "%s\n%s" "$display_state" "$reason" > "$STATE_FILE"
+        printf "%s\n%s" "$display_state" "$reason" >"$STATE_FILE"
         pkill -RTMIN+$WAYBAR_SIGNAL waybar 2>/dev/null || true
     fi
 }
@@ -108,7 +108,7 @@ start_idle() {
     local on_ac=false t_dim=90 t_lock=120 t_dpms=240 t_susp=360
 
     # Generic AC check
-    if grep -q 1 /sys/class/power_supply/*/online 2>/dev/null; then on_ac=true; fi
+    if [[ "$(cat /sys/class/power_supply/ACAD/online 2>/dev/null || echo 0)" == "1" ]]; then on_ac=true; fi
 
     [[ "$on_ac" == "true" ]] && {
         t_dim=570
@@ -167,7 +167,7 @@ check_and_act() {
 
     # 3. Power Source
     local p_src="BATTERY"
-    if grep -q 1 /sys/class/power_supply/*/online 2>/dev/null; then p_src="AC"; fi
+    if [[ "$(cat /sys/class/power_supply/ACAD/online 2>/dev/null)" == "1" ]]; then p_src="AC"; fi
     [[ "$CURRENT_POWER_SRC" != "$p_src" ]] && {
         CURRENT_POWER_SRC="$p_src"
         stop_idle
