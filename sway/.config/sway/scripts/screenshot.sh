@@ -17,15 +17,19 @@ if [[ "$1" == "region" || "$1" == "window" || "$1" == "fullscreen" ]]; then
     # 2. Capture raw pixels (-t ppm) for instant handoff
     case "$1" in
     region)
+        # Define the secure runtime path
+        RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+        TEMP_IMG="$RUNTIME_DIR/frozen.ppm"
+
         wayfreeze &
         FREEZE_PID=$!
         sleep 0.1
         GEOMETRY=$(slurp -d)
         if [ -n "$GEOMETRY" ]; then
-            grim -t ppm -g "$GEOMETRY" /tmp/frozen.ppm
+            grim -t ppm -g "$GEOMETRY" "$TEMP_IMG"
             kill $FREEZE_PID
-            satty --filename /tmp/frozen.ppm
-            rm /tmp/frozen.ppm
+            satty --filename "$TEMP_IMG"
+            rm "$TEMP_IMG"
         else
             kill $FREEZE_PID
         fi

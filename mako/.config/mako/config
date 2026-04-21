@@ -1,0 +1,50 @@
+# ==============================================================================
+# GLOBAL NOTIFICATION STYLE (UPSCALED)
+# ==============================================================================
+
+# Increased font size for better readability
+font=Adwaita 12
+
+background-color=#232527
+text-color=#ffffff
+border-color=#60686e
+
+# Matched to your Sway window border thickness
+border-size=2
+border-radius=0
+default-timeout=3000
+
+# Widened the box (Mako default is 300)
+width=500
+
+height=800
+
+# Doubled the padding for a more spacious, Fuzzel-like layout
+padding=10
+
+# Pushed slightly further from the screen edge
+margin=15
+
+# Progress bar styling for your vol.sh and bright.sh scripts
+progress-color=source #60686e
+
+markup=1
+
+max-visible=5
+layer=overlay
+
+# ==============================================================================
+# URGENCY LEVELS
+# ==============================================================================
+
+[urgency=low]
+border-color=#3f4447
+default-timeout=2000
+
+[urgency=normal]
+border-color=#60686e
+default-timeout=3000
+
+[urgency=high]
+border-color=#d93a49
+default-timeout=0

@@ -3,8 +3,6 @@
 
 set -euo pipefail
 
-WAYBAR_SIGNAL=11
-
 # Read current brightness BEFORE changing it
 CURRENT_BRIGHTNESS=$(brightnessctl -m | cut -d, -f4 | tr -d '%')
 
@@ -30,5 +28,3 @@ esac
 NEW_BRIGHTNESS=$(brightnessctl -m | cut -d, -f4 | tr -d '%')
 
 notify-send "Brightness: ${NEW_BRIGHTNESS}%" -t 1000 -h int:value:"${NEW_BRIGHTNESS}" -h string:x-canonical-private-synchronous:brightness -r 9992
-
-pkill -RTMIN+$WAYBAR_SIGNAL waybar 2>/dev/null || true

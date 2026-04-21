@@ -10,15 +10,13 @@ include /etc/sway/config.d/*
 
 exec dbus-update-activation-environment --systemd QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME ELECTRON_OZONE_PLATFORM_HINT ELECTRON_ENABLE_FEATURES LIBVA_DRIVER_NAME VDPAU_DRIVER AMD_VULKAN_ICD XCURSOR_THEME XCURSOR_SIZE
 
-set {
-    $mod Mod4
-    $term kitty
-    $f_term $term --class=float-term
-    $menu fuzzel
-    $scripts ~/.config/sway/scripts
-    $files      exec $term -e yazi
-    $g_files    pcmanfm
-}
+set $mod Mod4
+set $term kitty
+set $f_term $term --class=float-term
+set $menu fuzzel
+set $scripts ~/.config/sway/scripts
+set $files exec $term -e yazi
+set $g_files thunar
 
 # ==============================================================================
 #  2. HARDWARE: INPUT & OUTPUT
@@ -55,22 +53,22 @@ mouse_warping output
 #  3. AUTOSTART
 # ==============================================================================
 
-exec {
-    gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors-r3'
-    gsettings set org.gnome.desktop.interface cursor-size 24
-    /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-    input-remapper-control --command autoload
-    swaync
-    easyeffects --hide-window
-    gammastep -l 31.11167:30.94583
-    nm-applet --indicator
-    sh -c 'sleep 1 && blueman-applet'
-    copyq --start-server
-    $scripts/idle-mgr.sh
-    wpctl set-volume @DEFAULT_SINK@ 0.30
-    wpctl set-volume @DEFAULT_SOURCE@ 0.40
-    amixer -c 1 set 'Internal Mic Boost' 0
-}
+exec gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors-r3'
+exec gsettings set org.gnome.desktop.interface cursor-size 24
+exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+exec mako
+exec easyeffects --hide-window
+exec gammastep -l 31.11167:30.94583
+exec nm-applet --indicator
+exec sh -c 'sleep 1 && blueman-applet'
+exec copyq --start-server
+exec wpctl set-volume @DEFAULT_SINK@ 0.30
+exec wpctl set-volume @DEFAULT_SOURCE@ 0.40
+exec amixer -c 1 set 'Internal Mic Boost' 0
+
+exec $scripts/acpi_monitor.sh
+exec $scripts/start_idle.sh
+exec --no-startup-id wayland-pipewire-idle-inhibit
 
 # ==============================================================================
 #  4. APPEARANCE & THEME
@@ -133,9 +131,6 @@ for_window [all] inhibit_idle fullscreen
 for_window [app_id="(?i).*(mpv|vlc|okular|zathura|qbittorrent|transmission|steam|gamescope|\.exe).*"] inhibit_idle focus
 for_window [class="(?i).*(mpv|vlc|okular|zathura|qbittorrent|transmission|steam|gamescope|\.exe).*"] inhibit_idle focus
 
-# 2. Terminal Tasks (These inhibit based on the window title, not the app_id)
-for_window [title="(?i).*(pacman|yay|makepkg|yt-dlp).*"] inhibit_idle focus
-
 # ==============================================================================
 #  6. KEYBINDINGS: CORE
 # ==============================================================================
@@ -151,8 +146,6 @@ bindsym --to-code $mod+b        exec $term -e btop
 bindsym --to-code $mod+Shift+b  exec $f_term -e btop
 
 bindsym --to-code $mod+q        kill
-bindsym --to-code $mod+x        exec $scripts/fuzzel-kill.sh TERM
-bindsym --to-code $mod+Shift+x  exec $scripts/fuzzel-kill.sh KILL
 bindsym --to-code $mod+Shift+r  reload
 
 # ==============================================================================
@@ -250,10 +243,16 @@ bindsym --to-code $mod+period                exec playerctl next
 bindsym --to-code $mod+slash                 exec $scripts/media.sh play-pause
 
 # Desktop Utilities
-bindsym --to-code $mod+n        exec swaync-client --close-latest
-bindsym --to-code $mod+Shift+n  exec swaync-client -t -sw
-bindsym --to-code $mod+i        exec $scripts/idle-mgr.sh
-bindsym --to-code $mod+o        exec $scripts/idle-off.sh
+bindsym --to-code $mod+n        exec makoctl dismiss
+bindsym --to-code $mod+Shift+n  exec makoctl invoke
+
+# Disable Auto-lock
+bindsym --to-code $mod+o exec "killall swayidle; notify-send -t 1500 -h string:x-canonical-private-synchronous:idlemgr 'Idle Manager: Paused'; pkill -RTMIN+12 waybar"
+
+# Enable Auto-lock
+bindsym --to-code $mod+i exec "$scripts/start_idle.sh; notify-send -t 1500 -h string:x-canonical-private-synchronous:idlemgr 'Idle Manager: Resumed'; pkill -RTMIN+12 waybar"
+
+
 bindsym --to-code $mod+v        exec copyq toggle
     
 # Screenshots
@@ -274,7 +273,7 @@ bindsym --release --to-code Control+Mod1+Print  exec $scripts/screenshot.sh wind
 # ==============================================================================
 # -- 3. The Power Editor Mode (Satty) --
 # Logic: Enter mode, then press single letter for capture type
-set $satty_mode "Satty"
+set $satty_mode "Print"
 bindsym --to-code $mod+Print mode $satty_mode
 
 mode $satty_mode {
@@ -294,7 +293,7 @@ bindsym $mod+Escape mode Super
 mode Super {
     # System States (Lock, Suspend, Exit, Reboot, Poweroff)
     bindsym --to-code l exec $scripts/lock-ns.sh, mode default
-    bindsym --to-code s exec "swaylock -f -c 000000 -F -e -k -L && systemctl suspend", mode default
+    bindsym --to-code s exec "swaylock -f -c 000000 -F -e -k -L && systemctl suspend && $scripts/sentry.sh", mode default
     bindsym --to-code e exec $scripts/powermenu.sh logout, mode default
     bindsym --to-code r exec $scripts/powermenu.sh reboot, mode default
     bindsym --to-code p exec $scripts/powermenu.sh poweroff, mode default

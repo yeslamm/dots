@@ -1,41 +1,27 @@
 #!/bin/bash
-# lock-ns.sh - "Synchronous Blocking Edition"
-# Standardized paths and zero-polling architecture.
+# Lock-NS: Synchronous Blocking Lock (No Suspend)
 
 RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-PID_FILE="$RUNTIME_DIR/idle-mgr.pid"
+FLAG="$RUNTIME_DIR/lock-ns-active"
 
-# 1. Force Pause the manager
-if [ -f "$PID_FILE" ]; then
-    CURRENT_PID=$(cat "$PID_FILE")
-    [ -n "$CURRENT_PID" ] && kill -SIGUSR1 "$CURRENT_PID" 2>/dev/null
-fi
+# Tell Sentry to stand down and kill standard auto-idle
+touch "$FLAG"
+killall swayidle 2>/dev/null
 
-cleanup() {
-    # Surgical Cleanup: Kill only swayidle started by this script
-    [ -n "${TEMP_SWAYIDLE_PID:-}" ] && kill "$TEMP_SWAYIDLE_PID" 2>/dev/null && wait "$TEMP_SWAYIDLE_PID" 2>/dev/null || true
-    pkill -P "$$" swayidle 2>/dev/null || true
+# Start temporary aggressive idle for screen off (5 seconds)
+swayidle -w timeout 5 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' &
+TEMP_IDLE=$!
 
-    # Ensure display is back on
-    swaymsg "output * dpms on"
+# Update Waybar UI to show Paused
+pkill -RTMIN+12 waybar
 
-    # 2. Force Resume the manager
-    if [ -f "$PID_FILE" ]; then
-        LIVE_PID=$(cat "$PID_FILE" 2>/dev/null || true)
-        [ -n "$LIVE_PID" ] && kill -SIGUSR2 "$LIVE_PID" 2>/dev/null
-    fi
-}
-# Trap for cleanup on unlock or if the script is terminated
-trap cleanup EXIT INT TERM
-
-# Start temporary aggressive idle in background
-swayidle -w \
-    timeout 5 'swaymsg "output * dpms off"' \
-    resume 'swaymsg "output * dpms on"' &
-TEMP_SWAYIDLE_PID=$!
-
-# Run swaylock synchronously (WITHOUT -f).
-# The script blocks here until you unlock.
+# Run swaylock synchronously (Blocks here until unlocked)
 swaylock -c 000000 -F -e -k -L
 
-# On exit, the 'cleanup' trap handles everything.
+# --- UNLOCKED ---
+kill $TEMP_IDLE 2>/dev/null
+sleep 0.2
+swaymsg "output * dpms on"
+rm -f "$FLAG"
+~/.config/sway/scripts/start_idle.sh &
+pkill -RTMIN+12 waybar || true

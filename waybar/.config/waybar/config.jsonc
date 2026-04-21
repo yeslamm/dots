@@ -14,7 +14,7 @@
         "custom/separator0",
         "custom/fan",
         "custom/separator0",
-        "custom/idle"
+        "custom/idlemgr"
     ],
     "modules-center": ["clock"],
     "modules-right": [
@@ -127,13 +127,12 @@
     "sway/mode": {
         "format": "{}"
     },
-    "custom/idle": {
-        "format": "{}",
-        "exec": "head -n 1 /run/user/$(id -u)/idle-mgr.state 2>/dev/null || echo 'OFF'",
-        "tooltip": true,
-        "tooltip-format": "{}",
+    "custom/idlemgr": {
+        "exec": "pgrep swayidle > /dev/null && echo 'ON' || echo 'OFF'",
+        "return-type": "text",
+        "interval": "once",
         "signal": 12,
-        "on-click": "pkill -SIGRTMIN+1 idle-mgr.sh"
+        "tooltip": false
     },
     "privacy": {
         "icon-spacing": 18,
