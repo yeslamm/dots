@@ -58,7 +58,7 @@ exec gsettings set org.gnome.desktop.interface cursor-size 24
 exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec mako
 exec easyeffects --hide-window
-exec gammastep -l 31.11167:30.94583
+exec wlsunset -l 31.11167 -L 30.94583 -t 4500 -T 6500
 exec nm-applet --indicator
 exec sh -c 'sleep 1 && blueman-applet'
 exec copyq --start-server
@@ -69,7 +69,6 @@ exec_always sh -c 'killall waybar;waybar &'
 
 exec $scripts/start_idle.sh
 exec wayland-pipewire-idle-inhibit -q
-
 
 # ==============================================================================
 #  4. APPEARANCE & THEME
@@ -304,7 +303,7 @@ mode Super {
 
     # Hardware & System
     bindsym --to-code t exec $term -e watch -n 2.5 -d sensors, mode default
-    bindsym --to-code g exec $scripts/toggle_gammastep.sh, mode default
+    bindsym --to-code g exec $scripts/wlsunset.sh, mode default
     bindsym --to-code u exec $term -e sh -c 'sudo pacman -Syu && yay -Syua; read -p "Press enter to exit..."', mode default
     bindsym --to-code a exec $term -e sh -c 'alsamixer', mode default
     bindsym --to-code v exec pavucontrol, mode default
