@@ -298,6 +298,7 @@ alias nemo='nemo > /dev/null 2>&1 &'
 alias footconf='nvim ~/.config/foot/foot.ini'
 alias img='swayimg'
 alias zura='zathura'
+alias makoconf='nvim ~/.config/mako/config'
 
 ### Other
 alias discordf='flatpak run com.discordapp.Discord'

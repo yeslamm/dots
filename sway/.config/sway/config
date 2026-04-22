@@ -65,10 +65,11 @@ exec copyq --start-server
 exec wpctl set-volume @DEFAULT_SINK@ 0.30
 exec wpctl set-volume @DEFAULT_SOURCE@ 0.40
 exec amixer -c 1 set 'Internal Mic Boost' 0
+exec_always sh -c 'killall waybar;waybar &'
 
-exec $scripts/acpi_monitor.sh
 exec $scripts/start_idle.sh
-exec --no-startup-id wayland-pipewire-idle-inhibit
+exec wayland-pipewire-idle-inhibit -q
+
 
 # ==============================================================================
 #  4. APPEARANCE & THEME
@@ -91,10 +92,6 @@ client.focused_inactive  #3f4447    #2b2e30    #cccccc    #45494d    #17181a
 client.unfocused         #17181a    #17181a    #8a8f93    #17181a    #17181a
 client.urgent            #232527    #232527    #ffffff    #d93a49    #d93a49
 
-bar {
-    swaybar_command waybar
-}
-
 # ==============================================================================
 #  5. WINDOW RULES
 # ==============================================================================
@@ -108,6 +105,7 @@ for_window [app_id="org.strawberrymusicplayer.strawberry"] floating enable
 for_window [app_id="com.github.hluk.copyq"] floating enable, resize set 1800 1100, move position center
 for_window [app_id="mpv"] floating enable
 for_window [app_id="swayimg"] floating enable
+for_window [app_id="com.dec05eba.gpu_screen_recorder"] floating enable
 
 # System / Portals / General Dialogs
 for_window [app_id="xdg-desktop-portal-gtk"] floating enable
@@ -247,10 +245,10 @@ bindsym --to-code $mod+n        exec makoctl dismiss
 bindsym --to-code $mod+Shift+n  exec makoctl invoke
 
 # Disable Auto-lock
-bindsym --to-code $mod+o exec "killall swayidle; notify-send -t 1500 -h string:x-canonical-private-synchronous:idlemgr 'Idle Manager: Paused'; pkill -RTMIN+12 waybar"
+bindsym --to-code $mod+o exec "killall swayidle; notify-send -t 1500 -h string:x-canonical-private-synchronous:idlemgr 'Idle Manager: OFF'; pkill -RTMIN+12 waybar"
 
 # Enable Auto-lock
-bindsym --to-code $mod+i exec "$scripts/start_idle.sh; notify-send -t 1500 -h string:x-canonical-private-synchronous:idlemgr 'Idle Manager: Resumed'; pkill -RTMIN+12 waybar"
+bindsym --to-code $mod+i exec "$scripts/start_idle.sh; notify-send -t 1500 -h string:x-canonical-private-synchronous:idlemgr 'Idle Manager: ON'; pkill -RTMIN+12 waybar"
 
 
 bindsym --to-code $mod+v        exec copyq toggle
@@ -293,7 +291,7 @@ bindsym $mod+Escape mode Super
 mode Super {
     # System States (Lock, Suspend, Exit, Reboot, Poweroff)
     bindsym --to-code l exec $scripts/lock-ns.sh, mode default
-    bindsym --to-code s exec "swaylock -f -c 000000 -F -e -k -L && systemctl suspend && $scripts/sentry.sh", mode default
+    bindsym --to-code s exec "swaylock -f -c 000000 -F -e -k -L && $scripts/sentry.sh", mode default
     bindsym --to-code e exec $scripts/powermenu.sh logout, mode default
     bindsym --to-code r exec $scripts/powermenu.sh reboot, mode default
     bindsym --to-code p exec $scripts/powermenu.sh poweroff, mode default

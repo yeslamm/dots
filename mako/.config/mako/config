@@ -3,7 +3,7 @@
 # ==============================================================================
 
 # Increased font size for better readability
-font=Adwaita 12
+font=JetBrains Mono 12
 
 background-color=#232527
 text-color=#ffffff
