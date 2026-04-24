@@ -13,7 +13,7 @@ CONFIRM=$(echo -e "Yes\nNo" | fuzzel --dmenu --lines=2 --prompt="Confirm ${ACTIO
 # 3. Execute the validated action.
 case "$ACTION" in
 logout)
-    ~/.config/sway/scripts/idle-off.sh && swaymsg exit
+    killall swayidle && swaymsg exit
     ;;
 reboot)
     systemctl reboot

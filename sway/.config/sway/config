@@ -65,7 +65,7 @@ exec copyq --start-server
 exec wpctl set-volume @DEFAULT_SINK@ 0.30
 exec wpctl set-volume @DEFAULT_SOURCE@ 0.40
 exec amixer -c 1 set 'Internal Mic Boost' 0
-exec_always sh -c 'killall waybar;waybar &'
+exec_always sh -c 'killall waybar ; sleep 1 && waybar'
 
 exec $scripts/start_idle.sh
 exec wayland-pipewire-idle-inhibit -q
@@ -91,6 +91,9 @@ client.focused_inactive  #3f4447    #2b2e30    #cccccc    #45494d    #17181a
 client.unfocused         #17181a    #17181a    #8a8f93    #17181a    #17181a
 client.urgent            #232527    #232527    #ffffff    #d93a49    #d93a49
 
+# bar {
+#     swaybar_command waybar
+# }
 # ==============================================================================
 #  5. WINDOW RULES
 # ==============================================================================
@@ -248,7 +251,6 @@ bindsym --to-code $mod+o exec "killall swayidle; notify-send -t 1500 -h string:x
 
 # Enable Auto-lock
 bindsym --to-code $mod+i exec "$scripts/start_idle.sh; notify-send -t 1500 -h string:x-canonical-private-synchronous:idlemgr 'Idle Manager: ON'; pkill -RTMIN+12 waybar"
-
 
 bindsym --to-code $mod+v        exec copyq toggle
     

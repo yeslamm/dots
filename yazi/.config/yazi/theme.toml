@@ -37,10 +37,6 @@ preview_hovered = { reversed = true }
 find_keyword = { fg = "#e46876", bg = "#181616" }
 find_position = {}
 
-tab_active = { reversed = true }
-tab_inactive = {}
-tab_width = 1
-
 count_copied = { fg = "#282c34", bg = "#98c379" }
 count_cut = { fg = "#282c34", bg = "#e06c75" }
 count_selected = { fg = "#282c34", bg = "#61afef" }
@@ -74,6 +70,11 @@ perm_write = { fg = "#ff5d62" }
 perm_exec = { fg = "#7aa89f" }
 perm_sep = { fg = "#a292a3" }
 
+[tabs]
+active = { fg = "#16161d", bg = "#7fb4ca", bold = true }
+inactive = { fg = "#54546d", bg = "#181616" }
+sep_inner = { open = "", close = "" }
+sep_outer = { open = "", close = "" }
 
 [pick]
 border = { fg = "#8ea4a2" }

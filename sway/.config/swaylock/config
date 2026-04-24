@@ -1,0 +1,12 @@
+# ~/.config/swaylock/config
+
+# --- Background & Text ---
+color=000000
+font=JetBrains Mono
+
+# --- Indicator Geometry ---
+indicator-radius=60
+indicator-thickness=8
+show-failed-attempts
+ignore-empty-password
+indicator-caps-lock

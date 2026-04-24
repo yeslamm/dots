@@ -78,6 +78,7 @@ return { -- Autocompletion
                 -- Accept with Tab or C-y
                 ['<Tab>'] = cmp.mapping.confirm { select = true },
                 ['<C-y>'] = cmp.mapping.confirm { select = true },
+                ['<CR>'] = cmp.mapping.confirm { select = false },
                 ['<C-Space>'] = cmp.mapping.complete {},
 
                 -- Kill Shift-Tab (does nothing)

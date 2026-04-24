@@ -45,7 +45,8 @@ vim.opt.tabstop = 4 -- Number of spaces a <Tab> counts for
 vim.opt.shiftwidth = 4 -- Number of spaces to use for each step of (auto)indent
 -- vim.opt.softtabstop = 4 -- Number of spaces that a <Tab> counts for
 vim.o.autoindent = true -- Copy indent from current line to new line (already true)
-vim.o.smartindent = true -- Smart autoindent based on code structure (user requested)
+-- vim.o.smartindent = true -- Smart autoindent based on code structure (user requested)
+vim.bo.cindent = true
 vim.o.breakindent = true -- Preserve indent in wrapped lines (redundant setting removed)
 vim.o.linebreak = true -- Break lines at word boundaries
 

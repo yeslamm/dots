@@ -10,7 +10,7 @@ pluginsListWidth=288
 useDefaultInputDevice=false
 usedPresets=input_preset:5,input_preset2:1
 visiblePage=pluginsPage
-visiblePlugin=gate#0
+visiblePlugin=rnnoise#0
 
 [StreamOutputs]
 linkToVirtualSource=true
@@ -30,8 +30,8 @@ channels=right
 frequency=1005
 
 [Window]
-height=1148
+height=1172
 showTrayIcon=false
 visiblePage=inputPage
 visiblePipeWirePage=testSignalsPage
-width=940
+width=1920

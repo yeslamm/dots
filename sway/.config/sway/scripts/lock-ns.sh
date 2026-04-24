@@ -16,7 +16,7 @@ TEMP_IDLE=$!
 pkill -RTMIN+12 waybar
 
 # Run swaylock synchronously (Blocks here until unlocked)
-swaylock -c 000000 -F -e -k -L
+swaylock
 
 # --- UNLOCKED ---
 kill $TEMP_IDLE 2>/dev/null
