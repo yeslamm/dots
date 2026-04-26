@@ -299,6 +299,7 @@ alias footconf='nvim ~/.config/foot/foot.ini'
 alias img='swayimg'
 alias zura='zathura'
 alias makoconf='nvim ~/.config/mako/config'
+# alias nvim='nvim -u ~/.vimrc'
 
 ### Other
 alias discordf='flatpak run com.discordapp.Discord'

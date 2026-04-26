@@ -3,8 +3,8 @@
     "position": "top",
     "modules-left": [
         "sway/workspaces",
-        "sway/mode",
         "sway/scratchpad",
+        "sway/mode",
         "custom/separator0",
         "memory",
         "custom/separator0",

@@ -65,7 +65,7 @@ exec copyq --start-server
 exec wpctl set-volume @DEFAULT_SINK@ 0.30
 exec wpctl set-volume @DEFAULT_SOURCE@ 0.40
 exec amixer -c 1 set 'Internal Mic Boost' 0
-exec_always sh -c 'killall waybar ; sleep 1 && waybar'
+exec_always sh -c 'killall waybar ; sleep 0.5 && waybar'
 
 exec $scripts/start_idle.sh
 exec wayland-pipewire-idle-inhibit -q
