@@ -11,7 +11,7 @@ return {
             mappings = false, -- Disable icons for mappings
         },
         win = {
-            border = 'rounded',
+            border = 'single',
             padding = { 1, 2 },
             title = true,
             title_pos = 'center',
@@ -20,20 +20,12 @@ return {
             align = 'center',
         },
         spec = {
-            { '<leader>b', group = 'Buffers' },
-            { '<leader>c', group = 'Code' },
-            { '<leader>d', group = 'Debug' },
-            { '<leader>f', group = 'Quickfix list' },
             { '<leader>g', group = 'Git', mode = { 'n', 'v' } },
             { '<leader>gt', group = 'Toggles' },
             { '<leader>s', group = 'Search' },
-            { '<leader>x', group = 'Trouble' },
-            { '<leader>t', group = 'Tools' },
-            { '<leader>w', group = 'Workspace' },
             { '<leader><tab>', group = 'Tabs' },
             -- Individual Mappings
-            { '<leader>e', desc = 'Explorer' },
-            { '<leader>n', desc = 'Toggle Auto-save' },
+            { '<leader>f', desc = 'Quickfix list' },
             { '<leader>q', desc = 'Close Buffer' },
             { '<leader>Q', desc = 'Quit All' },
         },

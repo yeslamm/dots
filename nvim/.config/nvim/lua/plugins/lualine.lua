@@ -44,14 +44,12 @@ return {
                 for _, client in pairs(clients) do
                     table.insert(names, client.name)
                 end
-                return ' ' .. table.concat(names, '|')
+                return '' .. table.concat(names, '|')
             end
 
             require('lualine').setup {
                 options = {
                     icons_enabled = true,
-                    -- theme = 'onedark',
-                    -- theme = 'zenbones',
                     theme = 'vague',
                     section_separators = { left = '', right = '' },
                     component_separators = { left = '', right = '' },
@@ -74,18 +72,6 @@ return {
                     lualine_b = { 'branch' },
                     lualine_c = { { 'filename', path = 3 } },
                     lualine_x = {
-                        {
-                            'recording',
-                            fmt = function()
-                                local reg = vim.fn.reg_recording()
-                                return reg ~= '' and ('@%s'):format(reg) or ''
-                            end,
-                            cond = function()
-                                return vim.fn.reg_recording() ~= ''
-                            end,
-                            color = { fg = '#ff9e64' }, -- Adjust color to match your theme, e.g., orange
-                        },
-
                         diagnostics,
                         diff,
                         { 'encoding', cond = hide_in_width },

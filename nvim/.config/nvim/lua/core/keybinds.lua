@@ -1,62 +1,76 @@
--- [[ setting leader keys ]]
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- [[ Basic Keymaps ]]
--- Set highlight on search, but clear on pressing <Esc> in normal mode
-vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+local map = vim.keymap.set
 
--- Exit terminal mode
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+-- [[ 1. Basic Utilities ]]
+map('n', '<Esc>', '<cmd>nohlsearch<CR>', { desc = 'Clear search highlights' })
+map('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+map({ 'n', 'i', 's' }, '<C-s>', '<cmd>w<CR><esc>', { desc = 'Save' })
+map('n', '<S-q>', '<cmd>wa | qa<CR>', { desc = 'Save all and Quit' })
+map('n', 'Y', 'y$', { desc = 'Yank to end of line' })
 
--- Save and Quit
-vim.keymap.set('n', '<C-s>', '<cmd>w<CR>', { desc = 'Save' })
-vim.keymap.set('n', '<S-q>', '<cmd>wa | qa<CR>', { desc = 'Quit All' })
+-- [[ 2. Navigation & View ]]
+-- Keep cursor centered during jumps/searches
+map('n', '<C-d>', '<C-d>zz', { desc = 'Scroll down and center' })
+map('n', '<C-u>', '<C-u>zz', { desc = 'Scroll up and center' })
+map('n', 'n', 'nzzzv', { desc = 'Next search centered' })
+map('n', 'N', 'Nzzzv', { desc = 'Prev search centered' })
+map('n', '*', '*N', { desc = 'Highlight without jump' }) -- Highlight word under cursor
 
--- [[ Diagnostic Keymaps ]]
-vim.keymap.set('n', '<leader>f', vim.diagnostic.setqflist, { desc = 'Quickfix List' })
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Prev Diagnostic' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Next Diagnostic' })
-vim.keymap.set('n', 'gl', vim.diagnostic.open_float, { desc = 'Line Diagnostic' })
+-- [[ 3. Window Management ]]
+-- Focus (Ctrl + hjkl)
+map('n', '<C-h>', '<C-w>h', { desc = 'Move left' })
+map('n', '<C-j>', '<C-w>j', { desc = 'Move down' })
+map('n', '<C-k>', '<C-w>k', { desc = 'Move up' })
+map('n', '<C-l>', '<C-w>l', { desc = 'Move right' })
 
--- [[ Basic Navigation ]]
--- Vertical scroll and center
-vim.keymap.set('n', '<C-d>', '<C-d>zz')
-vim.keymap.set('n', '<C-u>', '<C-u>zz')
+-- Resizing (Ctrl + Alt + hjkl)
+map('n', '<C-A-j>', '<cmd>resize +2<CR>', { desc = 'Increase height', silent = true })
+map('n', '<C-A-k>', '<cmd>resize -2<CR>', { desc = 'Decrease height', silent = true })
+map('n', '<C-A-h>', '<cmd>vertical resize -2<CR>', { desc = 'Decrease width', silent = true })
+map('n', '<C-A-l>', '<cmd>vertical resize +2<CR>', { desc = 'Increase width', silent = true })
 
--- Find and center
-vim.keymap.set('n', 'n', 'nzzzv')
-vim.keymap.set('n', 'N', 'Nzzzv')
+-- [[ 4. Content Manipulation ]]
+-- Moving lines (Alt + jk)
+map('n', '<A-j>', '<cmd>m .+1<CR>==', { desc = 'Move line down' })
+map('n', '<A-k>', '<cmd>m .-2<CR>==', { desc = 'Move line up' })
+map('v', '<A-j>', ":m '>+1<CR>gv=gv", { desc = 'Move selection down' })
+map('v', '<A-k>', ":m '<-2<CR>gv=gv", { desc = 'Move selection up' })
 
--- Resize with arrows
-vim.keymap.set('n', '<Up>', ':resize -2<CR>', { silent = true })
-vim.keymap.set('n', '<Down>', ':resize +2<CR>', { silent = true })
-vim.keymap.set('n', '<Left>', ':vertical resize -2<CR>', { silent = true })
-vim.keymap.set('n', '<Right>', ':vertical resize +2<CR>', { silent = true })
+-- Joining lines (Centering behavior)
+map('n', 'J', 'mzJ`z', { desc = 'Join lines and keep cursor position' })
 
--- [[ Tab Management ]]
-vim.keymap.set('n', '<leader><tab>a', '<cmd>tabnew<CR>', { desc = 'Add Tab' })
-vim.keymap.set('n', '<leader><tab>x', '<cmd>tabclose<CR>', { desc = 'Close Tab' })
-vim.keymap.set('n', '[t', '<cmd>tabprevious<CR>', { desc = 'Prev Tab' })
-vim.keymap.set('n', ']t', '<cmd>tabnext<CR>', { desc = 'Next Tab' })
+-- [[ 5. Lists & Navigation (Manual Brackets) ]]
+-- Diagnostics
+map('n', '[d', function()
+    vim.diagnostic.jump { count = -1 }
+end, { desc = 'Prev Diagnostic' })
+map('n', ']d', function()
+    vim.diagnostic.jump { count = 1 }
+end, { desc = 'Next Diagnostic' })
+map('n', 'gl', vim.diagnostic.open_float, { desc = 'Line Diagnostic' })
+map('n', '<leader>f', vim.diagnostic.setqflist, { desc = 'Quickfix List' })
 
--- [[ Buffer Management ]]
-vim.keymap.set('n', 'H', '<cmd>bprevious<CR>', { desc = 'Prev Buffer' })
-vim.keymap.set('n', 'L', '<cmd>bnext<CR>', { desc = 'Next Buffer' })
-vim.keymap.set('n', '<leader>q', '<cmd>bd<CR>', { desc = 'Close Buffer' })
+-- Tabs
+map('n', '[t', '<cmd>tabprevious<CR>', { desc = 'Prev Tab' })
+map('n', ']t', '<cmd>tabnext<CR>', { desc = 'Next Tab' })
+map('n', '<leader>tn', '<cmd>tabnew<CR>', { desc = 'New Tab' })
+map('n', '<leader>tx', '<cmd>tabclose<CR>', { desc = 'Close Tab' })
+map('n', '<leader>to', '<cmd>tabonly<CR>', { desc = 'Only This Tab' })
 
--- [[ Code Manipulation ]]
--- Stay in indent mode
-vim.keymap.set('v', '<', '<gv')
-vim.keymap.set('v', '>', '>gv')
+-- Buffers
+map('n', '[b', '<cmd>bprevious<CR>', { desc = 'Prev Buffer' })
+map('n', ']b', '<cmd>bnext<CR>', { desc = 'Next Buffer' })
+map('n', '<leader>q', '<cmd>bd<CR>', { desc = 'Close Buffer' })
 
--- Keep last yanked when pasting
-vim.keymap.set('v', 'p', '"_dP')
+-- [[ 6. Code Ergonomics ]]
+map('v', '<', '<gv', { desc = 'Decrease indent' })
+map('v', '>', '>gv', { desc = 'Increase indent' })
+map('v', 'p', '"_dP', { desc = 'Safe Paste' }) -- Paste without losing register content
+map('n', 'x', '"_x', { desc = 'Delete char (no register)' })
+map('n', 'X', '"_X', { desc = 'Delete to start of line (no register)' })
 
--- Delete without copying into register
-vim.keymap.set('n', 'x', '"_x')
-vim.keymap.set('n', 'X', '"_X')
-
--- Add trailing comma/semicolon
-vim.keymap.set('n', '<leader>;', 'mmA;<Esc>`m', { desc = 'Add trailing semicolon' })
-vim.keymap.set('n', '<leader>,', 'mmA,<Esc>`m', { desc = 'Add trailing comma' })
+-- Quick C formatting
+map('n', '<leader>;', 'mmA;<Esc>`m', { desc = 'Add trailing semicolon' })
+map('n', '<leader>,', 'mmA,<Esc>`m', { desc = 'Add trailing comma' })

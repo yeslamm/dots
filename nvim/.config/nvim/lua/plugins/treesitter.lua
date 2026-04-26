@@ -1,27 +1,37 @@
-return { -- Highlight, edit, and navigate code
+return {
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
-    branch = 'master',
+    -- Notice we removed `branch = 'master'` so it pulls the new `main` rewrite
     event = { 'BufReadPre', 'BufNewFile' },
     config = function()
-        require('nvim-treesitter.configs').setup {
-            ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'python', 'json', 'toml' },
-            -- Autoinstall languages that are not installed
-            auto_install = true,
-            highlight = {
-                enable = true,
-                additional_vim_regex_highlighting = false,
-            },
-            indent = { enable = true, disable = { 'ruby' } },
-            incremental_selection = {
-                enable = true,
-                keymaps = {
-                    init_selection = '<CR>',
-                    node_incremental = '<CR>',
-                    scope_incremental = false,
-                    node_decremental = '<bs>',
-                },
-            },
+        -- 1. Initialize the new Treesitter architecture
+        require('nvim-treesitter').setup {}
+
+        -- 2. Tell it which language parsers to download
+        -- (This function runs asynchronously in the background)
+        require('nvim-treesitter').install {
+            'bash',
+            'c',
+            'diff',
+            'html',
+            'lua',
+            'luadoc',
+            'markdown',
+            'markdown_inline',
+            'python',
+            'query',
+            'vim',
+            'vimdoc',
         }
+
+        -- 3. Tell Neovim to turn on its native Treesitter engine for every file you open
+        vim.api.nvim_create_autocmd('FileType', {
+            pattern = '*',
+            callback = function()
+                -- We wrap this in a 'pcall' (protected call) so it silently ignores
+                -- files that don't have a parser installed yet, instead of throwing an error.
+                pcall(vim.treesitter.start)
+            end,
+        })
     end,
 }
