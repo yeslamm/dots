@@ -26,8 +26,8 @@ map('n', '<C-k>', '<C-w>k', { desc = 'Move up' })
 map('n', '<C-l>', '<C-w>l', { desc = 'Move right' })
 
 -- Resizing (Ctrl + Alt + hjkl)
-map('n', '<C-A-j>', '<cmd>resize +2<CR>', { desc = 'Increase height', silent = true })
-map('n', '<C-A-k>', '<cmd>resize -2<CR>', { desc = 'Decrease height', silent = true })
+map('n', '<C-A-j>', '<cmd>resize -2<CR>', { desc = 'Decrease height', silent = true })
+map('n', '<C-A-k>', '<cmd>resize +2<CR>', { desc = 'Increase height', silent = true })
 map('n', '<C-A-h>', '<cmd>vertical resize -2<CR>', { desc = 'Decrease width', silent = true })
 map('n', '<C-A-l>', '<cmd>vertical resize +2<CR>', { desc = 'Increase width', silent = true })
 
@@ -44,10 +44,10 @@ map('n', 'J', 'mzJ`z', { desc = 'Join lines and keep cursor position' })
 -- [[ 5. Lists & Navigation (Manual Brackets) ]]
 -- Diagnostics
 map('n', '[d', function()
-    vim.diagnostic.jump { count = -1 }
+    vim.diagnostic.jump { count = -1, float = true }
 end, { desc = 'Prev Diagnostic' })
 map('n', ']d', function()
-    vim.diagnostic.jump { count = 1 }
+    vim.diagnostic.jump { count = 1, float = true }
 end, { desc = 'Next Diagnostic' })
 map('n', 'gl', vim.diagnostic.open_float, { desc = 'Line Diagnostic' })
 map('n', '<leader>f', vim.diagnostic.setqflist, { desc = 'Quickfix List' })

@@ -1,6 +1,7 @@
 local opt = vim.opt
 
 -- [[ 1. General Behavior ]]
+vim.g.have_nerd_font = true
 opt.mouse = 'a' -- Enable mouse in all modes
 opt.undofile = true -- Persistent undo history
 opt.updatetime = 250 -- Faster response (mapped to LSP/Gitsigns)
@@ -10,8 +11,10 @@ opt.clipboard = 'unnamedplus' -- Use system clipboard
 opt.completeopt = 'menu,menuone,noselect'
 
 -- [[ 2. UI & Aesthetics ]]
-vim.o.laststatus = 2 -- Global statusline
-vim.o.winborder = 'single' -- Single line borders
+opt.cmdheight = 0
+
+vim.o.laststatus = 3 -- Global statusline
+-- opt.globalstatus = true
 opt.termguicolors = true -- 24-bit RGB colors
 opt.number = true -- Show line numbers
 opt.relativenumber = true -- Relative numbers for jumping
@@ -24,19 +27,31 @@ opt.showcmd = true -- Show macro recording/partial commands
 opt.winblend = 0 -- Absolute transparency
 opt.pumblend = 0 -- Popup menu transparency
 opt.pumheight = 10 -- Max items in completion menu
+vim.opt.splitright = true
+vim.opt.splitbelow = true
+opt.showtabline = 0 -- Hide the top tabline (we use buffers/FZF)
+vim.opt.list = true -- 1. Enable invisible characters
+
+vim.opt.listchars = { -- 2. Define what characters to show
+    tab = '>-', -- Renders a tab as '>---' (the classic vi tab style)
+    trail = '~', -- Puts a tilde on accidental spaces at the end of a line
+    nbsp = '+', -- Highlights non-breaking spaces with a plus sign
+    extends = '>', -- Tells you when text runs off the right edge
+    precedes = '<', -- Tells you when text runs off the left edge
+}
 
 -- [[ 3. Tabs & Indentation (CS50 Standard) ]]
-opt.expandtab = true -- Use spaces instead of tabs
 opt.tabstop = 4 -- 1 tab = 4 spaces
 opt.shiftwidth = 4 -- Indent size
+opt.expandtab = true -- Use spaces instead of tabs
+opt.softtabstop = 4 -- will delete all 4 spaces at once
 opt.smartindent = true -- Intelligent indentation
 opt.breakindent = true -- Wrapped lines keep indentation
 
 -- [[ 4. Text Formatting ]]
-opt.wrap = false -- Do not wrap long lines of code
+opt.wrap = false
 opt.linebreak = true -- Wrap at words, not characters
-opt.conceallevel = 2 -- Hide MD/JSON markup
-opt.formatoptions:remove { 'c', 'r', 'o' } -- Don't auto-comment newlines
+opt.conceallevel = 0 -- Hide MD/JSON markup
 opt.virtualedit = 'block' -- Allow cursor to move past end of line in block mode
 
 -- [[ 5. Search Logic ]]
@@ -55,6 +70,3 @@ opt.iskeyword:append '-' -- Treat hyphenated-words as one word
 -- Custom Diff filling
 opt.diffopt:append { 'vertical', 'foldcolumn:0', 'context:3' }
 opt.fillchars:append { diff = '╱' }
-
--- Native tabline cleanup
-opt.showtabline = 0 -- Hide the top tabline (we use buffers/FZF)

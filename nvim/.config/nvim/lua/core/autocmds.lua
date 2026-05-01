@@ -4,7 +4,7 @@ local augroup = vim.api.nvim_create_augroup('UserConfig', { clear = true })
 vim.api.nvim_create_autocmd('TextYankPost', {
     group = augroup,
     callback = function()
-        vim.highlight.on_yank { higroup = 'IncSearch', timeout = 250 }
+        vim.hl.on_yank { higroup = 'IncSearch', timeout = 250 }
     end,
 })
 
@@ -19,39 +19,12 @@ vim.api.nvim_create_autocmd('BufReadPost', {
     end,
 })
 
--- Set 4‑space indents for all filetypes
+-- Set conceallevel AND wrap for specific filetypes
 vim.api.nvim_create_autocmd('FileType', {
-    group = augroup,
-    callback = function()
-        vim.opt_local.tabstop = 4
-        vim.opt_local.shiftwidth = 4
-        vim.opt_local.softtabstop = 4
-        vim.opt_local.expandtab = true
-    end,
-    -- pattern = "*"
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-    pattern = { 'markdown', 'txt' },
-    callback = function()
-        -- writing experience
-        vim.opt_local.wrap = true
-        vim.opt_local.linebreak = true
-    end,
-})
-
--- Set conceallevel for specific filetypes
-vim.api.nvim_create_autocmd('FileType', {
-    pattern = { 'markdown', 'markdown_inline' },
+    pattern = { 'markdown', 'markdown_inline', 'help' },
     callback = function()
         vim.opt_local.conceallevel = 2
-    end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-    pattern = 'json',
-    callback = function()
-        vim.opt_local.conceallevel = 0
+        vim.opt_local.wrap = true
     end,
 })
 
@@ -64,16 +37,50 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'FileType' }, {
     end,
 })
 
--- 2. THE HIGHLIGHT CHAIN
-vim.api.nvim_create_autocmd('ColorScheme', {
-    pattern = '*',
-    callback = function()
-        -- Instead of clearing the background, forcefully link them to the main transparent window
-        vim.api.nvim_set_hl(0, 'NormalFloat', { link = 'Normal' })
-        vim.api.nvim_set_hl(0, 'FloatBorder', { link = 'Normal' })
+-- auto resize splits when the terminal's window is resized
+vim.api.nvim_create_autocmd('VimResized', {
+    command = 'wincmd =',
+})
 
-        -- Chain the stubborn plugins
-        vim.api.nvim_set_hl(0, 'LazyNormal', { link = 'Normal' })
-        vim.api.nvim_set_hl(0, 'MasonNormal', { link = 'Normal' })
+-- Create a single group for both autocommands so they don't step on each other
+local cursorline_group = vim.api.nvim_create_augroup('active_cursorline', { clear = true })
+
+-- Turn cursorline ON when entering a window or buffer
+vim.api.nvim_create_autocmd({ 'WinEnter', 'BufEnter' }, {
+    group = cursorline_group,
+    callback = function()
+        vim.opt_local.cursorline = true
+    end,
+})
+
+-- Turn cursorline OFF when leaving a window
+vim.api.nvim_create_autocmd({ 'WinLeave' }, {
+    group = cursorline_group,
+    callback = function()
+        vim.opt_local.cursorline = false
+    end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'msg',
+    callback = function(args)
+        -- Wait a tiny bit for the window to actually exist
+        vim.schedule(function()
+            local win = vim.fn.bufwinid(args.buf)
+            if win and win > -1 then
+                vim.api.nvim_win_set_config(win, {
+                    relative = 'editor',
+                    anchor = 'NE', -- Top-right corner of the float
+                    row = 1, -- 1 line down from the top
+                    col = vim.o.columns - 1, -- Hug the right edge
+                    focusable = false,
+                    border = 'single',
+                    style = 'minimal', -- Removes extra UI elements
+                })
+
+                -- Optional: Force a specific color for the notification window
+                vim.wo[win].winhighlight = 'Normal:NormalFloat,FloatBorder:FloatBorder'
+            end
+        end)
     end,
 })
