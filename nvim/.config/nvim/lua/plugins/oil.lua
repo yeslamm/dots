@@ -7,6 +7,7 @@ return {
         require('oil').setup {
             default_file_explorer = true,
             prompt_save_on_select_new_entry = false,
+            delete_to_trash = true,
             float = {
                 padding = 2,
                 max_width = 80,

@@ -6,18 +6,20 @@ return {
         local fzf = require 'fzf-lua'
 
         fzf.setup {
-            -- 1. Start from the Telescope-like profile, then override
-            'telescope',
+            -- 1. FZF NATIVE OPTIONS
+            fzf_opts = {
+                ['--layout'] = 'default',
+            },
+
+            -- 2. UI: List on TOP, Preview on BOTTOM, Input in MIDDLE
             winopts = {
-                border = 'single',
-                width = 0.80,
                 height = 0.85,
-                -- 2. Vertical layout (preview below), matching your old layout_config
+                width = 0.80,
+                border = 'single',
                 preview = {
                     layout = 'vertical',
-                    vertical = 'down:50%', -- 50% of height for preview
+                    vertical = 'down:50%', -- Preview BELOW the list
                     border = 'single',
-                    -- 3. Line numbers & cursorline in the preview (replaces your autocmd)
                     winopts = {
                         number = true,
                         relativenumber = false,
@@ -26,51 +28,81 @@ return {
                 },
             },
 
-            -- 4. Global defaults applied to all pickers
+            -- 3. GLOBAL KEYMAPS
+            keymap = {
+                builtin = {
+                    ['<C-d>'] = 'preview-page-down',
+                    ['<C-u>'] = 'preview-page-up',
+                },
+                fzf = {
+                    true,
+                    ['ctrl-j'] = 'down',
+                    ['ctrl-k'] = 'up',
+                    ['ctrl-n'] = 'down',
+                    ['ctrl-p'] = 'up',
+                },
+            },
+
+            -- 4. BUFFER SETTINGS
+            buffers = {
+                prompt = 'Buffers> ',
+                actions = {
+                    ['ctrl-d'] = false,
+                    ['ctrl-u'] = false,
+                    ['ctrl-x'] = { fn = fzf.actions.buf_del, reload = true },
+                },
+            },
+
+            -- 5. FIXED GREP SETTINGS
+            grep = {
+                -- MOVED -e to the end so it correctly captures your input as the pattern
+                rg_opts = '--column --line-number --no-heading --color=never --smart-case --hidden --max-columns=4096 --glob="!.git/" -e',
+                rg_glob = true, -- Add this line!
+            },
+
+            files = {
+                fd_opts = '--color=never --type f --hidden --strip-cwd-prefix --exclude .git --exclude node_modules',
+            },
+
             defaults = {
                 file_icons = true,
                 color_icons = true,
-                git_icons = true, -- show git status in file listings
+                git_icons = true,
             },
-
-            -- 5. Mirror your old `find_command` and `vimgrep_arguments`
-            files = {
-                fd_opts = '--color=never --type f --strip-cwd-prefix' .. ' --exclude .git --exclude node_modules',
-            },
-            grep = {
-                rg_opts = '--column --line-number --no-heading --color=never' .. ' --smart-case --max-columns=4096 -e',
-            },
-
-            -- 6. Automatically generate fzf colors to match your Neovim colorscheme
             fzf_colors = true,
 
-            -- 7. Add C-j / C-k for moving down/up (while keeping fzf defaults)
-            keymap = {
-                fzf = {
-                    true, -- inherit all default fzf binds
-                    ['ctrl-j'] = 'down',
-                    ['ctrl-k'] = 'up',
-                },
+            lsp = {
+                jump_to_single_result = true, -- Automatically jump if there's only 1 match
+                jump_to_single_result_action = require('fzf-lua.actions').file_edit,
             },
         }
 
-        -- 8. UI‑select replacement (already present, keep it)
-        fzf.register_ui_select()
+        -- Tell FZF to handle menus, but use a tiny popup without a preview
+        fzf.register_ui_select {
+            winopts = {
+                height = 0.25, -- Very short
+                width = 0.35, -- Very narrow
+                row = 0.5, -- Dead center vertically
+                col = 0.5, -- Dead center horizontally
+                preview = { hidden = 'hidden' }, -- Disable the giant preview window
+            },
+        }
 
-        -- 9. Your keymaps (unchanged, plus a resume map)
-        vim.keymap.set('n', '<leader>sh', fzf.help_tags, { desc = 'Help' })
-        vim.keymap.set('n', '<leader>sk', fzf.keymaps, { desc = 'Keymaps' })
-        vim.keymap.set('n', '<leader>sf', fzf.files, { desc = 'Files' })
-        vim.keymap.set('n', '<leader>ss', fzf.builtin, { desc = 'Builtin' })
-        vim.keymap.set('n', '<leader>sw', fzf.grep_cword, { desc = 'Current Word' })
-        vim.keymap.set('n', '<leader>sg', fzf.live_grep, { desc = 'Live Grep' })
-        vim.keymap.set('n', '<leader>sd', fzf.diagnostics_document, { desc = 'Diagnostics' })
-        vim.keymap.set('n', '<leader>sr', fzf.resume, { desc = 'Resume' })
-        vim.keymap.set('n', '<leader>s.', fzf.oldfiles, { desc = 'Recent Files' })
-        vim.keymap.set('n', '<leader><leader>', fzf.buffers, { desc = 'Buffers' })
+        -- 6. Keymaps
+        local map = vim.keymap.set
+        map('n', '<leader>sh', fzf.help_tags, { desc = 'Help' })
+        map('n', '<leader>sk', fzf.keymaps, { desc = 'Keymaps' })
+        map('n', '<leader>sf', fzf.files, { desc = 'Files' })
+        map('n', '<leader>ss', fzf.builtin, { desc = 'Builtin' })
+        map('n', '<leader>sw', fzf.grep_cword, { desc = 'Current Word' })
+        map('n', '<leader>sg', fzf.live_grep, { desc = 'Live Grep' })
+        map('n', '<leader>sd', fzf.diagnostics_document, { desc = 'Diagnostics' })
+        map('n', '<leader>sr', fzf.resume, { desc = 'Resume' })
+        map('n', '<leader>s.', fzf.oldfiles, { desc = 'Recent Files' })
+        map('n', '<leader><leader>', fzf.buffers, { desc = 'Buffers' })
+        map('n', '<leader>/', fzf.blines, { desc = 'Fuzz Search Buffer' })
 
-        vim.keymap.set('n', '<leader>/', fzf.blines, { desc = 'Fuzz Search Buffer' })
-        vim.keymap.set('n', '<leader>sn', function()
+        map('n', '<leader>sn', function()
             fzf.files { cwd = vim.fn.stdpath 'config' }
         end, { desc = 'Neovim Files' })
     end,

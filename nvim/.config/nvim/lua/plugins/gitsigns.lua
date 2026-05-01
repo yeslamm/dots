@@ -16,6 +16,16 @@ return {
             topdelete = { text = '‾' },
             changedelete = { text = '~' },
         },
+
+        -- ENABLE BY DEFAULT: GitLens-style inline blame
+        current_line_blame = true,
+        current_line_blame_opts = {
+            virt_text = true,
+            virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
+            delay = 500, -- 500ms delay so it doesn't spam while typing
+            ignore_whitespace = false,
+        },
+
         on_attach = function(bufnr)
             local gitsigns = require 'gitsigns'
 
@@ -43,7 +53,9 @@ return {
             end, { desc = 'Prev Change' })
 
             -- Actions
-            map('n', '<leader>gs', gitsigns.stage_hunk, { desc = 'Stage Hunk' })
+            map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', { desc = 'Select Git hunk' })
+
+            map('n', '<leader>gs', gitsigns.stage_hunk, { desc = 'Stage/Unstage Hunk' })
             map('n', '<leader>gr', gitsigns.reset_hunk, { desc = 'Reset Hunk' })
             map('v', '<leader>gs', function()
                 gitsigns.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
@@ -54,18 +66,18 @@ return {
 
             map('n', '<leader>gS', gitsigns.stage_buffer, { desc = 'Stage Buffer' })
             map('n', '<leader>gR', gitsigns.reset_buffer, { desc = 'Reset Buffer' })
-            map('n', '<leader>gu', gitsigns.undo_stage_hunk, { desc = 'Undo Stage Hunk' })
-            map('n', '<leader>gp', gitsigns.preview_hunk, { desc = 'Preview Hunk' })
+
+            map('n', '<leader>gp', gitsigns.preview_hunk_inline, { desc = 'Preview Hunk Inline' })
+
             map('n', '<leader>gb', gitsigns.blame_line, { desc = 'Blame Line' })
+            map('n', '<leader>gB', gitsigns.toggle_current_line_blame, { desc = 'Toggle Blame' })
+
+            map('n', '<leader>gw', gitsigns.toggle_word_diff, { desc = 'Toggle Word Diff' })
+
             map('n', '<leader>gd', gitsigns.diffthis, { desc = 'Diff Index' })
             map('n', '<leader>gD', function()
                 gitsigns.diffthis '~'
             end, { desc = 'Diff Last Commit' })
-
-            -- Toggles
-            map('n', '<leader>gtb', gitsigns.toggle_current_line_blame, { desc = 'Toggle Blame' })
-            map('n', '<leader>gtd', gitsigns.toggle_deleted, { desc = 'Toggle Deleted' })
-            map('n', '<leader>gtw', gitsigns.toggle_word_diff, { desc = 'Toggle Word Diff' })
         end,
     },
 }
