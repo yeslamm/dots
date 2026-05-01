@@ -3,97 +3,91 @@ return {
         'folke/lazydev.nvim',
         ft = 'lua',
         opts = {
-            library = {
-                { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
-            },
+            library = { { path = '${3rd}/luv/library', words = { 'vim%.uv' } } },
         },
     },
     {
         'neovim/nvim-lspconfig',
         dependencies = {
             'saghen/blink.cmp',
-            { 'mason-org/mason.nvim', opts = {} },
-            'mason-org/mason-lspconfig.nvim',
+            { 'williamboman/mason.nvim', opts = { ui = { border = 'single' } } },
+            'williamboman/mason-lspconfig.nvim',
             'WhoIsSethDaniel/mason-tool-installer.nvim',
             'b0o/schemastore.nvim',
-            {
-                'j-hui/fidget.nvim',
-                opts = {
-                    notification = {
-                        window = {
-                            avoid = { 'NvimTree' },
-                        },
-                    },
-                },
-            },
+            -- { 'j-hui/fidget.nvim', opts = { notification = { window = { avoid = { 'NvimTree' } } } } },
         },
         config = function()
             vim.api.nvim_create_autocmd('LspAttach', {
-                group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
+                group = vim.api.nvim_create_augroup('custom-lsp-attach', { clear = true }),
                 callback = function(event)
                     local map = function(keys, func, desc, mode)
-                        mode = mode or 'n'
-                        vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+                        vim.keymap.set(mode or 'n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
                     end
 
-                    -- Replace Telescope with fzf-lua
-                    local fzf = require 'fzf-lua'
-
+                    -- NATIVE Neovim LSP Commands (FZF-Lua will intercept multi-results automatically)
                     map('grn', vim.lsp.buf.rename, 'Rename')
                     map('gra', vim.lsp.buf.code_action, 'Code Action', { 'n', 'x' })
-                    map('grr', fzf.lsp_references, 'References')
-                    map('gri', fzf.lsp_implementations, 'Implementation')
-                    map('grd', fzf.lsp_definitions, 'Definition')
+                    map('grr', vim.lsp.buf.references, 'References')
+                    map('gri', vim.lsp.buf.implementation, 'Implementation')
+                    map('grd', vim.lsp.buf.definition, 'Definition')
                     map('grD', vim.lsp.buf.declaration, 'Declaration')
-                    map('grt', fzf.lsp_typedefs, 'Type Definition') -- note: different function name
-                    map('gO', fzf.lsp_document_symbols, 'Document Symbols')
-                    map('gW', fzf.lsp_live_workspace_symbols, 'Workspace Symbols')
-
+                    map('grt', vim.lsp.buf.type_definition, 'Type Definition')
+                    map('gO', vim.lsp.buf.document_symbol, 'Document Symbols')
+                    map('gW', vim.lsp.buf.workspace_symbol, 'Workspace Symbols')
                     map('K', function()
                         vim.lsp.buf.hover { border = 'single' }
                     end, 'Hover')
 
-                    local function client_supports_method(client, method, bufnr)
+                    local client = vim.lsp.get_client_by_id(event.data.client_id)
+                    if not client then
+                        return
+                    end
+
+                    -- Neovim version-safe wrapper for method checking
+                    local function client_supports_method(c, method, bufnr)
                         if vim.fn.has 'nvim-0.11' == 1 then
-                            return client:supports_method(method, bufnr)
+                            return c:supports_method(method, bufnr)
                         else
-                            return client.supports_method(method, { bufnr = bufnr })
+                            return c.supports_method(method, { bufnr = bufnr })
                         end
                     end
 
-                    local client = vim.lsp.get_client_by_id(event.data.client_id)
-                    if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
-                        local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
+                    -- Document Highlight
+                    if client_supports_method(client, vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
+                        local highlight_group = vim.api.nvim_create_augroup('custom-lsp-highlight', { clear = false })
                         vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
                             buffer = event.buf,
-                            group = highlight_augroup,
+                            group = highlight_group,
                             callback = vim.lsp.buf.document_highlight,
                         })
                         vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
                             buffer = event.buf,
-                            group = highlight_augroup,
+                            group = highlight_group,
                             callback = vim.lsp.buf.clear_references,
                         })
                         vim.api.nvim_create_autocmd('LspDetach', {
-                            group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
-                            callback = function(event2)
+                            group = vim.api.nvim_create_augroup('custom-lsp-detach', { clear = true }),
+                            callback = function(e)
                                 vim.lsp.buf.clear_references()
-                                vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
+                                vim.api.nvim_clear_autocmds { group = 'custom-lsp-highlight', buffer = e.buf }
                             end,
                         })
                     end
 
-                    if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
+                    -- Inlay Hints
+                    if client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
                         map('<leader>h', function()
                             vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
-                        end, 'Inlay Hints')
+                        end, 'Toggle Inlay Hints')
                     end
                 end,
             })
 
             vim.diagnostic.config {
                 severity_sort = true,
-                float = { border = 'rounded', source = 'if_many' },
+                float = { border = 'single', source = 'if_many' },
+                virtual_text = { prefix = '', spacing = 0, source = false },
+                underline = false,
                 signs = vim.g.have_nerd_font and {
                     text = {
                         [vim.diagnostic.severity.ERROR] = ' ',
@@ -102,20 +96,14 @@ return {
                         [vim.diagnostic.severity.HINT] = ' ',
                     },
                 } or {},
-                virtual_text = {
-                    prefix = '',
-                    spacing = 0,
-                    source = false,
-                },
-                underline = false,
             }
-
-            local capabilities = require('blink.cmp').get_lsp_capabilities()
 
             local servers = {
                 marksman = {},
                 texlab = {},
-                clangd = {},
+                clangd = {
+                    cmd = { 'clangd', '--offset-encoding=utf-16' },
+                },
                 bashls = {},
                 taplo = {},
                 cssls = {},
@@ -134,36 +122,25 @@ return {
                         new_config.settings.json.schemas = new_config.settings.json.schemas or {}
                         vim.list_extend(new_config.settings.json.schemas, require('schemastore').json.schemas())
                     end,
-                    settings = {
-                        json = {
-                            format = { enable = false },
-                            validate = { enable = true },
-                        },
-                    },
+                    settings = { json = { format = { enable = false }, validate = { enable = true } } },
                 },
                 omnisharp = {
                     cmd = { 'omnisharp' },
                     settings = {
-                        FormattingOptions = {
-                            EnableEditorConfigSupport = true,
-                            OrganizeImports = true,
-                        },
-                        RoslynExtensionsOptions = {
-                            EnableAnalyzersSupport = true,
-                            EnableImportCompletion = true,
-                        },
+                        FormattingOptions = { EnableEditorConfigSupport = true, OrganizeImports = true },
+                        RoslynExtensionsOptions = { EnableAnalyzersSupport = true, EnableImportCompletion = true },
                     },
                 },
+                basedpyright = {},
+                ruff = {},
             }
 
-            local ensure_installed = vim.tbl_keys(servers or {})
+            local ensure_installed = vim.tbl_keys(servers)
             vim.list_extend(ensure_installed, {
                 'stylua',
                 'shellcheck',
                 'shfmt',
                 'prettier',
-                'ruff',
-                'basedpyright',
                 'stylelint',
                 'clang-format',
                 'netcoredbg',
@@ -171,37 +148,32 @@ return {
             })
             require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
+            local capabilities = require('blink.cmp').get_lsp_capabilities()
+
             require('mason-lspconfig').setup {
-                ensure_installed = {},
-                automatic_installation = false,
                 handlers = {
+                    function(server_name)
+                        local server = servers[server_name] or {}
+                        server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+                        require('lspconfig')[server_name].setup(server)
+                    end,
                     ['basedpyright'] = function()
                         require('lspconfig').basedpyright.setup {
+                            capabilities = capabilities,
                             on_attach = function(client)
                                 client.server_capabilities.documentFormattingProvider = false
                                 client.server_capabilities.documentRangeFormattingProvider = false
                             end,
-                            settings = {
-                                basedpyright = {
-                                    analysis = {
-                                        diagnosticMode = 'openFilesOnly',
-                                    },
-                                },
-                            },
+                            settings = { basedpyright = { analysis = { diagnosticMode = 'openFilesOnly' } } },
                         }
                     end,
                     ['ruff'] = function()
                         require('lspconfig').ruff_lsp.setup {
+                            capabilities = capabilities,
                             on_attach = function(client)
                                 client.server_capabilities.hoverProvider = false
                             end,
                         }
-                    end,
-
-                    ['_'] = function(server_name)
-                        local server = servers[server_name] or {}
-                        server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-                        require('lspconfig')[server_name].setup(server)
                     end,
                 },
             }

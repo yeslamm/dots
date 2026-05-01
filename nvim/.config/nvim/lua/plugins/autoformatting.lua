@@ -16,6 +16,7 @@ return { -- Autoformat
         notify_on_error = true,
         format_on_save = {
             timeout_ms = 1000, -- Increased from 500ms
+            lsp_fallback = true, -- If conform doesn't know the language, ask the LSP to do it
         },
         formatters = {
             shfmt = {
@@ -32,7 +33,6 @@ return { -- Autoformat
             sh = { 'shfmt' },
             bash = { 'shfmt' },
             cs = { 'csharpier' },
-            zsh = {},
             toml = { 'taplo' },
 
             -- Add these lines:

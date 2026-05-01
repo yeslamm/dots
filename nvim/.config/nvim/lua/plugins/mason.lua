@@ -4,6 +4,7 @@ return {
         opts = {
             ui = {
                 border = 'single',
+                backdrop = 100,
             },
         },
     },
