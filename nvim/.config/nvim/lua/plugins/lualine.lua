@@ -1,19 +1,37 @@
 return {
-    -- { 'archibate/lualine-time' },
     {
         'nvim-lualine/lualine.nvim',
+        event = 'VeryLazy',
         config = function()
-            local mode = {
-                'mode',
-                fmt = function(str)
-                    return '' .. str .. ''
-                    -- return ' ' .. str
-                    -- return ' ' .. str:sub(1, 1) -- displays only the first character of the mode
-                end,
-            }
-
             local hide_in_width = function()
                 return vim.fn.winwidth(0) > 100
+            end
+
+            -- 1. Native Macro Recording Logic
+            local function macro_recording()
+                local reg = vim.fn.reg_recording()
+                if reg == '' then
+                    return ''
+                end
+                return 'Recording @' .. reg
+            end
+
+            -- 2. Simplified LSP Names
+            local function lsp_clients()
+                local clients = vim.lsp.get_clients { bufnr = 0 }
+                if #clients == 0 then
+                    return ''
+                end
+                local names = {}
+                for _, client in pairs(clients) do
+                    table.insert(names, client.name)
+                end
+                -- Only show full list if there's room, otherwise just the first
+                local client_str = table.concat(names, '|')
+                if #client_str > 20 and not hide_in_width() then
+                    return ' ' .. clients[1].name
+                end
+                return ' ' .. client_str
             end
 
             local diagnostics = {
@@ -34,53 +52,37 @@ return {
                 cond = hide_in_width,
             }
 
-            local function lsp_clients()
-                local bufnr = vim.api.nvim_get_current_buf()
-                local clients = vim.lsp.get_clients { bufnr = bufnr }
-                if next(clients) == nil then
-                    return ''
-                end
-                local names = {}
-                for _, client in pairs(clients) do
-                    table.insert(names, client.name)
-                end
-                return '' .. table.concat(names, '|')
-            end
-
             require('lualine').setup {
                 options = {
                     icons_enabled = true,
                     theme = 'vague',
                     section_separators = { left = '', right = '' },
                     component_separators = { left = '', right = '' },
-                    disabled_filetypes = {
-                        statusline = {
-                            'NvimTree',
-                            'undotree',
-                            'dashboard',
-                            'ministarter',
-                            'toggleterm',
-                            'terminal',
-                            'TelescopePrompt',
-                        },
-                    },
                     always_divide_middle = true,
-                    globalstatus = false,
+                    globalstatus = true,
                 },
                 sections = {
-                    lualine_a = { mode },
+                    lualine_a = { 'mode' },
                     lualine_b = { 'branch' },
                     lualine_c = { { 'filename', path = 3 } },
                     lualine_x = {
+
+                        -- Native Macro Component
+                        {
+                            macro_recording,
+                            color = { fg = '#ff9e64', gui = 'bold' },
+                        },
+                        -- Native Search Count (Standard Lualine component)
+                        {
+                            'searchcount',
+                            maxcount = 999,
+                            timeout = 500,
+                        },
+
                         diagnostics,
                         diff,
-                        { 'encoding', cond = hide_in_width },
                         lsp_clients,
-                        -- filetype_icon,
                         { 'filetype', cond = hide_in_width },
-                        -- function()
-                        --   return os.date '%I:%M %p' -- 12-hour format with AM/PM
-                        -- end,
                     },
                     lualine_y = { 'location' },
                     lualine_z = { 'progress' },
@@ -94,14 +96,7 @@ return {
                     lualine_z = {},
                 },
                 tabline = {},
-                extensions = { 'fugitive' },
             }
-            vim.api.nvim_set_hl(0, 'Lualine_c', { bg = 'none' })
-            vim.api.nvim_set_hl(0, 'Lualine_a', { bg = 'none' })
-            vim.api.nvim_set_hl(0, 'Lualine_b', { bg = 'none' })
-            vim.api.nvim_set_hl(0, 'Lualine_x', { bg = 'none' })
-            vim.api.nvim_set_hl(0, 'Lualine_y', { bg = 'none' })
-            vim.api.nvim_set_hl(0, 'Lualine_z', { bg = 'none' })
         end,
     },
 }

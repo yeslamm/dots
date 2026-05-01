@@ -8,7 +8,7 @@ return {
             breadcrumb = '»',
             separator = '➜',
             group = '+',
-            mappings = false, -- Disable icons for mappings
+            mappings = false,
         },
         win = {
             border = 'single',
@@ -21,9 +21,9 @@ return {
         },
         spec = {
             { '<leader>g', group = 'Git', mode = { 'n', 'v' } },
-            { '<leader>gt', group = 'Toggles' },
             { '<leader>s', group = 'Search' },
-            { '<leader><tab>', group = 'Tabs' },
+            { '<leader>n', group = 'Notifications' }, -- Register your new Noice group here
+            { '<leader>t', group = 'Tabs' },
             -- Individual Mappings
             { '<leader>f', desc = 'Quickfix list' },
             { '<leader>q', desc = 'Close Buffer' },
