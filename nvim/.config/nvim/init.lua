@@ -20,8 +20,12 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup {
     spec = { { import = 'plugins' } },
-    ui = { border = 'none' },
+    ui = {
+        border = 'single',
+        backdrop = 100,
+    },
 }
 
+vim.api.nvim_set_hl(0, 'LazyFloat', { bg = 'NONE' })
 vim.api.nvim_set_hl(0, 'LazyNormal', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'MasonNormal', { bg = 'none' })
