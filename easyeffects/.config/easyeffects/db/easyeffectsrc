@@ -32,6 +32,5 @@ frequency=1005
 [Window]
 height=1172
 showTrayIcon=false
-visiblePage=inputPage
 visiblePipeWirePage=testSignalsPage
 width=1920
