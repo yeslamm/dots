@@ -1,5 +1,6 @@
 return {
     'nvim-treesitter/nvim-treesitter',
+    branch = 'master', -- ADD THIS LINE: Forces the stable branch
     build = ':TSUpdate',
     event = { 'BufReadPre', 'BufNewFile' },
     config = function()

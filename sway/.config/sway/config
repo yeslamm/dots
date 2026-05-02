@@ -181,7 +181,7 @@ bindsym --to-code $mod+Shift+f       floating toggle
 bindsym --to-code $mod+f             fullscreen
 bindsym --to-code $mod+c             move position center
 floating_modifier $mod normal
-    
+
 # Scratchpad
 bindsym --to-code $mod+s             scratchpad show
 bindsym --to-code $mod+Shift+s       move scratchpad
@@ -253,7 +253,7 @@ bindsym --to-code $mod+o exec "killall swayidle; notify-send -t 1500 -h string:x
 bindsym --to-code $mod+i exec "$scripts/start_idle.sh; notify-send -t 1500 -h string:x-canonical-private-synchronous:idlemgr 'Idle Manager: ON'; pkill -RTMIN+12 waybar"
 
 bindsym --to-code $mod+v        exec copyq toggle
-    
+
 # Screenshots
 # -- 1. Fast Clipboard Snips (Copy) --
 # Logic: Base = Copy | Shift = Fullscreen | Alt (Mod1) = Window
