@@ -65,7 +65,6 @@ opt.inccommand = 'split' -- Preview search/replace in a split window
 vim.g.loaded_netrw = 1 -- Disable netrw (using Oil.nvim)
 vim.g.loaded_netrwPlugin = 1
 opt.shortmess:append 'c' -- Reduce completion messages
-opt.iskeyword:append '-' -- Treat hyphenated-words as one word
 
 -- Custom Diff filling
 opt.diffopt:append { 'vertical', 'foldcolumn:0', 'context:3' }
