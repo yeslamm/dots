@@ -55,7 +55,7 @@ return {
             require('lualine').setup {
                 options = {
                     icons_enabled = true,
-                    theme = 'vague',
+                    theme = 'auto',
                     section_separators = { left = '', right = '' },
                     component_separators = { left = '', right = '' },
                     always_divide_middle = true,
