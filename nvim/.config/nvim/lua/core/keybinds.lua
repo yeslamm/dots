@@ -31,17 +31,10 @@ map('n', '<C-A-k>', '<cmd>resize +2<CR>', { desc = 'Increase height', silent = t
 map('n', '<C-A-h>', '<cmd>vertical resize -2<CR>', { desc = 'Decrease width', silent = true })
 map('n', '<C-A-l>', '<cmd>vertical resize +2<CR>', { desc = 'Increase width', silent = true })
 
--- [[ 4. Content Manipulation ]]
--- Moving lines (Alt + jk)
-map('n', '<A-j>', '<cmd>m .+1<CR>==', { desc = 'Move line down' })
-map('n', '<A-k>', '<cmd>m .-2<CR>==', { desc = 'Move line up' })
-map('v', '<A-j>', ":m '>+1<CR>gv=gv", { desc = 'Move selection down' })
-map('v', '<A-k>', ":m '<-2<CR>gv=gv", { desc = 'Move selection up' })
-
 -- Joining lines (Centering behavior)
 map('n', 'J', 'mzJ`z', { desc = 'Join lines and keep cursor position' })
 
--- [[ 5. Lists & Navigation (Manual Brackets) ]]
+-- [[ 4. Lists & Navigation (Manual Brackets) ]]
 -- Diagnostics
 map('n', '[d', function()
     vim.diagnostic.jump { count = -1, float = true }
@@ -64,7 +57,7 @@ map('n', '[b', '<cmd>bprevious<CR>', { desc = 'Prev Buffer' })
 map('n', ']b', '<cmd>bnext<CR>', { desc = 'Next Buffer' })
 map('n', '<leader>q', '<cmd>bd<CR>', { desc = 'Close Buffer' })
 
--- [[ 6. Code Ergonomics ]]
+-- [[ 5. Code Ergonomics ]]
 map('v', '<', '<gv', { desc = 'Decrease indent' })
 map('v', '>', '>gv', { desc = 'Increase indent' })
 map('v', 'p', '"_dP', { desc = 'Safe Paste' }) -- Paste without losing register content
