@@ -29,7 +29,7 @@ opt.pumblend = 0 -- Popup menu transparency
 opt.pumheight = 10 -- Max items in completion menu
 vim.opt.splitright = true
 vim.opt.splitbelow = true
-opt.showtabline = 0 -- Hide the top tabline (we use buffers/FZF)
+opt.showtabline = 1 -- Hide the top tabline (we use buffers/FZF)
 vim.opt.list = true -- 1. Enable invisible characters
 
 vim.opt.listchars = { -- 2. Define what characters to show
