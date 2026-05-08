@@ -1,12 +1,3 @@
-# ----------------------------------------------------------------------
-# ⚡️ Zsh Profiling (Optional)
-# ----------------------------------------------------------------------
-# zmodload zsh/zprof
-
-
-# ----------------------------------------------------------------------
-# 🚀 Powerlevel10k Instant Prompt
-# ----------------------------------------------------------------------
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -14,13 +5,11 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# ----------------------------------------------------------------------
+# Zsh Configuration: History & Input
+# ----------------------------------------------------------------------
 
-# ----------------------------------------------------------------------
-# ⚙️ Zsh Configuration: History & Input
-# ----------------------------------------------------------------------
-#
 # History
-#
 HISTSIZE=5000
 HISTFILE=~/.zsh_history
 setopt appendhistory
@@ -28,17 +17,14 @@ setopt sharehistory
 setopt hist_ignore_dups
 setopt hist_find_no_dups
 
-#
 # Input/output
-#
-bindkey -e        # Set editor default keymap to emacs
-setopt CORRECT    # Prompt for spelling correction of commands.
-#SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? ' # Customize spelling correction prompt.
-WORDCHARS=${WORDCHARS//[\/]} # Remove path separator from WORDCHARS.
-
+bindkey -e
+setopt CORRECT
+SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
+WORDCHARS=${WORDCHARS//[\/]}
 
 # ----------------------------------------------------------------------
-# 📦 Zim Module Configuration
+# Zim Module Configuration
 # ----------------------------------------------------------------------
 
 # Start configuration added by Zim install {{{
@@ -46,34 +32,23 @@ WORDCHARS=${WORDCHARS//[\/]} # Remove path separator from WORDCHARS.
 # Use degit instead of git as the default tool to install and update modules.
 #zstyle ':zim:zmodule' use 'degit'
 
-#
 # git
-#
 #zstyle ':zim:git' aliases-prefix 'g'
 
-#
 # input
-#
 zstyle ':zim:input' double-dot-expand yes
 
-#
 # termtitle
-#
-#zstyle ':zim:termtitle' format '%1~'
+zstyle ':zim:termtitle' format '%1~'
 
-
-#
 # zsh-autosuggestions
-#
-ZSH_AUTOSUGGEST_MANUAL_REBIND=1 # Disable automatic widget re-binding on each precmd.
-#ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=242'
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=242'
 
-#
 # zsh-syntax-highlighting
-#
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
-#typeset -A ZSH_HIGHLIGHT_STYLES
-#ZSH_HIGHLIGHT_STYLES[comment]='fg=242'
+typeset -A ZSH_HIGHLIGHT_STYLES
+ZSH_HIGHLIGHT_STYLES[comment]='fg=242'
 
 # ------------------
 # Initialize modules
@@ -113,36 +88,30 @@ for key ('j') bindkey -M vicmd ${key} history-substring-search-down
 unset key
 # }}} End configuration added by Zim install
 
-
 # ----------------------------------------------------------------------
-# 📁 Path & Exports
+# Path & Exports
 # ----------------------------------------------------------------------
-
 export EDITOR="nvim"
 export VISUAL="nvim"
 
 # Local binaries and FZF
-export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.fzf/bin:$PATH"
-
-# FZF Configuration
-export FZF_DEFAULT_COMMAND='fd --type f --exclude .git --exclude node_modules --exclude .cache --exclude venv --exclude dist'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .git'
+export PATH="${PATH}:/opt/rocm/bin"
 
 # XDG
 export XDG_DATA_DIRS=$XDG_DATA_DIRS:/var/lib/flatpak/exports/share:/home/r3d/.local/share/flatpak/exports/share
+
+# FZF Configuration (Maximized for fd)
+export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --exclude .git --exclude node_modules --exclude .cache --exclude venv --exclude dist'
+export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:500 {}' --preview-window=right:50% --bind 'ctrl-u:preview-half-page-up,ctrl-d:preview-half-page-down'"
+export FZF_ALT_C_OPTS="--preview 'eza -lahG --color=always --icons=never {}' --preview-window=down:50% --bind 'ctrl-u:preview-half-page-up,ctrl-d:preview-half-page-down'"
 
 # Tool Initializations
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
 
-# Amdsmi
-export PATH="${PATH}:/opt/rocm/bin"
-
-
 # ----------------------------------------------------------------------
-# ⌨️ Zsh Functions
+# Zsh Functions
 # ----------------------------------------------------------------------
 
 # Mancp
@@ -152,33 +121,23 @@ mancp() {
 
 # yazi Function
 function y() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	yazi "$@" --cwd-file="$tmp"
-	IFS= read -r -d '' cwd < "$tmp"
-	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
-	rm -f -- "$tmp"
+    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+    yazi "$@" --cwd-file="$tmp"
+    IFS= read -r -d '' cwd < "$tmp"
+    [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+    rm -f -- "$tmp"
 }
 
-# Open file with nvim using fzf preview
+# Open file with nvim using fzf preview (Maximized with Bottom Layout)
 fznvim() {
-  nvim "$(fzf --preview='bat --color=always {}')"
-}
-
-# Change directory using fzf for files (directory of the selected file)
-cdf() {
-  local file
-  file=$(fzf) || return
-  if [[ -n "$file" ]]; then
-    cd "$(dirname "$file")"
-  fi
-}
-
-# Change directory using fzf with bat preview (directory of the selected file)
-cdfv() {
-  local file
-  file=$(fzf --preview='bat --color=always {}') || return
-  if [[ -n "$file" ]]; then
-    cd "$(dirname "$file")"
+  if [[ -n "$1" ]]; then
+    nvim "$@"
+  else
+    local file
+    file=$(fzf --preview='bat --color=always --style=numbers --line-range=:500 {}' \
+               --preview-window=down:50% \
+               --bind 'ctrl-u:preview-half-page-up,ctrl-d:preview-half-page-down')
+    [[ -n "$file" ]] && nvim "$file"
   fi
 }
 
@@ -227,13 +186,8 @@ x() {
   fi
 }
 
-# Crun func
-cc() {
-    clang -Wall -Wextra -Werror -std=c11 "$1" -o "${1%.c}" -lcs50
-}
-
 # ----------------------------------------------------------------------
-# 🚀 Aliases
+# Aliases
 # ----------------------------------------------------------------------
 
 ### Navigation Shortcuts
@@ -242,90 +196,54 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 
 ### Core Tools
-alias r="exec zsh"            # Reload shell
-alias cl='clear'              # Clear
-# alias ls='lsd --group-directories-first'      # list files (lsd)
-# alias lsa='lsd -Ah --group-directories-first' # list all files (lsd)
-# alias ls='ls --color=auto --group-directories-first'
-# alias lsa='ls -Ah --group-directories-first --color=auto'
-alias ls='eza --group-directories-first'
-alias lse='eza --group-directories-first --oneline'
-alias lsa='eza -Ah --group-directories-first'
-alias bat='bat'               # Cat replacement
-alias rm='rm -v'              # Remove with verbose
-alias cp='cpg -g'             # Copy with progress
-alias mv='mvg -g'             # Move with progress
+alias r='exec zsh'
+alias cl='clear'
+
+alias ls='eza --color=auto --icons=never --group-directories-first'
+alias ll='eza -lbGhF --git --color=auto --icons=never --group-directories-first'
+alias la='eza -lahF --git --color=auto --icons=never --group-directories-first'
+
+alias rm='rm -v'
+alias cp='cpg -g'
+alias mv='mvg -g'
 alias wlcp='wl-copy'
 alias wlpa='wl-paste'
-# alias cp='cp -v'
-# alias alias mv='mv -v'
 
 ### System & Maintenance
 alias fetch='fastfetch'
-alias py='python3'
-alias c='clang'
-alias update='sudo pacman -Syu && yay -Syua'
 alias updates='(checkupdates 2>/dev/null; yay -Qua 2>/dev/null) | sort -u'
-alias bye='sudo shutdown -r now'
 alias hmmm='yay -Sy &> /dev/null && yay -Qu'
 alias error='journalctl -b -p err'
-alias rmor='
-if [ -n "$(pacman -Qdtq)" ]; then sudo pacman -Rns $(pacman -Qdtq); fi
-if [ -n "$(yay -Qtdq)" ]; then yay -Rns $(yay -Qtdq); fi
-'
+alias rmor='yay -Yc'
 alias sshstart='sudo systemctl start sshd'
 alias sshstop='sudo systemctl stop sshd'
-alias make50='make CC=clang CFLAGS="-fsanitize=signed-integer-overflow -fsanitize=undefined -ggdb3 -O0 -std=c11 -Wall -Werror -Wextra -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wshadow" LDLIBS="-lcrypt -lcs50 -lm"'
 
-### Code Running
-alias pyrun='python3 %'
-alias jsrun='node %'
-alias luarun='lua %'
-alias cpprun='clang++ % -o %:r && ./%:r'
-alias shellrun='bash %'
-
-### Configuration Editing (nvim)
+### Configuration Editing
 alias rr='nvim ~/.zshrc'
-alias kittyconf='nvim ~/.config/kitty/kitty.conf'
-alias tmuxconf='nvim ~/.config/tmux/tmux.conf'
 alias swayconf='nvim ~/.config/sway/config'
-alias wayconf='nvim ~/.config/waybar/config.jsonc'
-alias waystyl='nvim ~/.config/waybar/style.css'
-alias alacconf='nvim ~/.config/alacritty/alacritty.toml'
-alias fuzzconf='nvim ~/.config/fuzzel/fuzzel.ini'
-alias yconf='yazi ~/.config/yazi/'
-alias nemo='nemo > /dev/null 2>&1 &'
-alias footconf='nvim ~/.config/foot/foot.ini'
-alias img='swayimg'
-alias zura='zathura'
-alias makoconf='nvim ~/.config/mako/config'
 # alias nvim='nvim -u ~/.vimrc'
 
 ### Other
-alias discordf='flatpak run com.discordapp.Discord'
-alias bm='bashmount'
 alias appid='swaymsg -t get_tree | rg app_id'
+alias img='swayimg'
+alias zura='zathura'
 
 # ----------------------------------------------------------------------
-# 🔍 FZF-Tab Completion Configuration
+# FZF-Tab Completion Configuration
 # ----------------------------------------------------------------------
 zstyle ':completion:*' menu no
 zstyle ':fzf-tab:*' group-format ''
-# zstyle ':fzf-tab:complete:*' show-command-type false
 zstyle ':completion:*:descriptions' format ''
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 
-## [Completion]
-## Completion scripts setup. Remove the following line to uninstall
-[[ -f /home/r3d/.config/.dart-cli-completion/zsh-config.zsh ]] && . /home/r3d/.config/.dart-cli-completion/zsh-config.zsh || true
-## [/Completion]
+# Pass custom layout and scrolling bindings to fzf-tab
+zstyle ':fzf-tab:*' fzf-flags '--preview-window=right:50%'
+zstyle ':fzf-tab:*' fzf-bindings 'ctrl-u:preview-half-page-up' 'ctrl-d:preview-half-page-down'
 
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1a --color=always $realpath'
+zstyle ':fzf-tab:complete:z:*' fzf-preview 'eza -1a --color=always $realpath'
 
 # ----------------------------------------------------------------------
-# 🎨 Powerlevel10k Prompt Setup
+# Powerlevel10k Prompt Setup
 # ----------------------------------------------------------------------
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# To customize prompt, run `p10k configure` or edit ~/dots/zsh/.p10k.zsh.
-[[ ! -f ~/dots/zsh/.p10k.zsh ]] || source ~/dots/zsh/.p10k.zsh
