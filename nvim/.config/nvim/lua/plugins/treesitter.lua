@@ -1,36 +1,43 @@
 return {
     'nvim-treesitter/nvim-treesitter',
-    branch = 'master', -- ADD THIS LINE: Forces the stable branch
+    branch = 'main',
     build = ':TSUpdate',
     event = { 'BufReadPre', 'BufNewFile' },
     config = function()
-        require('nvim-treesitter.configs').setup {
-            -- 1. ADDED THESE TO STOP THE WARNINGS
-            modules = {},
-            sync_install = false,
-            ignore_install = {},
+        -- 1. Setup the base plugin
+        require('nvim-treesitter').setup()
 
-            -- 2. YOUR EXISTING CONFIG
-            ensure_installed = {
-                'bash',
-                'c',
-                'diff',
-                'html',
-                'lua',
-                'luadoc',
-                'markdown',
-                'markdown_inline',
-                'python',
-                'query',
-                'vim',
-                'vimdoc',
-            },
-            auto_install = true,
-            highlight = {
-                enable = true,
-                additional_vim_regex_highlighting = false,
-            },
-            indent = { enable = true },
+        -- 2. Install parsers (This replaces ensure_installed & auto_install)
+        require('nvim-treesitter').install {
+            'bash',
+            'c',
+            'diff',
+            'html',
+            'lua',
+            'luadoc',
+            'markdown',
+            'markdown_inline',
+            'python',
+            'query',
+            'vim',
+            'vimdoc',
         }
+
+        -- 3. Native Highlighting (This replaces highlight = { enable = true })
+        vim.api.nvim_create_autocmd('FileType', {
+            pattern = '*',
+            callback = function(args)
+                -- We use pcall to prevent errors if you open a filetype without a parser
+                pcall(vim.treesitter.start, args.buf)
+            end,
+        })
+
+        -- 4. Native Indentation (This replaces indent = { enable = true })
+        vim.api.nvim_create_autocmd('FileType', {
+            pattern = '*',
+            callback = function()
+                vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            end,
+        })
     end,
 }
