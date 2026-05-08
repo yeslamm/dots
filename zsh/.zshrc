@@ -16,6 +16,7 @@ setopt appendhistory
 setopt sharehistory
 setopt hist_ignore_dups
 setopt hist_find_no_dups
+typeset -U PATH
 
 # Input/output
 bindkey -e
@@ -89,17 +90,8 @@ unset key
 # }}} End configuration added by Zim install
 
 # ----------------------------------------------------------------------
-# Path & Exports
+# Exports
 # ----------------------------------------------------------------------
-export EDITOR="nvim"
-export VISUAL="nvim"
-
-# Local binaries and FZF
-export PATH="$HOME/.fzf/bin:$PATH"
-export PATH="${PATH}:/opt/rocm/bin"
-
-# XDG
-export XDG_DATA_DIRS=$XDG_DATA_DIRS:/var/lib/flatpak/exports/share:/home/r3d/.local/share/flatpak/exports/share
 
 # FZF Configuration (Maximized for fd)
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --exclude .git --exclude node_modules --exclude .cache --exclude venv --exclude dist'
