@@ -71,14 +71,20 @@ return {
                     cwd = '${workspaceFolder}',
                 },
             }
-
             -- 6. Essential Keybindings
-            vim.keymap.set('n', '<F5>', dap.continue, { desc = 'Start/Continue' })
-            vim.keymap.set('n', '<S-F5>', dap.terminate, { desc = 'Stop' })
-            vim.keymap.set('n', '<F6>', dap.step_over, { desc = 'Step Over' })
-            vim.keymap.set('n', '<F7>', dap.step_into, { desc = 'Step Into' })
-            vim.keymap.set('n', '<F8>', dap.step_out, { desc = 'Step Out' })
-            vim.keymap.set('n', '<F9>', dap.toggle_breakpoint, { desc = 'Toggle Breakpoint' })
+
+            -- Setup & Toggles (Low frequency -> Use <leader>)
+            vim.keymap.set('n', '<leader>db', dap.toggle_breakpoint, { desc = 'Toggle Breakpoint', silent = true })
+            vim.keymap.set('n', '<leader>dc', dap.continue, { desc = 'Start/Continue', silent = true })
+            vim.keymap.set('n', '<leader>dx', dap.terminate, { desc = 'Terminate', silent = true })
+            vim.keymap.set('n', '<leader>dr', function()
+                require('dap').repl.toggle(nil, 'botright 50vsplit')
+            end, { desc = 'Toggle REPL', silent = true })
+
+            -- Action & Stepping (High frequency -> Single keypress!)
+            vim.keymap.set('n', '<F10>', dap.step_over, { desc = 'Step Over', silent = true })
+            vim.keymap.set('n', '<F11>', dap.step_into, { desc = 'Step Into', silent = true })
+            vim.keymap.set('n', '<F12>', dap.step_out, { desc = 'Step Out', silent = true })
         end,
     },
 
@@ -100,23 +106,6 @@ return {
                 only_first_definition = true,
                 all_references = false,
             }
-        end,
-    },
-
-    -- 3. Debug UI Plugin
-    {
-        'rcarriga/nvim-dap-ui',
-        dependencies = {
-            'mfussenegger/nvim-dap',
-            'nvim-neotest/nvim-nio',
-        },
-        config = function()
-            local dapui = require 'dapui'
-
-            dapui.setup()
-
-            -- Manual UI Toggle
-            vim.keymap.set('n', '<F10>', dapui.toggle, { desc = 'Toggle UI' })
         end,
     },
 }

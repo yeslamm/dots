@@ -24,6 +24,7 @@ return {
             { '<leader>s', group = 'Search' },
             { '<leader>n', group = 'Notifications' }, -- Register your new Noice group here
             { '<leader>t', group = 'Tabs' },
+            { '<leader>d', group = 'Debug' },
             -- Individual Mappings
             { '<leader>f', desc = 'Quickfix list' },
             { '<leader>q', desc = 'Close Buffer' },
