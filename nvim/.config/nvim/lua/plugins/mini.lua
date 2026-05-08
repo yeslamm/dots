@@ -23,17 +23,7 @@ return {
                     line_up = '<A-k>',
                 },
             }
-            require('mini.surround').setup {
-                mappings = {
-                    add = 'ys', -- Add surrounding in Normal and Visual modes
-                    delete = 'ds', -- Delete surrounding
-                    replace = 'cs', -- Replace surrounding
-                    find = '', -- Disable or remap to avoid conflicts
-                    find_left = '',
-                    highlight = '',
-                    update_n_lines = '',
-                },
-            }
+            require('mini.surround').setup()
             require('mini.pairs').setup()
             require('mini.indentscope').setup {
                 symbol = '│',
