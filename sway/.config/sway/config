@@ -295,7 +295,7 @@ bindsym $mod+Escape mode Super
 mode Super {
     # System States (Lock, Suspend, Exit, Reboot, Poweroff)
     bindsym --to-code l exec $scripts/lock-ns.sh, mode default
-    bindsym --to-code s exec "swaylock -f -c 000000 -F -e -k -L && $scripts/sentry.sh", mode default
+    bindsym --to-code s exec "swaylock -f && $scripts/sentry.sh", mode default
     bindsym --to-code e exec $scripts/powermenu.sh logout, mode default
     bindsym --to-code r exec $scripts/powermenu.sh reboot, mode default
     bindsym --to-code p exec $scripts/powermenu.sh poweroff, mode default
