@@ -1,0 +1,141 @@
+# ==========================================
+# Arch Linux + Sway System Package List
+# ==========================================
+
+# --- 1. CORE SYSTEM & DRIVERS ---
+base
+base-devel
+linux-zen
+linux-zen-headers
+linux-firmware
+amd-ucode
+amdsmi
+networkmanager
+network-manager-applet
+bluez
+bluez-utils
+blueman
+efibootmgr
+polkit-gnome
+power-profiles-daemon
+zram-generator
+
+# --- 2. AUDIO & VIDEO (Pipewire) ---
+pipewire
+pipewire-alsa
+pipewire-jack
+pipewire-pulse
+wireplumber
+pavucontrol
+pamixer
+easyeffects
+alsa-utils
+
+# --- 3. WAYLAND & SWAY DESKTOP ---
+sway-git
+swaybg
+swayidle
+swaylock
+swaync
+waybar
+fuzzel
+mako
+nwg-look
+wlsunset
+xdg-desktop-portal-gtk
+xdg-desktop-portal-wlr-git
+qt5-wayland
+qt6-wayland
+keyd
+
+# --- 4. SCREENSHOTS & RECORDING ---
+grim
+slurp
+satty
+wl-clipboard
+gpu-screen-recorder-git
+gpu-screen-recorder-gtk
+obs-studio
+
+# --- 5. TERMINAL & CLI UTILITIES ---
+kitty
+zsh
+yazi
+neovim
+fzf
+ripgrep
+fd
+bat
+eza
+zoxide
+btop
+htop
+nvtop
+fastfetch
+stow
+downgrade
+aria2
+rsync
+jq
+
+# --- 6. DEVELOPMENT & GIT ---
+git
+github-cli
+lazygit
+clang
+rust
+npm
+luarocks
+dotnet-sdk
+
+# --- 7. GUI APPLICATIONS ---
+firefox
+discord
+telegram-desktop
+visual-studio-code-bin
+obsidian
+thunar
+file-roller
+qbittorrent
+mission-center
+localsend-bin
+copyq
+zathura
+zathura-pdf-mupdf
+
+# --- 8. GAMING ---
+steam
+gamemode
+lib32-gamemode
+gamescope
+lib32-gamescope
+mangohud
+lib32-mangohud
+protonup-qt
+heroic-games-launcher-bin
+prismlauncher
+umu-launcher
+
+# --- 9. ARCHIVES & MEDIA ---
+7zip
+unrar
+zip
+lzip
+mediainfo
+ffmpeg
+ffmpegthumbnailer
+mpv
+mpv-mpris
+cava
+
+# --- 10. FONTS & THEMES ---
+ttf-jetbrains-mono-nerd
+ttf-fira-mono
+ttf-hack-nerd
+noto-fonts
+noto-fonts-cjk
+noto-fonts-emoji
+ttf-ms-fonts
+inter-font
+adw-gtk-theme
+breeze
