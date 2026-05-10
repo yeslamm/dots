@@ -118,8 +118,8 @@ for_window [instance="sun-awt-X11-XDialogPeer"] floating enable
 for_window [window_role="^(pop-up|bubble|task_dialog|dialog|menu)$"] floating enable
 
 # Troublemakers (Loose regex combo for XWayland fallbacks & unpredictable naming)
-for_window [app_id="(?i).*(pavucontrol|nm-connection-editor|blueman-manager|blueman-services|syncthingtray).*"] floating enable, sticky enable
-for_window [class="(?i).*(pavucontrol|nm-connection-editor|blueman-manager|blueman-services|syncthingtray).*"] floating enable, sticky enable
+for_window [app_id="(?i).*(pavucontrol|nm-connection-editor|blueman-manager|blueman-services).*"] floating enable, sticky enable
+for_window [class="(?i).*(pavucontrol|nm-connection-editor|blueman-manager|blueman-services).*"] floating enable, sticky enable
 
 # Custom App Rules
 for_window [app_id="float-term"] floating enable, resize set 1100 800, move position center, border pixel 4
@@ -182,7 +182,9 @@ bindsym --to-code $mod+semicolon     split v
 bindsym --to-code $mod+apostrophe    split h
 bindsym --to-code $mod+Shift+f       floating toggle
 bindsym --to-code $mod+f             fullscreen
-bindsym --to-code $mod+c             move position center
+bindsym --to-code $mod+Shift+c       move position center
+bindsym --to-code $mod+a             focus parent
+bindsym --to-code $mod+c             focus child
 floating_modifier $mod normal
 
 # Scratchpad
@@ -273,12 +275,11 @@ bindsym --release --to-code Control+Mod1+Print  exec $scripts/screenshot.sh wind
 # ==============================================================================
 # 10. MODES
 # ==============================================================================
-# -- 3. The Power Editor Mode (Satty) --
+# -- 3. The Power Editor Mode (Print) --
 # Logic: Enter mode, then press single letter for capture type
-set $satty_mode "Print"
-bindsym --to-code $mod+Print mode $satty_mode
+bindsym --to-code $mod+Print mode Print
 
-mode $satty_mode {
+mode Print {
     bindsym --to-code r exec swaymsg 'mode "default"' && $scripts/screenshot.sh region
     bindsym --to-code f exec swaymsg 'mode "default"' && $scripts/screenshot.sh fullscreen
     bindsym --to-code w exec swaymsg 'mode "default"' && $scripts/screenshot.sh window
@@ -308,7 +309,7 @@ mode Super {
 
     # Hardware & System
     bindsym --to-code t exec $term -e watch -n 2.5 -d sensors, mode default
-    bindsym --to-code g exec $scripts/wlsunset.sh, mode default
+    bindsym --to-code n exec $scripts/wlsunset.sh, mode default
     bindsym --to-code u exec $term -e sh -c 'sudo pacman -Syu && yay -Syua; read -p "Press enter to exit..."', mode default
     bindsym --to-code a exec $term -e sh -c 'alsamixer', mode default
     bindsym --to-code v exec pavucontrol, mode default
@@ -319,11 +320,11 @@ mode Super {
     bindsym $mod+Escape mode default
 }
 
-# -- Asus Mode --
-bindsym XF86Launch1 mode Asus
-bindsym --to-code $mod+a mode Asus
+# -- Power Mode --
+bindsym XF86Launch1 mode Power
+bindsym --to-code $mod+p mode Power
 
-mode Asus {
+mode Power {
     # Power Profiles (Saver, Balanced, Performance)
     bindsym --to-code s exec powerprofilesctl set power-saver \
         && notify-send -t 1500 -h string:x-canonical-private-synchronous:asus "Profile: Power Saver", mode "default"
@@ -345,5 +346,5 @@ mode Asus {
     bindsym Escape mode "default"
     bindsym Return mode "default"
     bindsym XF86Launch1 mode "default"
-    bindsym --to-code $mod+a mode "default"
+    bindsym --to-code $mod+p mode "default"
 }
