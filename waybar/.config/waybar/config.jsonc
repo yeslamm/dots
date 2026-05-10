@@ -23,6 +23,8 @@
     "custom/separator1",
     "power-profiles-daemon",
     "custom/separator1",
+    "keyboard-state",
+    "custom/separator1",
     "sway/language",
     "custom/separator1",
     "wireplumber",
@@ -111,6 +113,15 @@
   "sway/language": {
     "format": "{short} {variant}",
     "tooltip": false
+  },
+  "keyboard-state": {
+    "numlock": false,
+    "capslock": true,
+    "format": "{icon}",
+    "format-icons": {
+      "locked": "ON",
+      "unlocked": "OFF"
+    }
   },
   "custom/fan": {
     "format": "{} RPM",

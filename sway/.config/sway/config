@@ -26,7 +26,7 @@ output * bg ~/Pictures/archlogosquares.jpg fill
 
 input type:keyboard {
     xkb_layout "us,ara"
-    xkb_capslock disabled
+    # xkb_capslock disabled
     xkb_options "grp:alt_shift_toggle"
     repeat_delay 190
     repeat_rate 60
@@ -56,16 +56,19 @@ mouse_warping output
 exec gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors-r3'
 exec gsettings set org.gnome.desktop.interface cursor-size 24
 exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-exec mako
-exec easyeffects --hide-window
 exec wlsunset -l 31.11167 -L 30.94583 -t 4500 -T 6500
+
 exec nm-applet --indicator
 exec sh -c 'sleep 1 && blueman-applet'
+exec mako
 exec copyq --start-server
+exec $scripts/capslock.sh
+exec_always sh -c 'killall waybar ; sleep 0.5 && waybar'
+
 exec wpctl set-volume @DEFAULT_SINK@ 0.30
 exec wpctl set-volume @DEFAULT_SOURCE@ 0.40
+exec easyeffects --hide-window
 exec amixer -c 1 set 'Internal Mic Boost' 0
-exec_always sh -c 'killall waybar ; sleep 0.5 && waybar'
 
 exec $scripts/start_idle.sh
 exec wayland-pipewire-idle-inhibit -q
