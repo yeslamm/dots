@@ -119,8 +119,8 @@
     "capslock": true,
     "format": "{icon}",
     "format-icons": {
-      "locked": "ON",
-      "unlocked": "OFF"
+      "locked": "CAPS   ",
+      "unlocked": ""
     }
   },
   "custom/fan": {
@@ -139,7 +139,7 @@
     "format": "{}"
   },
   "custom/idlemgr": {
-    "exec": "pgrep swayidle > /dev/null && echo 'ON' || echo 'OFF'",
+    "exec": "pgrep swayidle > /dev/null && echo 'IDLE: on' || echo 'IDLE: off'",
     "return-type": "text",
     "interval": "once",
     "signal": 12,
