@@ -26,7 +26,6 @@ output * bg ~/Pictures/archlogosquares.jpg fill
 
 input type:keyboard {
     xkb_layout "us,ara"
-    # xkb_capslock disabled
     xkb_options "grp:alt_shift_toggle"
     repeat_delay 190
     repeat_rate 60
