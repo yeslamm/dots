@@ -1,6 +1,6 @@
 * {
   font-family: "Iosevka Nerd Font", "Symbols Nerd Font", sans-serif;
-  font-size: 17px;
+  font-size: 16px;
   border: none;
   border-radius: 0;
 }
@@ -62,44 +62,10 @@
   margin: 0px 0px;
 }
 
-#memory,
-#disk,
-#cpu,
-#temperature,
-#network,
-#sway-language,
-#custom-fan,
-#custom-idle {
-  background: rgba(46, 52, 64, 0);
-  color: #ffffff;
-  padding: 0px 0px;
-  margin: 0px;
-}
-
-#custom-layout {
-  color: #ffffff;
-  padding-left: 8px;
-  padding-right: 0px;
-}
-
-#pulseaudio,
-#wireplumber,
-#backlight {
-  background: rgba(46, 52, 64, 0);
-  color: #ffffff;
-  padding: 0px 0px;
-  margin: 0px;
-}
-
 #battery {
   color: #ffffff;
   padding: 0px 0px;
   margin-right: 8px;
-}
-
-#power-profiles-daemon {
-  font-size: 16px;
-  margin-top: 1px;
 }
 
 #clock {
@@ -107,7 +73,6 @@
   color: #ffffff;
   font-size: 20px;
   padding: 0px 0px;
-  margin-top: 2px;
 }
 
 #tray {
@@ -117,14 +82,7 @@
   margin: 0px 0px 0px 16px;
 }
 
-#custom-updates {
-  padding: 0px 0px;
-  margin-right: 16px;
-  font-size: 16px;
-}
-
-#custom-separator0,
-#custom-separator1 {
+#custom-separator {
   color: #666666;
   padding: 0px;
 }
