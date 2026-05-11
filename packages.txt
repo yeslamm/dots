@@ -11,10 +11,10 @@ linux-firmware
 amd-ucode
 amdsmi
 networkmanager
-network-manager-applet
+imapla
+bluetui
 bluez
 bluez-utils
-blueman
 efibootmgr
 polkit-gnome
 power-profiles-daemon
