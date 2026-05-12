@@ -59,7 +59,6 @@ exec wlsunset -l 31.11167 -L 30.94583 -t 4500 -T 6500
 
 exec mako
 exec copyq --start-server
-exec $scripts/capslock.sh
 exec_always sh -c 'killall waybar ; sleep 0.5 && waybar'
 
 exec wpctl set-volume @DEFAULT_SINK@ 0.30
