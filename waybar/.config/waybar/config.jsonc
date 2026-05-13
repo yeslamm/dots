@@ -37,13 +37,13 @@
   ],
 
   "custom/separator": {
-    "format": "   ",
+    "format": " ",
     "tooltip": false
   },
 
   "tray": {
     "icon-size": 16,
-    "spacing": 16
+    "spacing": 14
   },
 
   "wireplumber": {

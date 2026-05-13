@@ -1,6 +1,7 @@
 * {
-  font-family: "Iosevka Nerd Font", "Symbols Nerd Font", sans-serif;
-  font-size: 16px;
+  font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font", sans-serif;
+
+  font-size: 15px;
   border: none;
   border-radius: 0;
 }
@@ -11,7 +12,6 @@
 }
 
 #workspaces button {
-  font-family: "JetBrainsMono Nerd Font", sans-serif;
   padding: 0px 8px;
   min-width: 8px;
   margin: 0px 0px;
@@ -42,11 +42,10 @@
 
 #scratchpad,
 #mode {
-  font-family: "JetBrainsMono Nerd Font", sans-serif;
   background-color: #4d545b;
   color: #ffffff;
   padding: 0px 8px;
-  margin-left: 12px;
+  margin-left: 15px;
   margin-right: 0px;
 }
 
@@ -83,6 +82,16 @@
 }
 
 #custom-separator {
-  color: #666666;
   padding: 0px;
+  min-width: 20px;
+}
+
+#temperature.critical {
+  color: #ff5555;
+}
+#battery.warning {
+  color: #f1fa8c;
+}
+#battery.critical {
+  color: #ff5555;
 }
