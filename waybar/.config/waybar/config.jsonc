@@ -49,11 +49,9 @@
   "wireplumber": {
     "format": "{volume}%",
     "format-muted": "Muted",
-    // Using your custom scripts so you get the notify-send popups!
     "on-scroll-up": "~/.config/sway/scripts/vol.sh up",
     "on-scroll-down": "~/.config/sway/scripts/vol.sh down",
     "on-click": "~/.config/sway/scripts/vol.sh mute",
-    // Using your media script for right click
     "on-click-right": "~/.config/sway/scripts/media.sh",
     "on-click-middle": "pavucontrol"
   },
@@ -77,9 +75,11 @@
   },
   "battery": {
     "bat": "BAT1",
-    "interval": 1,
+    "interval": 30,
     "states": {
-      "clamped": 70
+      "clamped": 60,
+      "warning": 30,
+      "critical": 15
     },
     "format": "{capacity}%",
     "format-charging": "+ {capacity}%",
@@ -91,12 +91,13 @@
     "interval": 3,
     "format": "{used:0.2f}G",
     "on-click": "$TERMINAL -e btop",
-    "tooltip": false
+    "tooltip": true,
+    "tooltip-format": "Used: {used:0.2f}G\nSwap: {swapUsed:0.2f}G\nTotal: {total:0.2f}G"
   },
   "temperature": {
     "interval": 3,
     "tooltip": false,
-    "hwmon-path": "/sys/class/hwmon/hwmon6/temp1_input",
+    "thermal-zone": "/sys/class/thermal/thermal_zone0",
     "format": "{temperatureC}°C",
     "critical-threshold": 100,
     "format-critical": "CRIT {temperatureC}°C",
@@ -108,15 +109,17 @@
     "on-click": "missioncenter"
   },
   "sway/language": {
-    "format": "{short} {variant}",
-    "tooltip": false
+    "format": "{shortDescription} {variant}",
+    "on-click": "swaymsg input type:keyboard xkb_switch_layout next",
+    "tooltip": true,
+    "tooltip-format": "{long} {variant}"
   },
   "keyboard-state": {
     "numlock": false,
     "capslock": true,
     "format": "{icon}",
     "format-icons": {
-      "locked": "CAPS   ",
+      "locked": "CAPS  ",
       "unlocked": ""
     }
   },
@@ -158,11 +161,8 @@
     ]
   },
   "sway/scratchpad": {
-    "format": "{icon} {count}",
-    "show-empty": false,
-    "format-icons": ["", ""],
-    "tooltip": true,
-    "tooltip-format": "{app}: {title}"
+    "format": "Pad: {count}",
+    "show-empty": false
   },
   "network": {
     "format-wifi": "{essid}",
