@@ -219,6 +219,7 @@ alias swayconf='nvim ~/.config/sway/config'
 alias appid='swaymsg -t get_tree | rg app_id'
 alias img='swayimg'
 alias zura='zathura'
+alias btctl='bluetoothctl'
 
 # ----------------------------------------------------------------------
 # FZF-Tab Completion Configuration

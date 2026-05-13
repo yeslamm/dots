@@ -297,10 +297,6 @@ mode Super {
     bindsym --to-code r exec $scripts/powermenu.sh reboot, mode default
     bindsym --to-code p exec $scripts/powermenu.sh poweroff, mode default
 
-    # Network & Bluetooth
-    bindsym --to-code w exec $f_term -e impala, mode default
-    bindsym --to-code b exec $f_term -e bluetui, mode default
-
     # Hardware & System
     bindsym --to-code t exec $term -e watch -n 2.5 -d sensors, mode default
     bindsym --to-code n exec $scripts/wlsunset.sh, mode default

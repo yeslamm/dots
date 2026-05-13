@@ -165,20 +165,30 @@
     "tooltip-format": "{app}: {title}"
   },
   "network": {
-    "format-wifi": "WIFI: on",
-    "format-ethernet": "ETH: on",
-    "format-disconnected": "WIFI: off",
-    "tooltip-format": "{ifname} via {gwaddr}\n{ipaddr}",
-    "tooltip-format-wifi": "{essid} {signalStrength}%\n{ipaddr}",
-    "on-click": "kitty --class float-term -e impala"
+    "format-wifi": "{essid}",
+    "format-ethernet": "{ipaddr}",
+    "format-disconnected": "Disconnected",
+    "format-disabled": "off",
+    "tooltip-format": "{ifname} via {gwaddr}",
+    "tooltip-format-wifi": "SSID: {essid}\nSignal: {signalStrength}%\nFreq: {frequency}Ghz\n\nIP: {ipaddr}\nGW: {gwaddr}",
+    "tooltip-format-ethernet": "{ifname}\t{ipaddr}",
+    "tooltip-format-disconnected": "No active network connection",
+    "tooltip-format-disabled": "Networking is completely disabled",
+    "max-length": 20,
+    "on-click": "nmcli radio all on",
+    "on-click-right": "nmcli radio all off"
   },
   "bluetooth": {
-    "format": "BT: {status}",
-    "format-connected": "BT: Connected",
-    "format-disabled": "BT: off",
-    "tooltip-format": "Bluetooth Status: {status}",
-    "tooltip-format-connected": "Connected Devices:\n{device_enumerate}",
-    "tooltip-format-enumerate-connected": "- {device_alias}",
-    "on-click": "kitty --class float-term -e bluetui"
+    "format": "on",
+    "format-connected": "{num_connections} connected",
+    "format-off": "off",
+    "format-disabled": "Disabled",
+    "tooltip-format": "{controller_alias}\t{controller_address}",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    "tooltip-format-off": "Bluetooth is powered off",
+    "tooltip-format-disabled": "Bluetooth hardware is disabled",
+    "on-click": "bluetoothctl power on",
+    "on-click-right": "bluetoothctl power off"
   }
 }

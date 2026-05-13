@@ -11,8 +11,6 @@ linux-firmware
 amd-ucode
 amdsmi
 networkmanager
-imapla
-bluetui
 bluez
 bluez-utils
 efibootmgr
