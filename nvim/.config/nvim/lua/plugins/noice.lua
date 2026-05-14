@@ -4,6 +4,7 @@ return {
     opts = {
         lsp = {
             enabled = true, -- This replaces Fidget[cite: 1]
+            signature = { enabled = false },
             view = 'mini', -- A tiny, non-intrusive notification in the corner[cite: 1]
             override = {
                 ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
@@ -13,8 +14,6 @@ return {
         },
         views = {
             cmdline_popup = {
-                position = { row = 5, col = '50%' },
-                size = { width = 60, height = 'auto' },
                 border = { style = 'single', padding = { 0, 1 } },
             },
             cmdline_input = {
@@ -22,8 +21,6 @@ return {
             },
             popupmenu = {
                 relative = 'editor',
-                position = { row = 8, col = '50%' },
-                size = { width = 60, height = 10 },
                 border = { style = 'single', padding = { 0, 1 } },
                 win_options = {
                     winhighlight = { Normal = 'NormalFloat', FloatBorder = 'FloatBorder' },
