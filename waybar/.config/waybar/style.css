@@ -85,13 +85,3 @@
   padding: 0px;
   min-width: 20px;
 }
-
-#temperature.critical {
-  color: #ff5555;
-}
-#battery.warning {
-  color: #f1fa8c;
-}
-#battery.critical {
-  color: #ff5555;
-}
