@@ -84,6 +84,7 @@ return {
             })
 
             vim.diagnostic.config {
+                update_in_insert = false,
                 severity_sort = true,
                 float = { border = 'single', source = 'if_many' },
                 virtual_text = { prefix = '', spacing = 0, source = false },

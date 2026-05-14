@@ -40,7 +40,7 @@ return {
                 sections = { 'error', 'warn', 'info', 'hint' },
                 symbols = { error = ' ', warn = ' ', info = ' ', hint = ' ' },
                 colored = true,
-                update_in_insert = true,
+                update_in_insert = false,
                 always_visible = false,
                 cond = hide_in_width,
             }
