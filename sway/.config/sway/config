@@ -298,10 +298,8 @@ mode Super {
     bindsym --to-code p exec $scripts/powermenu.sh poweroff, mode default
 
     # Hardware & System
-    bindsym --to-code t exec $term -e watch -n 2.5 -d sensors, mode default
+    bindsym --to-code t exec $term -e watch -n 3 -d sensors, mode default
     bindsym --to-code n exec $scripts/wlsunset.sh, mode default
-    bindsym --to-code u exec $term -e sh -c 'sudo pacman -Syu && yay -Syua; read -p "Press enter to exit..."', mode default
-    bindsym --to-code a exec $term -e sh -c 'alsamixer', mode default
     bindsym --to-code v exec pavucontrol, mode default
 
     # Wi-Fi 
