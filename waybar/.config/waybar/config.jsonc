@@ -123,23 +123,29 @@
       "unlocked": ""
     }
   },
+
   "custom/fan": {
-    "format": "{} RPM",
-    "exec": "sensors | awk '/cpu_fan/ {print $2}'",
+    "exec": "awk '{if ($1 != 0) print $1 \" RPM  \"}' /sys/class/hwmon/hwmon7/fan1_input",
     "interval": 3,
     "tooltip": false,
     "on-click": "$TERMINAL -e watch -d sensors"
   },
+
   "power-profiles-daemon": {
-    "format": "{profile}",
+    "format": "{icon}",
     "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
-    "tooltip": true
+    "tooltip": true,
+    "format-icons": {
+      "performance": "|>",
+      "balanced": "|=",
+      "power-saver": "|-"
+    }
   },
   "sway/mode": {
     "format": "{}"
   },
   "custom/idlemgr": {
-    "exec": "pgrep swayidle > /dev/null && echo 'IDLE: on' || echo 'IDLE: off'",
+    "exec": "pgrep swayidle > /dev/null && echo 'IDLE: ON' || echo 'IDLE: OFF'",
     "return-type": "text",
     "interval": "once",
     "signal": 12,
@@ -167,28 +173,30 @@
   "network": {
     "format-wifi": "{essid}",
     "format-ethernet": "{ipaddr}",
-    "format-disconnected": "Disconnected",
-    "format-disabled": "off",
+    "format-disconnected": "DISCONNECTED",
+    "format-disabled": "OFF",
     "tooltip-format": "{ifname} via {gwaddr}",
     "tooltip-format-wifi": "SSID: {essid}\nSignal: {signalStrength}%\nFreq: {frequency}Ghz\n\nIP: {ipaddr}\nGW: {gwaddr}",
     "tooltip-format-ethernet": "{ifname}\t{ipaddr}",
     "tooltip-format-disconnected": "No active network connection",
     "tooltip-format-disabled": "Networking is completely disabled",
-    "max-length": 20,
+    "max-length": 18,
     "on-click": "nmcli radio all on",
-    "on-click-right": "nmcli radio all off"
+    "on-click-right": "nmcli radio all off",
+    "on-click-middle": "$TERMINAL -e nmtui"
   },
   "bluetooth": {
-    "format": "on",
-    "format-connected": "{num_connections} connected",
-    "format-off": "off",
-    "format-disabled": "Disabled",
+    "format": "ON",
+    "format-connected": "{num_connections} CONNECTED",
+    "format-off": "OFF",
+    "format-disabled": "DISABLED",
     "tooltip-format": "{controller_alias}\t{controller_address}",
     "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
     "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
     "tooltip-format-off": "Bluetooth is powered off",
     "tooltip-format-disabled": "Bluetooth hardware is disabled",
     "on-click": "bluetoothctl power on",
-    "on-click-right": "bluetoothctl power off"
+    "on-click-right": "bluetoothctl power off",
+    "on-click-middle": "$TERMINAL -e bluetuith"
   }
 }
