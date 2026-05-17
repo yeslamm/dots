@@ -90,14 +90,10 @@ client.focused_inactive  #3f4447    #2b2e30    #cccccc    #45494d    #17181a
 client.unfocused         #17181a    #17181a    #8a8f93    #17181a    #17181a
 client.urgent            #232527    #232527    #ffffff    #d93a49    #d93a49
 
-# bar {
-#     swaybar_command waybar
-# }
 # ==============================================================================
 #  5. WINDOW RULES
 # ==============================================================================
 
-# Specific Apps (Strict matches for predictable apps)
 for_window [app_id="fdm"] floating enable, resize set 1100 800, move position center, move scratchpad
 for_window [app_id="org.qbittorrent.qBittorrent"] floating enable, resize set 1300 900, move position center
 for_window [class="com-abdownloadmanager-desktop-AppKt"] floating enable
@@ -108,25 +104,20 @@ for_window [app_id="mpv"] floating enable
 for_window [app_id="swayimg"] floating enable
 for_window [app_id="com.dec05eba.gpu_screen_recorder"] floating enable
 
-# System / Portals / General Dialogs
 for_window [app_id="xdg-desktop-portal-gtk"] floating enable
 for_window [instance="sun-awt-X11-XDialogPeer"] floating enable
 for_window [window_role="^(pop-up|bubble|task_dialog|dialog|menu)$"] floating enable
 
-# Troublemakers (Loose regex combo for XWayland fallbacks & unpredictable naming)
 for_window [app_id="(?i).*(pavucontrol).*"] floating enable, sticky enable
 for_window [class="(?i).*(pavucontrol).*"] floating enable, sticky enable
 
-# Custom App Rules
 for_window [app_id="fterm"] floating enable, resize set 1100 800, move position center, border pixel 4
 for_window [title="^fterm$"] floating enable, resize set 1100 800, move position center, border pixel 4
 for_window [title="Picture-in-Picture"] floating enable, sticky enable
 for_window [app_id="firefox" title="^Extension:.*"] floating enable
 
-# IDLE INHIBITORS
 for_window [all] inhibit_idle fullscreen
 
-# 1. Media, Readers, Torrents, and Gaming (Bulletproof Wayland & XWayland catch-all)
 for_window [app_id="(?i).*(mpv|vlc|okular|zathura|qbittorrent|transmission|steam|gamescope|\.exe).*"] inhibit_idle focus
 for_window [class="(?i).*(mpv|vlc|okular|zathura|qbittorrent|transmission|steam|gamescope|\.exe).*"] inhibit_idle focus
 
@@ -153,24 +144,20 @@ bindsym --to-code $mod+Shift+r  reload
 
 bindsym $mod+tab focus mode_toggle
 
-# Focus
 bindsym --to-code $mod+h        focus left
 bindsym --to-code $mod+j        focus down
 bindsym --to-code $mod+k        focus up
 bindsym --to-code $mod+l        focus right
 
-# Move
 bindsym --to-code $mod+Shift+h  move left
 bindsym --to-code $mod+Shift+j  move down
 bindsym --to-code $mod+Shift+k  move up
 bindsym --to-code $mod+Shift+l  move right
 
-# Workspaces
 bindsym --to-code $mod+Shift+period  move workspace to output next
 bindsym --to-code $mod+Shift+comma   move workspace to output prev
 bindsym --to-code $mod+grave         workspace back_and_forth
 
-# Layouts
 bindsym --to-code $mod+w             layout tabbed
 bindsym --to-code $mod+e             layout toggle split
 bindsym --to-code $mod+z             layout stacking
@@ -183,11 +170,9 @@ bindsym --to-code $mod+a             focus parent
 bindsym --to-code $mod+c             focus child
 floating_modifier $mod normal
 
-# Scratchpad
 bindsym --to-code $mod+s             scratchpad show
 bindsym --to-code $mod+Shift+s       move scratchpad
 
-# Resize
 bindsym --to-code Control+$mod+h  resize shrink width 40px
 bindsym --to-code Control+$mod+j  resize grow height 40px
 bindsym --to-code Control+$mod+k  resize shrink height 40px
@@ -221,7 +206,6 @@ bindsym --to-code $mod+Shift+9 move container to workspace number 9
 #  9. UTILITIES & HARDWARE
 # ==============================================================================
 
-# Hardware keys (Native Support)
 bindsym --locked XF86MonBrightnessDown exec $scripts/bright.sh down
 bindsym --locked XF86MonBrightnessUp   exec $scripts/bright.sh up
 bindsym --locked XF86AudioRaiseVolume  exec $scripts/vol.sh up
@@ -231,19 +215,17 @@ bindsym --locked XF86AudioPlay         exec $scripts/media.sh play-pause
 bindsym --locked XF86AudioNext         exec playerctl next
 bindsym --locked XF86AudioPrev         exec playerctl previous
 
-# Universal Controls (Mnemonic & Right-Hand Zone)
-bindsym --locked --to-code --locked $mod+minus        exec $scripts/vol.sh down
-bindsym --locked --to-code --locked $mod+equal        exec $scripts/vol.sh up
-bindsym --locked --to-code --locked $mod+0            exec $scripts/vol.sh mute
+bindsym --to-code --locked $mod+minus        exec $scripts/vol.sh down
+bindsym --to-code --locked $mod+equal        exec $scripts/vol.sh up
+bindsym --to-code --locked $mod+0            exec $scripts/vol.sh mute
 
 bindsym --to-code --locked $mod+bracketleft  exec $scripts/bright.sh down
 bindsym --to-code --locked $mod+bracketright exec $scripts/bright.sh up
 
-bindsym --locked --to-code $mod+comma                 exec playerctl previous
-bindsym --locked --to-code $mod+period                exec playerctl next
-bindsym --locked --to-code $mod+slash                 exec $scripts/media.sh play-pause
+bindsym --to-code --locked $mod+comma                 exec playerctl previous
+bindsym --to-code --locked $mod+period                exec playerctl next
+bindsym --to-code --locked $mod+slash                 exec $scripts/media.sh play-pause
 
-# Desktop Utilities
 bindsym --to-code $mod+n        exec makoctl dismiss
 bindsym --to-code $mod+Shift+n  exec makoctl invoke
 
@@ -255,15 +237,10 @@ bindsym --to-code $mod+i exec "$scripts/start_idle.sh; notify-send -t 1500 -h st
 
 bindsym --to-code $mod+v        exec copyq toggle
 
-# Screenshots
-# -- 1. Fast Clipboard Snips (Copy) --
-# Logic: Base = Copy | Shift = Fullscreen | Alt (Mod1) = Window
 bindsym --to-code Print               exec $scripts/screenshot.sh region-copy
 bindsym --to-code Shift+Print         exec $scripts/screenshot.sh grim-copy
 bindsym --release --to-code Mod1+Print          exec $scripts/screenshot.sh window-copy
 
-# -- 2. Archiving (Save to Disk) --
-# Logic: Control = Save
 bindsym --to-code Control+Print       exec $scripts/screenshot.sh region-save
 bindsym --to-code Control+Shift+Print exec $scripts/screenshot.sh grim-save
 bindsym --release --to-code Control+Mod1+Print  exec $scripts/screenshot.sh window-save
@@ -271,8 +248,7 @@ bindsym --release --to-code Control+Mod1+Print  exec $scripts/screenshot.sh wind
 # ==============================================================================
 # 10. MODES
 # ==============================================================================
-# -- 3. The Power Editor Mode (Print) --
-# Logic: Enter mode, then press single letter for capture type
+
 bindsym --to-code $mod+Print mode Print
 
 mode Print {
@@ -280,50 +256,41 @@ mode Print {
     bindsym --to-code f exec swaymsg 'mode "default"' && $scripts/screenshot.sh fullscreen
     bindsym --to-code w exec swaymsg 'mode "default"' && $scripts/screenshot.sh window
 
-    # Exit keys
     bindsym Escape mode "default"
     bindsym Return mode "default"
     bindsym $mod+Print mode "default"
 }
 
-# -- Super Mode --
 bindsym $mod+Escape mode Super
 
 mode Super {
-    # System States (Lock, Suspend, Exit, Reboot, Poweroff)
     bindsym --to-code l exec $scripts/lock-ns.sh, mode default
     bindsym --to-code s exec "swaylock -f && $scripts/sentry.sh", mode default
     bindsym --to-code e exec $scripts/powermenu.sh logout, mode default
     bindsym --to-code r exec $scripts/powermenu.sh reboot, mode default
     bindsym --to-code p exec $scripts/powermenu.sh poweroff, mode default
 
-    # Hardware & System
     bindsym --to-code t exec $term -e watch -n 3 -d sensors, mode default
     bindsym --to-code n exec $scripts/wlsunset.sh, mode default
     bindsym --to-code v exec pavucontrol, mode default
 
-    # Wi-Fi 
     bindsym --to-code w exec nmcli radio all on && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Network: ON", mode default
     bindsym --to-code Shift+w exec nmcli radio all off && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Network: OFF", mode default
     bindsym --to-code Control+w exec $f_term -e nmtui, mode default
 
-    # Bluetooth
     bindsym --to-code b exec bluetoothctl power on && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Bluetooth: ON", mode default
     bindsym --to-code Shift+b exec bluetoothctl power off && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Bluetooth: OFF", mode default
     bindsym --to-code Control+b exec $f_term -e bluetuith, mode default
 
-    # Exit mode
     bindsym Escape mode default
     bindsym Return mode default
     bindsym $mod+Escape mode default
 }
 
-# -- Power Mode --
 bindsym XF86Launch1 mode Power
 bindsym --to-code $mod+p mode Power
 
 mode Power {
-    # Power Profiles (Saver, Balanced, Performance)
     bindsym --to-code s exec powerprofilesctl set power-saver \
         && notify-send -t 1500 -h string:x-canonical-private-synchronous:asus "Profile: Power Saver", mode "default"
 
@@ -333,14 +300,12 @@ mode Power {
     bindsym --to-code p exec powerprofilesctl set performance \
         && notify-send -t 1500 -h string:x-canonical-private-synchronous:asus "Profile: Performance", mode "default"
 
-    # Battery Charging (Limit, Full)
     bindsym --to-code l exec asusctl battery limit 60 \
         && notify-send -t 1500 -h string:x-canonical-private-synchronous:asus "Battery: Limit set to 60%", mode default
 
     bindsym --to-code f exec asusctl battery oneshot \
         && notify-send -t 1500 -h string:x-canonical-private-synchronous:asus "Battery: Charging to 100%", mode default
 
-    # Exit mode
     bindsym Escape mode "default"
     bindsym Return mode "default"
     bindsym XF86Launch1 mode "default"
