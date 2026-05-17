@@ -232,16 +232,16 @@ bindsym --locked XF86AudioNext         exec playerctl next
 bindsym --locked XF86AudioPrev         exec playerctl previous
 
 # Universal Controls (Mnemonic & Right-Hand Zone)
-bindsym --to-code --locked $mod+minus        exec $scripts/vol.sh down
-bindsym --to-code --locked $mod+equal        exec $scripts/vol.sh up
-bindsym --to-code --locked $mod+0            exec $scripts/vol.sh mute
+bindsym --locked --to-code --locked $mod+minus        exec $scripts/vol.sh down
+bindsym --locked --to-code --locked $mod+equal        exec $scripts/vol.sh up
+bindsym --locked --to-code --locked $mod+0            exec $scripts/vol.sh mute
 
 bindsym --to-code --locked $mod+bracketleft  exec $scripts/bright.sh down
 bindsym --to-code --locked $mod+bracketright exec $scripts/bright.sh up
 
-bindsym --to-code $mod+comma                 exec playerctl previous
-bindsym --to-code $mod+period                exec playerctl next
-bindsym --to-code $mod+slash                 exec $scripts/media.sh play-pause
+bindsym --locked --to-code $mod+comma                 exec playerctl previous
+bindsym --locked --to-code $mod+period                exec playerctl next
+bindsym --locked --to-code $mod+slash                 exec $scripts/media.sh play-pause
 
 # Desktop Utilities
 bindsym --to-code $mod+n        exec makoctl dismiss
