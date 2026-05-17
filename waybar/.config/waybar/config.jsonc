@@ -45,7 +45,7 @@
   "wireplumber": {
     "format": "{volume}%",
     "format-muted": "Muted",
-    "on-scroll-up": "wpctl set-volume @DEFAULT_SINK@ 5%+",
+    "on-scroll-up": "wpctl set-volume -l 1.0 @DEFAULT_SINK@ 5%+",
     "on-scroll-down": "wpctl set-volume @DEFAULT_SINK@ 5%-",
     "on-click": "wpctl set-mute @DEFAULT_SINK@ toggle",
     "on-click-right": "~/.config/sway/scripts/media.sh",
