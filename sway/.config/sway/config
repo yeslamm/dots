@@ -229,11 +229,8 @@ bindsym --to-code --locked $mod+slash                 exec $scripts/media.sh pla
 bindsym --to-code $mod+n        exec makoctl dismiss
 bindsym --to-code $mod+Shift+n  exec makoctl invoke
 
-# Disable Auto-lock
-bindsym --to-code $mod+o exec "killall swayidle; notify-send -t 1500 -h string:x-canonical-private-synchronous:idlemgr 'IDLE: OFF'; pkill -RTMIN+12 waybar"
-
-# Enable Auto-lock
-bindsym --to-code $mod+i exec "$scripts/start_idle.sh; notify-send -t 1500 -h string:x-canonical-private-synchronous:idlemgr 'IDLE: ON'; pkill -RTMIN+12 waybar"
+bindsym --to-code $mod+o exec $scripts/idlemgr.sh OFF
+bindsym --to-code $mod+i exec $scripts/idlemgr.sh ON
 
 bindsym --to-code $mod+v        exec copyq toggle
 

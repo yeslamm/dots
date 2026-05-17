@@ -145,7 +145,8 @@
     "return-type": "text",
     "interval": "once",
     "signal": 12,
-    "tooltip": false
+    "tooltip": false,
+    "on-click": "~/.config/sway/scripts/idlemgr.sh TOGGLE"
   },
   "privacy": {
     "icon-spacing": 18,
