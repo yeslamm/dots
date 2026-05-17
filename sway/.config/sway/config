@@ -303,12 +303,12 @@ mode Super {
     bindsym --to-code v exec pavucontrol, mode default
 
     # Wi-Fi 
-    bindsym --to-code w exec nmcli radio all on && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Network: on", mode default
+    bindsym --to-code w exec nmcli radio all on && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Network: ON", mode default
     bindsym --to-code Shift+w exec nmcli radio all off && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Network: OFF", mode default
     bindsym --to-code Control+w exec $f_term -e nmtui, mode default
 
     # Bluetooth
-    bindsym --to-code b exec bluetoothctl power on && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Bluetooth: on", mode default
+    bindsym --to-code b exec bluetoothctl power on && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Bluetooth: ON", mode default
     bindsym --to-code Shift+b exec bluetoothctl power off && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Bluetooth: OFF", mode default
     bindsym --to-code Control+b exec $f_term -e bluetuith, mode default
 
