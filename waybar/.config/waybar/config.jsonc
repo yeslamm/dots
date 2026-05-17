@@ -47,9 +47,9 @@
   "wireplumber": {
     "format": "{volume}%",
     "format-muted": "Muted",
-    "on-scroll-up": "~/.config/sway/scripts/vol.sh up",
-    "on-scroll-down": "~/.config/sway/scripts/vol.sh down",
-    "on-click": "~/.config/sway/scripts/vol.sh mute",
+    "on-scroll-up": "wpctl set-volume @DEFAULT_SINK@ 5%+",
+    "on-scroll-down": "wpctl set-volume @DEFAULT_SINK@ 5%-",
+    "on-click": "wpctl set-mute @DEFAULT_SINK@ toggle",
     "on-click-right": "~/.config/sway/scripts/media.sh",
     "on-click-middle": "pavucontrol"
   },
@@ -57,11 +57,11 @@
   "backlight": {
     "device": "amdgpu_bl1",
     "format": "{percent}%",
-    "on-scroll-up": "~/.config/sway/scripts/bright.sh up",
-    "on-scroll-down": "~/.config/sway/scripts/bright.sh down",
-    "on-click": "brightnessctl -d amdgpu_bl1 set 85%",
-    "on-click-right": "brightnessctl -d amdgpu_bl1 set 70%",
-    "on-click-middle": "brightnessctl -d amdgpu_bl1 set 50%",
+    "on-scroll-up": "brightnessctl set 5%+",
+    "on-scroll-down": "brightnessctl set 5%-",
+    "on-click": "brightnessctl set 85%",
+    "on-click-right": "brightnessctl set 70%",
+    "on-click-middle": "brightnessctl set 50%",
     "tooltip": false
   },
   "clock": {
