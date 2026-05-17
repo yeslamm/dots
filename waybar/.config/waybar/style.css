@@ -64,6 +64,10 @@
 #battery {
   color: #ffffff;
   padding: 0px 0px;
+  margin-right: 10px;
+}
+
+#power-profiles-daemon {
   margin-right: 8px;
 }
 

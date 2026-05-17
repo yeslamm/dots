@@ -12,15 +12,12 @@
     "temperature",
     "custom/separator",
     "custom/fan",
-    "custom/separator",
     "custom/idlemgr"
   ],
   "modules-center": ["clock"],
   "modules-right": [
     "privacy",
     "tray",
-    "custom/separator",
-    "power-profiles-daemon",
     "custom/separator",
     "keyboard-state",
     "sway/language",
@@ -33,7 +30,8 @@
     "custom/separator",
     "backlight",
     "custom/separator",
-    "battery"
+    "battery",
+    "power-profiles-daemon"
   ],
 
   "custom/separator": {
@@ -167,7 +165,7 @@
     ]
   },
   "sway/scratchpad": {
-    "format": "Pad: {count}",
+    "format": "███ {count}",
     "show-empty": false
   },
   "network": {
