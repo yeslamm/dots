@@ -136,7 +136,7 @@ for_window [class="(?i).*(mpv|vlc|okular|zathura|qbittorrent|transmission|steam|
 
 bindsym $mod+Return             exec $term
 bindsym $mod+Shift+Return       exec $f_term
-bindsym $mod+space              exec $menu
+bindsym $mod+d                  exec $menu
 
 bindsym --to-code $mod+y        exec $files
 bindsym --to-code $mod+Shift+y  exec $f_term -e yazi
