@@ -8,7 +8,7 @@ set -euo pipefail
 playerctl play-pause
 
 # Tiny delay to allow the player to update its status
-sleep 0.05
+sleep 0.08
 
 # Fetch status and metadata
 STATUS=$(playerctl status 2>/dev/null || echo "Stopped")
