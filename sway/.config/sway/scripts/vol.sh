@@ -27,7 +27,7 @@ STATUS=$(wpctl get-volume @DEFAULT_SINK@)
 
 # Parse volume and muted state
 # Status looks like: "Volume: 0.45" or "Volume: 0.00 [MUTED]"
-VOL=$(echo "$STATUS" | awk '{print int($2 * 100)}')
+VOL=$(echo "$STATUS" | awk '{printf "%.0f\n", $2 * 100}')
 IS_MUTED=$(echo "$STATUS" | grep -q "\[MUTED\]" && echo "true" || echo "false")
 
 # Logic: Notify "Muted" if either the toggle is on OR volume is 0
