@@ -38,7 +38,7 @@ input type:touchpad {
     dwt enabled
     tap enabled
     tap_button_map lrm
-    drag_lock disabled
+    drag_lock enabled
 }
 
 bindgesture swipe:3:left workspace prev
