@@ -203,12 +203,10 @@ alias wlpa='wl-paste'
 
 ### System & Maintenance
 alias fetch='fastfetch'
-alias updates='(checkupdates 2>/dev/null; yay -Qua 2>/dev/null) | sort -u'
-alias hmmm='yay -Sy &> /dev/null && yay -Qu'
 alias error='journalctl -b -p err'
-alias rmor='yay -Yc'
-alias sshstart='sudo systemctl start sshd'
-alias sshstop='sudo systemctl stop sshd'
+export CC=clang
+export CFLAGS="-fsanitize=integer -fsanitize=undefined -ggdb3 -O0 -std=c11 -Wall -Werror -Wextra"
+export LDLIBS="-lcrypt -lcs50 -lm"
 
 ### Configuration Editing
 alias rr='nvim ~/.zshrc'
