@@ -15,7 +15,7 @@ set $term kitty
 set $f_term $term --class=fterm
 set $menu fuzzel
 set $scripts ~/.config/sway/scripts
-set $files exec $term -e yazi
+set $files $term -e yazi
 set $g_files thunar
 
 # ==============================================================================
