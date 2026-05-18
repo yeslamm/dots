@@ -97,7 +97,7 @@ file-roller
 qbittorrent
 mission-center
 localsend-bin
-copyq
+cliphist
 zathura
 zathura-pdf-mupdf
 

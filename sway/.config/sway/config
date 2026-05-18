@@ -58,8 +58,9 @@ exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec wlsunset -l 31.11167 -L 30.94583 -t 4500 -T 6500
 
 exec mako
-exec copyq --start-server
-exec_always sh -c 'killall waybar ; sleep 0.5 && waybar'
+exec wl-paste --type text --watch cliphist store
+exec wl-paste --type image --watch cliphist store
+exec_always pkill waybar; waybar
 
 exec wpctl set-volume @DEFAULT_SINK@ 0.30
 exec wpctl set-volume @DEFAULT_SOURCE@ 0.40
@@ -99,7 +100,6 @@ for_window [app_id="org.qbittorrent.qBittorrent"] floating enable, resize set 13
 for_window [class="com-abdownloadmanager-desktop-AppKt"] floating enable
 for_window [app_id="FileRoller"] floating enable
 for_window [app_id="org.strawberrymusicplayer.strawberry"] floating enable
-for_window [app_id="com.github.hluk.copyq"] floating enable, resize set 1800 1100, move position center
 for_window [app_id="mpv"] floating enable
 for_window [app_id="swayimg"] floating enable
 for_window [app_id="com.dec05eba.gpu_screen_recorder"] floating enable
@@ -232,7 +232,7 @@ bindsym --to-code $mod+Shift+n  exec makoctl invoke
 bindsym --to-code $mod+o exec $scripts/idlemgr.sh OFF
 bindsym --to-code $mod+i exec $scripts/idlemgr.sh ON
 
-bindsym --to-code $mod+v        exec copyq toggle
+bindsym $mod+v exec cliphist list | fuzzel -d -l 20 -w 90 | cliphist decode | wl-copy
 
 bindsym --to-code Print               exec $scripts/screenshot.sh region-copy
 bindsym --to-code Shift+Print         exec $scripts/screenshot.sh grim-copy
