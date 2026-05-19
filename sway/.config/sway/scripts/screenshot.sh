@@ -1,104 +1,88 @@
 #!/bin/bash
+# screenshot.sh - Finalized, Optimized, and Bug-fixed
 
-# Define the save directory and format
 SAVE_DIR="$HOME/Pictures/Screenshots"
 mkdir -p "$SAVE_DIR"
 FILE_NAME="$SAVE_DIR/Screenshot_$(date +'%Y-%m-%d_%H:%M:%S').png"
+RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 
-# ==============================================================================
-# --- SATTY MODES (Requires jq parsing to restore fullscreen games/apps) ---
-# ==============================================================================
-if [[ "$1" == "region" || "$1" == "window" || "$1" == "fullscreen" ]]; then
+# Helper: Fast focused window lookup
+get_focused_info() {
+    local target
+    target=$(swaymsg -t get_tree | jq -r 'first(.. | select(.focused? == true and (.type? == "con" or .type? == "floating_con"))) |
+   "\(.id);\(.fullscreen_mode);\(.rect.x),\(.rect.y) \(.rect.width)x\(.rect.height)"')
+    echo "$target"
+}
 
-    # 1. Grab window info
-    TARGET=$(swaymsg -t get_tree | jq -r '.. | select(.focused? == true and (.type? == "con" or .type? == "floating_con")) | "\(.id);\(.fullscreen_mode);\(.rect.x),\(.rect.y) \(.rect.width)x\(.rect.height)"' | head -n 1)
-    IFS=';' read -r WIN_ID IS_FULL GEOMETRY <<<"$TARGET"
+# Helper: Frozen region selection
+get_region() {
+    local geom freeze_pid
+    wayfreeze &
+    freeze_pid=$!
+    sleep 0.1
+    geom=$(slurp)
+    kill "$freeze_pid" 2>/dev/null
+    echo "$geom"
+}
 
-    # 2. Capture raw pixels (-t ppm) for instant handoff
+# --- SATTY MODES (Interactive) ---
+if [[ "$1" =~ ^(region|window|fullscreen)$ ]]; then
+    win_data=$(get_focused_info)
+    IFS=';' read -r win_id is_full geometry <<<"$win_data"
+    temp_img="$RUNTIME_DIR/frozen.ppm"
+
+    trap 'rm -f "$temp_img"' EXIT
+
     case "$1" in
     region)
-        # Define the secure runtime path
-        RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-        TEMP_IMG="$RUNTIME_DIR/frozen.ppm"
-
-        wayfreeze &
-        FREEZE_PID=$!
-        sleep 0.1
-        GEOMETRY=$(slurp -d)
-        if [ -n "$GEOMETRY" ]; then
-            grim -t ppm -g "$GEOMETRY" "$TEMP_IMG"
-            kill $FREEZE_PID
-            satty --filename "$TEMP_IMG"
-            rm "$TEMP_IMG"
-        else
-            kill $FREEZE_PID
-        fi
+        geometry=$(get_region)
+        [[ -z "$geometry" ]] && exit 1
+        grim -t ppm -g "$geometry" "$temp_img"
         ;;
     window)
-        grim -t ppm -g "$GEOMETRY" - | satty --filename -
+        grim -t ppm -g "$geometry" "$temp_img"
         ;;
     fullscreen)
-        grim -t ppm - | satty --filename -
+        grim -t ppm "$temp_img"
         ;;
     esac
 
-    # 3. Restore Fullscreen when Satty closes
-    if [ "$IS_FULL" = "1" ]; then
-        swaymsg "[con_id=$WIN_ID] fullscreen enable"
-    fi
+    satty --filename "$temp_img"
+    [[ "$is_full" == "1" ]] && swaymsg "[con_id=$win_id] fullscreen enable"
     exit 0
 fi
 
-# ==============================================================================
-# --- DIRECT MODES (Instant, silent, background compression) ---
-# ==============================================================================
+# --- DIRECT MODES (Instant) ---
 case "$1" in
-grim-copy)
-    grim - | wl-copy
-    notify-send -t 2000 "Screenshot" "Fullscreen copied to clipboard"
-    ;;
-grim-save)
-    grim "$FILE_NAME"
-    notify-send -t 2000 "Screenshot" "Saved to ~/Pictures/Screenshots"
-    ;;
+grim-copy) grim - | wl-copy ;;
+grim-save) grim "$FILE_NAME" ;;
 region-copy)
-    wayfreeze &
-    FREEZE_PID=$!
-    sleep 0.1
-    GEOMETRY=$(slurp -d)
-    if [ -n "$GEOMETRY" ]; then
-        grim -g "$GEOMETRY" - | wl-copy
-        kill $FREEZE_PID
-        notify-send -t 2000 "Screenshot" "Region copied to clipboard"
-    else
-        kill $FREEZE_PID
-    fi
+    geometry=$(get_region)
+    [[ -z "$geometry" ]] && exit 1
+    grim -g "$geometry" - | wl-copy
     ;;
 region-save)
-    wayfreeze &
-    FREEZE_PID=$!
-    sleep 0.1
-    GEOMETRY=$(slurp -d)
-    if [ -n "$GEOMETRY" ]; then
-        grim -g "$GEOMETRY" "$FILE_NAME"
-        kill $FREEZE_PID
-        notify-send -t 2000 "Screenshot" "Region saved to ~/Pictures/Screenshots"
-    else
-        kill $FREEZE_PID
-    fi
+    geometry=$(get_region)
+    [[ -z "$geometry" ]] && exit 1
+    grim -g "$geometry" "$FILE_NAME"
     ;;
 window-copy)
-    GEOMETRY=$(swaymsg -t get_tree | jq -r '.. | select(.focused? == true and (.type? == "con" or .type? == "floating_con")) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' | head -n 1)
-    grim -g "$GEOMETRY" - | wl-copy
-    notify-send -t 2000 "Screenshot" "Window copied to clipboard"
+    geometry=$(get_focused_info | cut -d';' -f3)
+    grim -g "$geometry" - | wl-copy
     ;;
 window-save)
-    GEOMETRY=$(swaymsg -t get_tree | jq -r '.. | select(.focused? == true and (.type? == "con" or .type? == "floating_con")) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' | head -n 1)
-    grim -g "$GEOMETRY" "$FILE_NAME"
-    notify-send -t 2000 "Screenshot" "Window saved to ~/Pictures/Screenshots"
+    geometry=$(get_focused_info | cut -d';' -f3)
+    grim -g "$geometry" "$FILE_NAME"
     ;;
 *)
-    echo "Usage: $0 {region|window|fullscreen|grim-copy|grim-save|region-copy|region-save}"
+    echo "Usage: $0 {region|window|fullscreen|grim-copy|grim-save|region-copy|region-save|window-copy|window-save}"
     exit 1
     ;;
 esac
+
+# Notifications
+if [[ "$1" =~ -copy$ ]]; then
+    notify-send -t 2000 "Screenshot" "Copied to clipboard"
+elif [[ "$1" =~ -save$ ]]; then
+    notify-send -t 2000 "Screenshot" "Saved to $SAVE_DIR"
+fi
