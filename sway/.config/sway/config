@@ -247,9 +247,9 @@ bindsym --release --to-code Control+Mod1+Print  exec $scripts/screenshot.sh wind
 bindsym --to-code $mod+Print mode Print
 
 mode Print {
-    bindsym --to-code r exec swaymsg 'mode "default"' && $scripts/screenshot.sh region
-    bindsym --to-code f exec swaymsg 'mode "default"' && $scripts/screenshot.sh fullscreen
-    bindsym --to-code w exec swaymsg 'mode "default"' && $scripts/screenshot.sh window
+    bindsym --to-code print exec swaymsg 'mode "default"' && $scripts/screenshot.sh region
+    bindsym --to-code Shift+print exec swaymsg 'mode "default"' && $scripts/screenshot.sh fullscreen
+    bindsym --release --to-code Mod1+print exec swaymsg 'mode "default"' && $scripts/screenshot.sh window
 
     bindsym Escape mode "default"
     bindsym Return mode "default"
