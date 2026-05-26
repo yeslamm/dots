@@ -14,7 +14,7 @@ return {
             'williamboman/mason-lspconfig.nvim',
             'WhoIsSethDaniel/mason-tool-installer.nvim',
             'b0o/schemastore.nvim',
-            -- { 'j-hui/fidget.nvim', opts = { notification = { window = { avoid = { 'NvimTree' } } } } },
+            { 'j-hui/fidget.nvim', opts = { notification = { window = { avoid = { 'NvimTree' } } } } },
         },
         config = function()
             vim.api.nvim_create_autocmd('LspAttach', {
@@ -87,8 +87,8 @@ return {
                 update_in_insert = false,
                 severity_sort = true,
                 float = { border = 'single', source = 'if_many' },
-                virtual_text = { prefix = '', spacing = 0, source = false },
-                underline = false,
+                virtual_text = { prefix = '', spacing = 2, source = false },
+                underline = true,
                 signs = vim.g.have_nerd_font and {
                     text = {
                         [vim.diagnostic.severity.ERROR] = ' ',
