@@ -60,7 +60,7 @@ exec wlsunset -l 31.11167 -L 30.94583 -t 4500 -T 6500
 exec mako
 exec wl-paste --type text --watch cliphist store
 exec wl-paste --type image --watch cliphist store
-exec_always pkill waybar; waybar
+exec_always sh -c 'killall waybar; sleep 1 && waybar'
 
 exec wpctl set-volume @DEFAULT_SINK@ 0.30
 exec wpctl set-volume @DEFAULT_SOURCE@ 0.40
