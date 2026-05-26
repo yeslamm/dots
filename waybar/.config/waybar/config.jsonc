@@ -1,5 +1,6 @@
 {
   "position": "top",
+  "output": "eDP-1",
   "modules-left": [
     "sway/workspaces",
     "sway/scratchpad",
@@ -93,7 +94,8 @@
   "temperature": {
     "interval": 3,
     "tooltip": false,
-    "thermal-zone": "/sys/class/thermal/thermal_zone0",
+    "hwmon-path-abs": "/sys/devices/pci0000:00/0000:00:18.3/hwmon",
+    "input-filename": "temp1_input",
     "format": "{temperatureC}°C",
     "critical-threshold": 100,
     "format-critical": "CRIT {temperatureC}°C",
@@ -121,7 +123,7 @@
   },
 
   "custom/fan": {
-    "exec": "awk '{if ($1 != 0) print $1 \" RPM  \"}' /sys/class/hwmon/hwmon7/fan1_input",
+    "exec": "~/.config/waybar/fan.sh",
     "interval": 3,
     "tooltip": false,
     "on-click": "$TERMINAL -e watch -d sensors"
@@ -164,7 +166,7 @@
     ]
   },
   "sway/scratchpad": {
-    "format": "███ {count}",
+    "format": "[{count}]",
     "show-empty": false
   },
   "network": {
