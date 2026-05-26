@@ -11,7 +11,6 @@ opt.clipboard = 'unnamedplus' -- Use system clipboard
 opt.completeopt = 'menu,menuone,noselect'
 
 -- [[ 2. UI & Aesthetics ]]
-opt.cmdheight = 0
 
 vim.o.laststatus = 3 -- Global statusline
 -- opt.globalstatus = true

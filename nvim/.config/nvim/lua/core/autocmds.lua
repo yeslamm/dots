@@ -21,7 +21,7 @@ vim.api.nvim_create_autocmd('BufReadPost', {
 
 -- Set conceallevel AND wrap for specific filetypes
 vim.api.nvim_create_autocmd('FileType', {
-    pattern = { 'markdown', 'markdown_inline', 'help' },
+    pattern = { 'text', 'markdown', 'markdown_inline', 'help' },
     callback = function()
         vim.opt_local.conceallevel = 2
         vim.opt_local.wrap = true
