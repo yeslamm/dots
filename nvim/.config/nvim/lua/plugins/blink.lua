@@ -17,7 +17,10 @@ return {
 
         signature = {
             enabled = true,
-            window = { border = 'single' },
+            window = {
+                border = 'single',
+                show_documentation = true, -- Ensures the documentation block is rendered alongside parameters
+            },
         },
 
         completion = {
