@@ -97,7 +97,6 @@ return {
         map('n', '<leader>sw', fzf.grep_cword, { desc = 'Current Word' })
         map('n', '<leader>sg', fzf.live_grep, { desc = 'Live Grep' })
         map('n', '<leader>sd', fzf.diagnostics_document, { desc = 'Diagnostics' })
-        map('n', '<leader>sr', fzf.resume, { desc = 'Resume' })
         map('n', '<leader>s.', fzf.oldfiles, { desc = 'Recent Files' })
         map('n', '<leader><leader>', fzf.buffers, { desc = 'Buffers' })
         map('n', '<leader>/', fzf.blines, { desc = 'Fuzz Search Buffer' })

@@ -22,7 +22,7 @@ return {
         spec = {
             { '<leader>g', group = 'Git', mode = { 'n', 'v' } },
             { '<leader>s', group = 'Search' },
-            { '<leader>n', group = 'Notifications' }, -- Register your new Noice group here
+            -- { '<leader>n', group = 'Notifications' }, -- Register your new Noice group here
             { '<leader>t', group = 'Tabs' },
             { '<leader>d', group = 'Debug' },
             -- Individual Mappings

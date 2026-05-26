@@ -7,16 +7,6 @@ return {
                 return vim.fn.winwidth(0) > 100
             end
 
-            -- 1. Native Macro Recording Logic
-            local function macro_recording()
-                local reg = vim.fn.reg_recording()
-                if reg == '' then
-                    return ''
-                end
-                return 'Recording @' .. reg
-            end
-
-            -- 2. Simplified LSP Names
             local function lsp_clients()
                 local clients = vim.lsp.get_clients { bufnr = 0 }
                 if #clients == 0 then
@@ -67,22 +57,10 @@ return {
                     lualine_c = { { 'filename', path = 3 } },
                     lualine_x = {
 
-                        -- Native Macro Component
-                        {
-                            macro_recording,
-                            color = { fg = '#ff9e64', gui = 'bold' },
-                        },
-                        -- Native Search Count (Standard Lualine component)
-                        {
-                            'searchcount',
-                            maxcount = 999,
-                            timeout = 500,
-                        },
-
                         diagnostics,
                         diff,
                         lsp_clients,
-                        { 'filetype', cond = hide_in_width },
+                        { 'filetype' },
                     },
                     lualine_y = { 'location' },
                     lualine_z = { 'progress' },

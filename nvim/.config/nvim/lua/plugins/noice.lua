@@ -1,6 +1,7 @@
 return {
     'folke/noice.nvim',
     event = 'VeryLazy',
+    enabled = false,
     opts = {
         lsp = {
             enabled = true, -- This replaces Fidget[cite: 1]
