@@ -5,7 +5,7 @@ return {
         indent = {
             char = '▏',
         },
-        scope = { enabled = false },
+        scope = { enabled = true },
         exclude = {
             filetypes = {
                 'help',

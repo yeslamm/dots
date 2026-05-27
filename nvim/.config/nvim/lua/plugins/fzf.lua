@@ -90,8 +90,6 @@ return {
 
         -- 6. Keymaps
         local map = vim.keymap.set
-        map('n', '<leader>sh', fzf.help_tags, { desc = 'Help' })
-        map('n', '<leader>sk', fzf.keymaps, { desc = 'Keymaps' })
         map('n', '<leader>sf', fzf.files, { desc = 'Files' })
         map('n', '<leader>ss', fzf.builtin, { desc = 'Builtin' })
         map('n', '<leader>sw', fzf.grep_cword, { desc = 'Current Word' })
