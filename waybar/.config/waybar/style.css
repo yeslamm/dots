@@ -1,13 +1,12 @@
 * {
   font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font", sans-serif;
-
   font-size: 15px;
   border: none;
   border-radius: 0;
 }
 
 #waybar {
-  background-color: rgba(0, 0, 0, 1);
+  background-color: #000000;
   color: #ffffff;
 }
 
@@ -15,34 +14,34 @@
   padding: 0px 8px;
   min-width: 8px;
   margin: 0px 0px;
-  background: rgba(46, 52, 64, 0);
-  color: #ffffff;
+  background: transparent;
+  color: #8a8f93;
   border-bottom: 1px solid transparent;
   box-shadow: none;
   text-shadow: none;
 }
 
 #workspaces button.focused {
-  background: #565c61;
+  background: #60686e;
   color: #ffffff;
   border-bottom: 1px solid #ffffff;
 }
 
 #workspaces button.active {
-  background: #4d545b;
+  background: #2b2e30;
   color: #ffffff;
-  border-bottom: 1px solid #3584e4;
+  border-bottom: 1px solid #3995e5;
 }
 
 #workspaces button.urgent {
-  background: rgba(198, 40, 40, 0.3);
+  background: rgba(217, 58, 73, 0.3);
   color: #ffffff;
-  border-bottom: 1px solid #c01c28;
+  border-bottom: 1px solid #d93a49;
 }
 
 #scratchpad,
 #mode {
-  background-color: #4d545b;
+  background-color: #60686e;
   color: #ffffff;
   padding: 0px 4px;
   margin-left: 15px;
@@ -50,14 +49,14 @@
 }
 
 #privacy {
-  background-color: #4d545b;
+  background-color: #60686e;
   padding: 0px 8px;
 }
 
 .binding_mode {
-  background: rgba(46, 52, 64, 0.2);
-  color: #2e3436;
-  padding: 0px 0px;
+  background: #3995e5;
+  color: #000000;
+  padding: 0px 4px;
   margin: 0px 0px;
 }
 
@@ -72,14 +71,14 @@
 }
 
 #clock {
-  background: rgba(46, 52, 64, 0);
+  background: transparent;
   color: #ffffff;
   font-size: 18px;
   padding: 0px 0px;
 }
 
 #tray {
-  background: rgba(46, 52, 64, 0);
+  background: transparent;
   color: #ffffff;
   padding: 0px 0px;
   margin: 0px 0px 0px 16px;
