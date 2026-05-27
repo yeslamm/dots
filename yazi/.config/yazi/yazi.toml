@@ -3,3 +3,6 @@ prepend-previewers = [
   { mime = "audio/*", run = "mediainfo" },
   { mime = "video/*", run = "mediainfo" },
 ]
+
+[opener]
+edit = [{ run = 'nvim "$@"', block = true, desc = "Edit" }]
