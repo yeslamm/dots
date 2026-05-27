@@ -86,9 +86,13 @@ return {
             vim.diagnostic.config {
                 update_in_insert = false,
                 severity_sort = true,
-                float = { border = 'single', source = 'if_many' },
-                virtual_text = { prefix = '', spacing = 2, source = false },
                 underline = true,
+                float = { border = 'single', source = true, header = '' },
+                virtual_text = {
+                    spacing = 2,
+                    source = false,
+                    prefix = vim.g.have_nerd_font and '■' or '●',
+                },
                 signs = vim.g.have_nerd_font and {
                     text = {
                         [vim.diagnostic.severity.ERROR] = ' ',
@@ -169,7 +173,7 @@ return {
                         }
                     end,
                     ['ruff'] = function()
-                        require('lspconfig').ruff_lsp.setup {
+                        require('lspconfig').ruff.setup {
                             capabilities = capabilities,
                             on_attach = function(client)
                                 client.server_capabilities.hoverProvider = false
