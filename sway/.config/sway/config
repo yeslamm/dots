@@ -27,7 +27,7 @@ output eDP-1 max_render_time 3
 
 input type:keyboard {
     xkb_layout "us,ara"
-    xkb_options "grp:alt_shift_toggle"
+    xkb_options grp:win_space_toggle
     repeat_delay 190
     repeat_rate 60
 }
