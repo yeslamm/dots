@@ -24,7 +24,7 @@ return {
                         vim.keymap.set(mode or 'n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
                     end
 
-                    -- NATIVE Neovim LSP Commands (FZF-Lua will intercept multi-results automatically)
+                    -- NATIVE Neovim LSP Commands
                     map('grn', vim.lsp.buf.rename, 'Rename')
                     map('gra', vim.lsp.buf.code_action, 'Code Action', { 'n', 'x' })
                     map('grr', vim.lsp.buf.references, 'References')
@@ -46,7 +46,7 @@ return {
                     -- Neovim version-safe wrapper for method checking
                     local function client_supports_method(c, method, bufnr)
                         if vim.fn.has 'nvim-0.11' == 1 then
-                            return c:supports_method(method, bufnr)
+                            return c:supports_method(method, { bufnr = bufnr })
                         else
                             return c.supports_method(method, { bufnr = bufnr })
                         end
@@ -77,7 +77,8 @@ return {
                     -- Inlay Hints
                     if client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
                         map('<leader>h', function()
-                            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
+                            local filter = { bufnr = event.buf }
+                            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(filter), filter)
                         end, 'Toggle Inlay Hints')
                     end
                 end,
@@ -91,14 +92,14 @@ return {
                 virtual_text = {
                     spacing = 2,
                     source = false,
-                    prefix = vim.g.have_nerd_font and '■' or '●',
+                    prefix = vim.g.have_nerd_font and '●' or '■',
                 },
                 signs = vim.g.have_nerd_font and {
                     text = {
-                        [vim.diagnostic.severity.ERROR] = ' ',
-                        [vim.diagnostic.severity.WARN] = ' ',
-                        [vim.diagnostic.severity.INFO] = ' ',
-                        [vim.diagnostic.severity.HINT] = ' ',
+                        [vim.diagnostic.severity.ERROR] = '● ',
+                        [vim.diagnostic.severity.WARN] = '● ',
+                        [vim.diagnostic.severity.INFO] = '● ',
+                        [vim.diagnostic.severity.HINT] = '● ',
                     },
                 } or {},
             }
