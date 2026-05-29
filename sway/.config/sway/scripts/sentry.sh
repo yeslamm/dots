@@ -13,12 +13,12 @@ swaymsg "output * power on"
 
 brightnessctl -q -r
 
-for ((i = 1; i <= 12; i++)); do
+for ((i = 1; i <= 60; i++)); do
     if ! pgrep -x "swaylock" >/dev/null; then
         "$HOME/.config/sway/scripts/start_idle.sh" &
         exit 0
     fi
-    sleep 5
+    sleep 1
 done
 
 exec "$HOME/.config/sway/scripts/sentry.sh"
