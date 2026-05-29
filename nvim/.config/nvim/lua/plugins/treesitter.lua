@@ -21,6 +21,7 @@ return {
             'query',
             'vim',
             'vimdoc',
+            'toml',
         }
 
         -- 3. Native Highlighting (This replaces highlight = { enable = true })
