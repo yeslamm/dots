@@ -39,7 +39,6 @@ return {
                 },
             }
             dap.configurations.cpp = dap.configurations.c
-            dap.configurations.rust = dap.configurations.c
 
             -- 4. Python Configuration (Smart VENV detection)
             dap.configurations.python = {
