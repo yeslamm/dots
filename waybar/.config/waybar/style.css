@@ -22,14 +22,13 @@
 #wireplumber,
 #backlight,
 #battery {
-  margin-left: 20px;
+  margin-left: 25px;
 }
 
 /* --- Left Modules --- */
 #workspaces button {
   padding: 0px 8px;
   min-width: 8px;
-  margin: 0px 0px;
   background: transparent;
   color: #8a8f93;
   border-bottom: 1px solid transparent;
@@ -59,13 +58,19 @@
 #mode {
   background-color: #60686e;
   color: #ffffff;
-  padding: 0px 4px;
-  margin-left: 15px;
+  padding: 0px 5px;
+  margin-left: 25px;
   margin-right: 0px;
 }
 
 #memory {
-  margin-left: 15px;
+  margin-left: 25px;
+}
+
+#custom-idlemgr {
+  background-color: #60686e;
+  color: #ffffff;
+  padding: 0px 5px;
 }
 
 /* --- Center Modules --- */
@@ -73,7 +78,6 @@
   background: transparent;
   color: #ffffff;
   font-size: 18px;
-  padding: 0px 0px;
 }
 
 /* --- Right Modules --- */
@@ -85,29 +89,20 @@
 #tray {
   background: transparent;
   color: #ffffff;
-  padding: 0px 0px;
-  margin: 0px 0px 0px 16px;
 }
 
-#keyboard-state label.unlocked {
-  font-size: 0px;
-  padding: 0px;
-  margin: 0px;
-}
-
-#keyboard-state label.locked {
+#custom-capslock {
   background-color: #60686e;
   color: #ffffff;
-  padding: 0px 4px;
-  margin-left: 20px;
+  padding: 0px 5px;
+  margin-left: 25px;
 }
 
 #battery {
   color: #ffffff;
-  padding: 0px 0px;
   margin-right: 10px;
 }
 
 #power-profiles-daemon {
-  margin-right: 8px;
+  margin-right: 5px;
 }
