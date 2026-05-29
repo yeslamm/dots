@@ -15,7 +15,7 @@
   "modules-right": [
     "privacy",
     "tray",
-    "keyboard-state",
+    "custom/capslock",
     "sway/language",
     "bluetooth",
     "network",
@@ -77,7 +77,7 @@
   },
 
   "custom/idlemgr": {
-    "exec": "pgrep swayidle > /dev/null && echo 'IDLE: ON' || echo 'IDLE: OFF'",
+    "exec": "pgrep swayidle > /dev/null && echo '' || echo 'INHIBIT_IDLE'",
     "return-type": "text",
     "interval": "once",
     "signal": 12,
@@ -122,14 +122,10 @@
     "spacing": 15
   },
 
-  "keyboard-state": {
-    "numlock": false,
-    "capslock": true,
-    "format": "{icon}",
-    "format-icons": {
-      "locked": "CAPS",
-      "unlocked": ""
-    }
+  "custom/capslock": {
+    "exec": "~/.config/waybar/capslock.sh",
+    "format": "{}",
+    "tooltip": false
   },
 
   "sway/language": {
@@ -141,9 +137,9 @@
 
   "bluetooth": {
     "format": "ON",
-    "format-connected": "{num_connections} CONNECTED",
+    "format-connected": "{num_connections} CON",
     "format-off": "OFF",
-    "format-disabled": "DISABLED",
+    "format-disabled": "--",
     "tooltip-format": "{controller_alias}\t{controller_address}",
     "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
     "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
@@ -155,26 +151,24 @@
   },
 
   "network": {
-    "format-wifi": "{essid}",
-    "format-ethernet": "{ipaddr}",
-    "format-disconnected": "DISCONNECTED",
-    "format-disabled": "OFF",
+    "format-wifi": "ON",
+    "format-ethernet": "ETH",
+    "format-disconnected": "OFF",
+    "format-disabled": "--",
     "tooltip-format": "{ifname} via {gwaddr}",
     "tooltip-format-wifi": "SSID: {essid}\nSignal: {signalStrength}%\nFreq: {frequency}Ghz\n\nIP: {ipaddr}\nGW: {gwaddr}",
     "tooltip-format-ethernet": "{ifname}\t{ipaddr}",
     "tooltip-format-disconnected": "No active network connection",
     "tooltip-format-disabled": "Networking is completely disabled",
-    "max-length": 18,
-    "on-click": "nmcli radio all on",
-    "on-click-right": "nmcli radio all off",
+    "on-click": "nmcli radio wifi on",
+    "on-click-right": "nmcli radio wifi off",
     "on-click-middle": "$TERMINAL -e nmtui"
   },
 
   "wireplumber": {
     "format": "{volume}%",
     "format-muted": "Muted",
-    "on-scroll-up": "wpctl set-volume -l 1.0 @DEFAULT_SINK@ 5%+",
-    "on-scroll-down": "wpctl set-volume @DEFAULT_SINK@ 5%-",
+    "scroll-step": 5,
     "on-click": "wpctl set-mute @DEFAULT_SINK@ toggle",
     "on-click-right": "~/.config/sway/scripts/media.sh",
     "on-click-middle": "pavucontrol"
@@ -183,8 +177,7 @@
   "backlight": {
     "device": "amdgpu_bl1",
     "format": "{percent}%",
-    "on-scroll-up": "brightnessctl set 5%+",
-    "on-scroll-down": "brightnessctl set 5%-",
+    "scroll-step": 5,
     "on-click": "brightnessctl set 85%",
     "on-click-right": "brightnessctl set 70%",
     "on-click-middle": "brightnessctl set 50%",
