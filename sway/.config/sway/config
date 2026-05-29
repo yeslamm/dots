@@ -126,7 +126,7 @@ for_window [class="(?i).*(mpv|vlc|okular|zathura|qbittorrent|transmission|steam|
 
 bindsym $mod+Return             exec $term
 bindsym $mod+Shift+Return       exec $f_term
-bindsym --to-code $mod+d                  exec $menu
+bindsym --to-code $mod+d        exec $menu
 
 bindsym --to-code $mod+y        exec $files
 bindsym --to-code $mod+Shift+y  exec $f_term -e yazi
@@ -270,8 +270,8 @@ mode Super {
     bindsym --to-code n exec $scripts/wlsunset.sh, mode default
     bindsym --to-code v exec pavucontrol, mode default
 
-    bindsym --to-code w exec nmcli radio all on && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Network: ON", mode default
-    bindsym --to-code Shift+w exec nmcli radio all off && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Network: OFF", mode default
+    bindsym --to-code w exec nmcli radio wifi on && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Network: ON", mode default
+    bindsym --to-code Shift+w exec nmcli radio wifi off && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Network: OFF", mode default
     bindsym --to-code Control+w exec $f_term -e nmtui, mode default
 
     bindsym --to-code b exec bluetoothctl power on && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Bluetooth: ON", mode default
