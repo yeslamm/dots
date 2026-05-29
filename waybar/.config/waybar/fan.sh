@@ -10,7 +10,7 @@ for dev in /sys/class/hwmon/hwmon*; do
 
             # 3. Only print if it's spinning (otherwise print nothing to auto-hide)
             if [[ ${RPM:-0} -gt 0 ]]; then
-                echo "${RPM} RPM  "
+                echo "${RPM} RPM"
                 exit 0
             fi
         fi

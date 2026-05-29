@@ -10,6 +10,22 @@
   color: #ffffff;
 }
 
+/* --- Shared Layout Spacing --- */
+#cpu,
+#temperature,
+#custom-fan,
+#custom-idlemgr,
+#tray,
+#language,
+#bluetooth,
+#network,
+#wireplumber,
+#backlight,
+#battery {
+  margin-left: 20px;
+}
+
+/* --- Left Modules --- */
 #workspaces button {
   padding: 0px 8px;
   min-width: 8px;
@@ -48,16 +64,42 @@
   margin-right: 0px;
 }
 
+#memory {
+  margin-left: 15px;
+}
+
+/* --- Center Modules --- */
+#clock {
+  background: transparent;
+  color: #ffffff;
+  font-size: 18px;
+  padding: 0px 0px;
+}
+
+/* --- Right Modules --- */
 #privacy {
   background-color: #60686e;
   padding: 0px 8px;
 }
 
-.binding_mode {
-  background: #3995e5;
-  color: #000000;
+#tray {
+  background: transparent;
+  color: #ffffff;
+  padding: 0px 0px;
+  margin: 0px 0px 0px 16px;
+}
+
+#keyboard-state label.unlocked {
+  font-size: 0px;
+  padding: 0px;
+  margin: 0px;
+}
+
+#keyboard-state label.locked {
+  background-color: #60686e;
+  color: #ffffff;
   padding: 0px 4px;
-  margin: 0px 0px;
+  margin-left: 20px;
 }
 
 #battery {
@@ -68,23 +110,4 @@
 
 #power-profiles-daemon {
   margin-right: 8px;
-}
-
-#clock {
-  background: transparent;
-  color: #ffffff;
-  font-size: 18px;
-  padding: 0px 0px;
-}
-
-#tray {
-  background: transparent;
-  color: #ffffff;
-  padding: 0px 0px;
-  margin: 0px 0px 0px 16px;
-}
-
-#custom-separator {
-  padding: 0px;
-  min-width: 20px;
 }

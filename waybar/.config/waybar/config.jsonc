@@ -5,13 +5,9 @@
     "sway/workspaces",
     "sway/scratchpad",
     "sway/mode",
-    "custom/separator",
     "memory",
-    "custom/separator",
     "cpu",
-    "custom/separator",
     "temperature",
-    "custom/separator",
     "custom/fan",
     "custom/idlemgr"
   ],
@@ -19,30 +15,159 @@
   "modules-right": [
     "privacy",
     "tray",
-    "custom/separator",
     "keyboard-state",
     "sway/language",
-    "custom/separator",
     "bluetooth",
-    "custom/separator",
     "network",
-    "custom/separator",
     "wireplumber",
-    "custom/separator",
     "backlight",
-    "custom/separator",
     "battery",
     "power-profiles-daemon"
   ],
 
-  "custom/separator": {
-    "format": " ",
-    "tooltip": false
+  // ==========================================
+  // MODULES-LEFT CONFIGURATION
+  // ==========================================
+
+  "sway/workspaces": {
+    "disable-scroll": true,
+    "all-outputs": false,
+    "format": "{name}"
+  },
+
+  "sway/scratchpad": {
+    "format": "[{count}]",
+    "show-empty": false
+  },
+
+  "sway/mode": {
+    "format": "{}"
+  },
+
+  "memory": {
+    "interval": 3,
+    "format": "{used:0.2f}G",
+    "on-click": "$TERMINAL -e btop",
+    "tooltip": true,
+    "tooltip-format": "Used: {used:0.2f}G\nSwap: {swapUsed:0.2f}G\nTotal: {total:0.2f}G"
+  },
+
+  "cpu": {
+    "interval": 3,
+    "format": "{}%",
+    "on-click": "missioncenter"
+  },
+
+  "temperature": {
+    "interval": 3,
+    "tooltip": false,
+    "hwmon-path-abs": "/sys/devices/pci0000:00/0000:00:18.3/hwmon",
+    "input-filename": "temp1_input",
+    "format": "{temperatureC}°C",
+    "critical-threshold": 100,
+    "format-critical": "CRIT {temperatureC}°C",
+    "on-click": "$TERMINAL -e watch -d sensors"
+  },
+
+  "custom/fan": {
+    "exec": "~/.config/waybar/fan.sh",
+    "interval": 3,
+    "tooltip": false,
+    "on-click": "$TERMINAL -e watch -d sensors"
+  },
+
+  "custom/idlemgr": {
+    "exec": "pgrep swayidle > /dev/null && echo 'IDLE: ON' || echo 'IDLE: OFF'",
+    "return-type": "text",
+    "interval": "once",
+    "signal": 12,
+    "tooltip": false,
+    "on-click": "~/.config/sway/scripts/idlemgr.sh TOGGLE"
+  },
+
+  // ==========================================
+  // MODULES-CENTER CONFIGURATION
+  // ==========================================
+
+  "clock": {
+    "interval": 60,
+    "tooltip": true,
+    "format": "{:%d/%m - %I:%M %p}",
+    "tooltip-format": "{:%A %d of %B}",
+    "max-length": 25
+  },
+
+  // ==========================================
+  // MODULES-RIGHT CONFIGURATION
+  // ==========================================
+
+  "privacy": {
+    "icon-spacing": 15,
+    "icon-size": 16,
+    "transition-duration": 0,
+    "modules": [
+      {
+        "type": "screenshare",
+        "icon-name": "screen-shared-symbolic"
+      },
+      {
+        "type": "audio-in",
+        "icon-name": "audio-input-microphone-symbolic"
+      }
+    ]
   },
 
   "tray": {
     "icon-size": 16,
-    "spacing": 14
+    "spacing": 15
+  },
+
+  "keyboard-state": {
+    "numlock": false,
+    "capslock": true,
+    "format": "{icon}",
+    "format-icons": {
+      "locked": "CAPS",
+      "unlocked": ""
+    }
+  },
+
+  "sway/language": {
+    "format": "{shortDescription} {variant}",
+    "on-click": "swaymsg input type:keyboard xkb_switch_layout next",
+    "tooltip": true,
+    "tooltip-format": "{long} {variant}"
+  },
+
+  "bluetooth": {
+    "format": "ON",
+    "format-connected": "{num_connections} CONNECTED",
+    "format-off": "OFF",
+    "format-disabled": "DISABLED",
+    "tooltip-format": "{controller_alias}\t{controller_address}",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    "tooltip-format-off": "Bluetooth is powered off",
+    "tooltip-format-disabled": "Bluetooth hardware is disabled",
+    "on-click": "bluetoothctl power on",
+    "on-click-right": "bluetoothctl power off",
+    "on-click-middle": "$TERMINAL -e bluetuith"
+  },
+
+  "network": {
+    "format-wifi": "{essid}",
+    "format-ethernet": "{ipaddr}",
+    "format-disconnected": "DISCONNECTED",
+    "format-disabled": "OFF",
+    "tooltip-format": "{ifname} via {gwaddr}",
+    "tooltip-format-wifi": "SSID: {essid}\nSignal: {signalStrength}%\nFreq: {frequency}Ghz\n\nIP: {ipaddr}\nGW: {gwaddr}",
+    "tooltip-format-ethernet": "{ifname}\t{ipaddr}",
+    "tooltip-format-disconnected": "No active network connection",
+    "tooltip-format-disabled": "Networking is completely disabled",
+    "max-length": 18,
+    "on-click": "nmcli radio all on",
+    "on-click-right": "nmcli radio all off",
+    "on-click-middle": "$TERMINAL -e nmtui"
   },
 
   "wireplumber": {
@@ -65,13 +190,7 @@
     "on-click-middle": "brightnessctl set 50%",
     "tooltip": false
   },
-  "clock": {
-    "interval": 60,
-    "tooltip": true,
-    "format": "{:%d/%m - %I:%M %p}",
-    "tooltip-format": "{:%A %d of %B}",
-    "max-length": 25
-  },
+
   "battery": {
     "bat": "BAT1",
     "interval": 30,
@@ -86,50 +205,6 @@
     "format-full": "{capacity}%",
     "format-clamped": "{capacity}%"
   },
-  "memory": {
-    "interval": 3,
-    "format": "{used:0.2f}G",
-    "on-click": "$TERMINAL -e btop",
-    "tooltip": true,
-    "tooltip-format": "Used: {used:0.2f}G\nSwap: {swapUsed:0.2f}G\nTotal: {total:0.2f}G"
-  },
-  "temperature": {
-    "interval": 3,
-    "tooltip": false,
-    "hwmon-path-abs": "/sys/devices/pci0000:00/0000:00:18.3/hwmon",
-    "input-filename": "temp1_input",
-    "format": "{temperatureC}°C",
-    "critical-threshold": 100,
-    "format-critical": "CRIT {temperatureC}°C",
-    "on-click": "$TERMINAL -e watch -d sensors"
-  },
-  "cpu": {
-    "interval": 3,
-    "format": "{}%",
-    "on-click": "missioncenter"
-  },
-  "sway/language": {
-    "format": "{shortDescription} {variant}",
-    "on-click": "swaymsg input type:keyboard xkb_switch_layout next",
-    "tooltip": true,
-    "tooltip-format": "{long} {variant}"
-  },
-  "keyboard-state": {
-    "numlock": false,
-    "capslock": true,
-    "format": "{icon}",
-    "format-icons": {
-      "locked": "CAPS  ",
-      "unlocked": ""
-    }
-  },
-
-  "custom/fan": {
-    "exec": "~/.config/waybar/fan.sh",
-    "interval": 3,
-    "tooltip": false,
-    "on-click": "$TERMINAL -e watch -d sensors"
-  },
 
   "power-profiles-daemon": {
     "format": "{icon}",
@@ -140,64 +215,5 @@
       "balanced": "|=",
       "power-saver": "|-"
     }
-  },
-  "sway/mode": {
-    "format": "{}"
-  },
-  "custom/idlemgr": {
-    "exec": "pgrep swayidle > /dev/null && echo 'IDLE: ON' || echo 'IDLE: OFF'",
-    "return-type": "text",
-    "interval": "once",
-    "signal": 12,
-    "tooltip": false,
-    "on-click": "~/.config/sway/scripts/idlemgr.sh TOGGLE"
-  },
-  "privacy": {
-    "icon-spacing": 18,
-    "icon-size": 14,
-    "transition-duration": 0,
-    "modules": [
-      {
-        "type": "screenshare",
-        "icon-name": "screen-shared-symbolic"
-      },
-      {
-        "type": "audio-in",
-        "icon-name": "audio-input-microphone-symbolic"
-      }
-    ]
-  },
-  "sway/scratchpad": {
-    "format": "[{count}]",
-    "show-empty": false
-  },
-  "network": {
-    "format-wifi": "{essid}",
-    "format-ethernet": "{ipaddr}",
-    "format-disconnected": "DISCONNECTED",
-    "format-disabled": "OFF",
-    "tooltip-format": "{ifname} via {gwaddr}",
-    "tooltip-format-wifi": "SSID: {essid}\nSignal: {signalStrength}%\nFreq: {frequency}Ghz\n\nIP: {ipaddr}\nGW: {gwaddr}",
-    "tooltip-format-ethernet": "{ifname}\t{ipaddr}",
-    "tooltip-format-disconnected": "No active network connection",
-    "tooltip-format-disabled": "Networking is completely disabled",
-    "max-length": 18,
-    "on-click": "nmcli radio all on",
-    "on-click-right": "nmcli radio all off",
-    "on-click-middle": "$TERMINAL -e nmtui"
-  },
-  "bluetooth": {
-    "format": "ON",
-    "format-connected": "{num_connections} CONNECTED",
-    "format-off": "OFF",
-    "format-disabled": "DISABLED",
-    "tooltip-format": "{controller_alias}\t{controller_address}",
-    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
-    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
-    "tooltip-format-off": "Bluetooth is powered off",
-    "tooltip-format-disabled": "Bluetooth hardware is disabled",
-    "on-click": "bluetoothctl power on",
-    "on-click-right": "bluetoothctl power off",
-    "on-click-middle": "$TERMINAL -e bluetuith"
   }
 }
