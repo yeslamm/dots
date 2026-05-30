@@ -47,7 +47,7 @@
   "memory": {
     "interval": 3,
     "format": "{used:0.2f}G",
-    "on-click": "$TERMINAL -e btop",
+    "on-click": "$TERMINAL btop",
     "tooltip": true,
     "tooltip-format": "Used: {used:0.2f}G\nSwap: {swapUsed:0.2f}G\nTotal: {total:0.2f}G"
   },
@@ -66,14 +66,14 @@
     "format": "{temperatureC}°C",
     "critical-threshold": 100,
     "format-critical": "CRIT {temperatureC}°C",
-    "on-click": "$TERMINAL -e watch -d sensors"
+    "on-click": "$TERMINAL watch -d sensors"
   },
 
   "custom/fan": {
     "exec": "~/.config/waybar/fan.sh",
     "interval": 3,
     "tooltip": false,
-    "on-click": "$TERMINAL -e watch -d sensors"
+    "on-click": "$TERMINAL watch -d sensors"
   },
 
   "custom/idlemgr": {
@@ -147,7 +147,7 @@
     "tooltip-format-disabled": "Bluetooth hardware is disabled",
     "on-click": "bluetoothctl power on",
     "on-click-right": "bluetoothctl power off",
-    "on-click-middle": "$TERMINAL -e bluetuith"
+    "on-click-middle": "$TERMINAL bluetuith"
   },
 
   "network": {
@@ -162,7 +162,7 @@
     "tooltip-format-disabled": "Networking is completely disabled",
     "on-click": "nmcli radio wifi on",
     "on-click-right": "nmcli radio wifi off",
-    "on-click-middle": "$TERMINAL -e nmtui"
+    "on-click-middle": "$TERMINAL nmtui"
   },
 
   "wireplumber": {

@@ -11,11 +11,11 @@ include /etc/sway/config.d/*
 exec dbus-update-activation-environment --systemd QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME ELECTRON_OZONE_PLATFORM_HINT ELECTRON_ENABLE_FEATURES LIBVA_DRIVER_NAME VDPAU_DRIVER AMD_VULKAN_ICD XCURSOR_THEME XCURSOR_SIZE
 
 set $mod Mod4
-set $term kitty
-set $f_term $term --class=fterm
+set $term foot
+set $f_term $term --app-id=fterm --window-size-pixels=1100x800
 set $menu fuzzel
 set $scripts ~/.config/sway/scripts
-set $files $term -e yazi
+set $files $term yazi
 set $g_files thunar
 
 # ==============================================================================
@@ -129,10 +129,10 @@ bindsym $mod+Shift+Return       exec $f_term
 bindsym --to-code $mod+d        exec $menu
 
 bindsym --to-code $mod+y        exec $files
-bindsym --to-code $mod+Shift+y  exec $f_term -e yazi
+bindsym --to-code $mod+Shift+y  exec $f_term yazi
 bindsym --to-code $mod+g        exec $g_files
-bindsym --to-code $mod+b        exec $term -e btop
-bindsym --to-code $mod+Shift+b  exec $f_term -e btop
+bindsym --to-code $mod+b        exec $term btop
+bindsym --to-code $mod+Shift+b  exec $f_term btop
 
 bindsym --to-code $mod+q        kill
 bindsym --to-code $mod+Shift+r  reload
@@ -266,17 +266,17 @@ mode Super {
     bindsym --to-code r exec $scripts/powermenu.sh reboot, mode default
     bindsym --to-code p exec $scripts/powermenu.sh poweroff, mode default
 
-    bindsym --to-code t exec $term -e watch -n 3 -d sensors, mode default
+    bindsym --to-code t exec $term watch -n 3 -d sensors, mode default
     bindsym --to-code n exec $scripts/wlsunset.sh, mode default
     bindsym --to-code v exec pavucontrol, mode default
 
     bindsym --to-code w exec nmcli radio wifi on && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Network: ON", mode default
     bindsym --to-code Shift+w exec nmcli radio wifi off && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Network: OFF", mode default
-    bindsym --to-code Control+w exec $f_term -e nmtui, mode default
+    bindsym --to-code Control+w exec $f_term nmtui, mode default
 
     bindsym --to-code b exec bluetoothctl power on && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Bluetooth: ON", mode default
     bindsym --to-code Shift+b exec bluetoothctl power off && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Bluetooth: OFF", mode default
-    bindsym --to-code Control+b exec $f_term -e bluetuith, mode default
+    bindsym --to-code Control+b exec $f_term bluetuith, mode default
 
     bindsym Escape mode default
     bindsym Return mode default
