@@ -93,6 +93,10 @@ unset key
 # Exports
 # ----------------------------------------------------------------------
 
+# Force explicit UTF-8 encoding for proper glyph width calculation
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
 # FZF Configuration (Maximized for fd)
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --exclude .git --exclude node_modules --exclude .cache --exclude venv --exclude dist'
 export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:500 {}' --preview-window=right:50% --bind 'ctrl-u:preview-half-page-up,ctrl-d:preview-half-page-down'"
@@ -238,3 +242,6 @@ zstyle ':fzf-tab:complete:z:*' fzf-preview 'eza -1a --color=always $realpath'
 # ----------------------------------------------------------------------
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# To customize prompt, run `p10k configure` or edit ~/dots/zsh/.p10k.zsh.
+[[ ! -f ~/dots/zsh/.p10k.zsh ]] || source ~/dots/zsh/.p10k.zsh
