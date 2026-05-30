@@ -18,18 +18,18 @@ map('n', 'n', 'nzzzv', { desc = 'Next search centered' })
 map('n', 'N', 'Nzzzv', { desc = 'Prev search centered' })
 map('n', '*', '*N', { desc = 'Highlight without jump' }) -- Highlight word under cursor
 
--- [[ 3. Window Management ]]
--- Focus (Ctrl + hjkl)
-map('n', '<C-h>', '<C-w>h', { desc = 'Move left' })
-map('n', '<C-j>', '<C-w>j', { desc = 'Move down' })
-map('n', '<C-k>', '<C-w>k', { desc = 'Move up' })
-map('n', '<C-l>', '<C-w>l', { desc = 'Move right' })
+-- -- [[ 3. Window Management ]]
+-- -- Focus (Ctrl + hjkl)
+-- map('n', '<C-h>', '<C-w>h', { desc = 'Move left' })
+-- map('n', '<C-j>', '<C-w>j', { desc = 'Move down' })
+-- map('n', '<C-k>', '<C-w>k', { desc = 'Move up' })
+-- map('n', '<C-l>', '<C-w>l', { desc = 'Move right' })
 
--- Resizing (Ctrl + Alt + hjkl)
-map('n', '<C-A-j>', '<cmd>resize -2<CR>', { desc = 'Decrease height', silent = true })
-map('n', '<C-A-k>', '<cmd>resize +2<CR>', { desc = 'Increase height', silent = true })
-map('n', '<C-A-h>', '<cmd>vertical resize -2<CR>', { desc = 'Decrease width', silent = true })
-map('n', '<C-A-l>', '<cmd>vertical resize +2<CR>', { desc = 'Increase width', silent = true })
+-- -- Resizing (Ctrl + Alt + hjkl)
+-- map('n', '<C-A-j>', '<cmd>resize -2<CR>', { desc = 'Decrease height', silent = true })
+-- map('n', '<C-A-k>', '<cmd>resize +2<CR>', { desc = 'Increase height', silent = true })
+-- map('n', '<C-A-h>', '<cmd>vertical resize -2<CR>', { desc = 'Decrease width', silent = true })
+-- map('n', '<C-A-l>', '<cmd>vertical resize +2<CR>', { desc = 'Increase width', silent = true })
 
 -- Joining lines (Centering behavior)
 map('n', 'J', 'mzJ`z', { desc = 'Join lines and keep cursor position' })
