@@ -6,8 +6,8 @@ return {
         config = function()
             require('nightfox').setup {
                 options = {
-                    transparent = false, -- Disable setting background
-                    terminal_colors = true, -- Set terminal colors (vim.g.terminal_color_*) used in `:terminal`
+                    transparent = false,
+                    terminal_colors = true,
                 },
             }
             vim.cmd 'colorscheme carbonfox'
@@ -29,8 +29,8 @@ return {
         config = function()
             require('kanagawa').setup {
                 transparent = false,
-                terminalColors = true, -- define vim.g.terminal_color_{0,17}
-                theme = 'dragon', -- Load "wave" theme
+                terminalColors = true,
+                theme = 'dragon',
             }
             -- vim.cmd 'colorscheme kanagawa'
         end,
