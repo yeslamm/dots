@@ -1,58 +1,59 @@
-# ==============================================================================
+# ====================================================================================================
 #  SWAY CONFIGURATION
-# ==============================================================================
+# ====================================================================================================
 
-# ==============================================================================
-#  1. VARIABLES & PATHS
-# ==============================================================================
+# ==================================================================================================== #
+# =========== 1. VARIABLES & PATHS =================================================================== #
 
 include /etc/sway/config.d/*
 
-exec dbus-update-activation-environment --systemd QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME ELECTRON_OZONE_PLATFORM_HINT ELECTRON_ENABLE_FEATURES LIBVA_DRIVER_NAME VDPAU_DRIVER AMD_VULKAN_ICD XCURSOR_THEME XCURSOR_SIZE
+exec dbus-update-activation-environment --systemd \
+    WAYLAND_DISPLAY \
+    XDG_CURRENT_DESKTOP \
+    XCURSOR_THEME \
+    XCURSOR_SIZE
 
-set $mod Mod4
-set $term foot
-set $f_term $term --app-id=fterm --window-size-pixels=1100x800
-set $menu fuzzel
+set $mod     Mod4
+set $term    foot
+set $f_term  $term --app-id=fterm --window-size-pixels=1100x800
+set $menu    fuzzel
 set $scripts ~/.config/sway/scripts
-set $files $term yazi
+set $files   $term yazi
 set $g_files thunar
 
-# ==============================================================================
-#  2. HARDWARE: INPUT & OUTPUT
-# ==============================================================================
+# ==================================================================================================== #
+# =========== 2. HARDWARE: INPUT & OUTPUT ============================================================ #
 
 output * bg #000000 solid_color
 output eDP-1 max_render_time 3
 
 input type:keyboard {
-    xkb_layout "us,ara"
-    xkb_options grp:win_space_toggle
+    xkb_layout   "us,ara"
+    xkb_options  grp:win_space_toggle,altwin:menu_win
     repeat_delay 190
-    repeat_rate 60
+    repeat_rate  60
 }
 
 input type:touchpad {
-    accel_profile adaptive
-    pointer_accel 0.4
-    scroll_factor 0.8
-    dwt enabled
-    tap enabled
-    tap_button_map lrm
-    drag_lock enabled
+    accel_profile   adaptive
+    pointer_accel   0.4
+    scroll_factor   0.8
+    dwt             enabled
+    tap             enabled
+    tap_button_map  lrm
+    drag_lock       enabled
 }
 
-bindgesture swipe:3:left workspace prev
 bindgesture swipe:3:right workspace next
+bindgesture swipe:3:left  workspace prev
 
 bindswitch lid:on exec $scripts/lid_action.sh
 seat * xcursor_theme capitaine-cursors-r3 24
 seat * hide_cursor when-typing enable
 mouse_warping output
 
-# ==============================================================================
-#  3. AUTOSTART
-# ==============================================================================
+# ==================================================================================================== #
+# =========== 3. AUTOSTART =========================================================================== #
 
 exec gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors-r3'
 exec gsettings set org.gnome.desktop.interface cursor-size 24
@@ -60,7 +61,7 @@ exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec sh -c 'source ~/.config/sway/geo && wlsunset -l $LAT -L $LON -t 4500 -T 6500'
 
 exec mako
-exec wl-paste --type text --watch cliphist store
+exec wl-paste --type text  --watch cliphist store
 exec wl-paste --type image --watch cliphist store
 exec_always sh -c 'killall waybar; sleep 1 && waybar'
 
@@ -72,115 +73,120 @@ exec amixer -c 1 set 'Internal Mic Boost' 0
 exec $scripts/start_idle.sh
 exec wayland-pipewire-idle-inhibit -q
 
-# ==============================================================================
-#  4. APPEARANCE & THEME
-# ==============================================================================
+# ==================================================================================================== #
+# =========== 4. APPEARANCE & THEME ================================================================== #
 
-default_border pixel 4
+default_border          pixel 4
 default_floating_border normal 4
-smart_borders on
-gaps inner 8
-smart_gaps on
+smart_borders           on
+gaps inner              8
+smart_gaps              on
 
-font pango:JetBrains Mono 11
-titlebar_border_thickness 0
-titlebar_padding 4 2
-title_align center
+font              pango:JetBrains Mono 11
+titlebar_padding  4 2
+title_align       center
 
-# Syntax:                border     bg         text       indicator  child_border
-client.focused           #60686e    #60686e    #ffffff    #aaaaaa    #60686e
-client.focused_inactive  #3f4447    #2b2e30    #cccccc    #45494d    #17181a
-client.unfocused         #17181a    #17181a    #8a8f93    #17181a    #17181a
-client.urgent            #232527    #232527    #ffffff    #d93a49    #d93a49
+client.focused           #60686e   #60686e   #ffffff   #aaaaaa   #60686e
+client.focused_inactive  #3f4447   #2b2e30   #cccccc   #45494d   #17181a
+client.unfocused         #17181a   #17181a   #8a8f93   #17181a   #17181a
+client.urgent            #232527   #232527   #ffffff   #d93a49   #d93a49
 
-# ==============================================================================
-#  5. WINDOW RULES
-# ==============================================================================
+# ==================================================================================================== #
+# =========== 5. WINDOW RULES ======================================================================== #
 
-for_window [app_id="fdm"] floating enable, resize set 1100 800, move position center, move scratchpad
-for_window [app_id="org.qbittorrent.qBittorrent"] floating enable, resize set 1300 900, move position center
-for_window [class="com-abdownloadmanager-desktop-AppKt"] floating enable
+for_window [app_id="org.qbittorrent.qBittorrent"] \
+    floating enable, \
+    resize set 1300 900, \
+    move position center
+
+for_window [app_id="fterm"] \
+    floating enable, \
+    resize set 1100 800, \
+    move position center, \
+    border pixel 4
+
+for_window [title="^fterm$"] \
+    floating enable, \
+    resize set 1100 800, \
+    move position center, \
+    border pixel 4
+
 for_window [app_id="FileRoller"] floating enable
 for_window [app_id="org.strawberrymusicplayer.strawberry"] floating enable
 for_window [app_id="mpv"] floating enable
 for_window [app_id="swayimg"] floating enable
 for_window [app_id="com.dec05eba.gpu_screen_recorder"] floating enable
-
 for_window [app_id="xdg-desktop-portal-gtk"] floating enable
 for_window [instance="sun-awt-X11-XDialogPeer"] floating enable
 for_window [window_role="^(pop-up|bubble|task_dialog|dialog|menu)$"] floating enable
-
 for_window [app_id="(?i).*(pavucontrol).*"] floating enable, sticky enable
 for_window [class="(?i).*(pavucontrol).*"] floating enable, sticky enable
-
-for_window [app_id="fterm"] floating enable, resize set 1100 800, move position center, border pixel 4
-for_window [title="^fterm$"] floating enable, resize set 1100 800, move position center, border pixel 4
 for_window [title="Picture-in-Picture"] floating enable, sticky enable
 for_window [app_id="firefox" title="^Extension:.*"] floating enable
 
 for_window [app_id="(?i).*(mpv|vlc|okular|zathura|qbittorrent|transmission|steam|gamescope|\.exe).*"] inhibit_idle focus
 for_window [class="(?i).*(mpv|vlc|okular|zathura|qbittorrent|transmission|steam|gamescope|\.exe).*"] inhibit_idle focus
 
-# ==============================================================================
-#  6. KEYBINDINGS: CORE
-# ==============================================================================
+# ==================================================================================================== #
+# =========== 6. KEYBINDINGS: CORE =================================================================== #
 
-bindsym $mod+Return             exec $term
-bindsym $mod+Shift+Return       exec $f_term
-bindsym --to-code $mod+d        exec $menu
+bindsym $mod+Return              exec $term
+bindsym $mod+Shift+Return        exec $f_term
+bindsym --to-code $mod+d         exec $menu
 
-bindsym --to-code $mod+y        exec $files
-bindsym --to-code $mod+Shift+y  exec $f_term yazi
-bindsym --to-code $mod+g        exec $g_files
-bindsym --to-code $mod+b        exec $term btop
-bindsym --to-code $mod+Shift+b  exec $f_term btop
+bindsym --to-code $mod+y         exec $files
+bindsym --to-code $mod+Shift+y   exec $f_term yazi
+bindsym --to-code $mod+g         exec $g_files
+bindsym --to-code $mod+b         exec $term btop
+bindsym --to-code $mod+Shift+b   exec $f_term btop
 
-bindsym --to-code $mod+q        kill
-bindsym --to-code $mod+Shift+r  reload
+bindsym --to-code $mod+q         kill
+bindsym --whole-window $mod+button2 kill
+bindsym --to-code $mod+Shift+r   reload
 
-# ==============================================================================
-#  7. NAVIGATION & LAYOUT
-# ==============================================================================
+# ==================================================================================================== #
+# =========== 7. NAVIGATION & LAYOUT ================================================================= #
 
 bindsym $mod+tab focus mode_toggle
 
-bindsym --to-code $mod+h        focus left
-bindsym --to-code $mod+j        focus down
-bindsym --to-code $mod+k        focus up
-bindsym --to-code $mod+l        focus right
+bindsym --to-code $mod+h                 focus left
+bindsym --to-code $mod+j                 focus down
+bindsym --to-code $mod+k                 focus up
+bindsym --to-code $mod+l                 focus right
 
-bindsym --to-code $mod+Shift+h  move left
-bindsym --to-code $mod+Shift+j  move down
-bindsym --to-code $mod+Shift+k  move up
-bindsym --to-code $mod+Shift+l  move right
+bindsym --to-code $mod+Shift+h           move left  40 px
+bindsym --to-code $mod+Shift+j           move down  40 px
+bindsym --to-code $mod+Shift+k           move up    40 px
+bindsym --to-code $mod+Shift+l           move right 40 px
 
-bindsym --to-code $mod+Shift+period  move workspace to output next
-bindsym --to-code $mod+Shift+comma   move workspace to output prev
-bindsym --to-code $mod+grave         workspace back_and_forth
+bindsym --to-code Control+$mod+h         resize shrink width  40 px
+bindsym --to-code Control+$mod+j         resize grow   height 40 px
+bindsym --to-code Control+$mod+k         resize shrink height 40 px
+bindsym --to-code Control+$mod+l         resize grow   width  40 px
 
-bindsym --to-code $mod+w             layout tabbed
-bindsym --to-code $mod+e             layout toggle split
-bindsym --to-code $mod+z             layout stacking
-bindsym --to-code $mod+semicolon     split v
-bindsym --to-code $mod+apostrophe    split h
-bindsym --to-code $mod+Shift+f       floating toggle
-bindsym --to-code $mod+f             fullscreen
-bindsym --to-code $mod+Shift+c       move position center
-bindsym --to-code $mod+a             focus parent
-bindsym --to-code $mod+c             focus child
+bindsym --to-code $mod+w                 layout tabbed
+bindsym --to-code $mod+e                 layout toggle split
+bindsym --to-code $mod+apostrophe        split h
+bindsym --to-code $mod+semicolon         split v
+bindsym --to-code $mod+Shift+apostrophe  split none
+bindsym --to-code $mod+Shift+semicolon   split none
+
+bindsym --to-code $mod+f                 fullscreen
+bindsym --to-code $mod+Shift+f           floating toggle
+bindsym --to-code $mod+Control+f         sticky toggle
+bindsym --to-code $mod+Shift+c           move position center
+bindsym --to-code $mod+a                 focus parent
+bindsym --to-code $mod+c                 focus child
 floating_modifier $mod normal
 
-bindsym --to-code $mod+s             scratchpad show
-bindsym --to-code $mod+Shift+s       move scratchpad
+bindsym --to-code $mod+grave             workspace back_and_forth
+bindsym --to-code $mod+Shift+grave move container to workspace back_and_forth; workspace back_and_forth
 
-bindsym --to-code Control+$mod+h  resize shrink width 40px
-bindsym --to-code Control+$mod+j  resize grow height 40px
-bindsym --to-code Control+$mod+k  resize shrink height 40px
-bindsym --to-code Control+$mod+l  resize grow width 40px
+bindsym --to-code $mod+s                 scratchpad show
+bindsym --to-code $mod+Shift+s           move scratchpad
 
-# ==============================================================================
-#  8. WORKSPACES
-# ==============================================================================
+# ==================================================================================================== #
+# =========== 8. WORKSPACES ========================================================================== #
 
 bindsym --to-code $mod+1 workspace number 1
 bindsym --to-code $mod+2 workspace number 2
@@ -202,109 +208,138 @@ bindsym --to-code $mod+Shift+7 move container to workspace number 7
 bindsym --to-code $mod+Shift+8 move container to workspace number 8
 bindsym --to-code $mod+Shift+9 move container to workspace number 9
 
-# ==============================================================================
-#  9. UTILITIES & HARDWARE
-# ==============================================================================
+# ==================================================================================================== #
+# =========== 9. UTILITIES & HARDWARE ================================================================ #
 
-bindsym --locked XF86MonBrightnessDown exec $scripts/bright.sh down
-bindsym --locked XF86MonBrightnessUp   exec $scripts/bright.sh up
-bindsym --locked XF86AudioRaiseVolume  exec $scripts/vol.sh up
-bindsym --locked XF86AudioLowerVolume  exec $scripts/vol.sh down
-bindsym --locked XF86AudioMute         exec $scripts/vol.sh mute
-bindsym --locked XF86AudioPlay         exec $scripts/media.sh play-pause
-bindsym --locked XF86AudioNext         exec playerctl next
-bindsym --locked XF86AudioPrev         exec playerctl previous
+bindsym --locked XF86AudioRaiseVolume          exec $scripts/vol.sh up
+bindsym --locked XF86AudioLowerVolume          exec $scripts/vol.sh down
+bindsym --locked XF86AudioMute                 exec $scripts/vol.sh mute
+bindsym --locked XF86AudioPlay                 exec $scripts/media.sh play-pause
+bindsym --locked XF86AudioNext                 exec playerctl next
+bindsym --locked XF86AudioPrev                 exec playerctl previous
 
-bindsym --to-code --locked $mod+minus        exec $scripts/vol.sh down
-bindsym --to-code --locked $mod+equal        exec $scripts/vol.sh up
-bindsym --to-code --locked $mod+0            exec $scripts/vol.sh mute
+bindsym --to-code --locked $mod+equal          exec $scripts/vol.sh up
+bindsym --to-code --locked $mod+minus          exec $scripts/vol.sh down
+bindsym --to-code --locked $mod+0              exec $scripts/vol.sh mute
 
-bindsym --to-code --locked $mod+bracketleft  exec $scripts/bright.sh down
-bindsym --to-code --locked $mod+bracketright exec $scripts/bright.sh up
+bindsym --to-code --locked $mod+period         exec playerctl next
+bindsym --to-code --locked $mod+comma          exec playerctl previous
+bindsym --to-code --locked $mod+slash          exec $scripts/media.sh play-pause
 
-bindsym --to-code --locked $mod+comma                 exec playerctl previous
-bindsym --to-code --locked $mod+period                exec playerctl next
-bindsym --to-code --locked $mod+slash                 exec $scripts/media.sh play-pause
+bindsym --locked XF86MonBrightnessUp           exec $scripts/bright.sh up
+bindsym --locked XF86MonBrightnessDown         exec $scripts/bright.sh down
+bindsym --to-code --locked $mod+bracketright   exec $scripts/bright.sh up
+bindsym --to-code --locked $mod+bracketleft    exec $scripts/bright.sh down
 
-bindsym --to-code $mod+n        exec makoctl dismiss
-bindsym --to-code $mod+Shift+n  exec makoctl invoke
+bindsym --to-code $mod+Shift+bracketright      opacity plus 0.1
+bindsym --to-code $mod+Shift+bracketleft       opacity minus 0.1
 
-bindsym --to-code $mod+o exec $scripts/idlemgr.sh OFF
-bindsym --to-code $mod+i exec $scripts/idlemgr.sh ON
+bindsym --to-code $mod+n                       exec makoctl dismiss
+bindsym --to-code $mod+Shift+n                 exec makoctl invoke
+bindsym --to-code $mod+i                       exec $scripts/idlemgr.sh ON
+bindsym --to-code $mod+o                       exec $scripts/idlemgr.sh OFF
+bindsym --to-code $mod+v                       exec cliphist list | fuzzel -d -l 20 -w 90 | cliphist decode | wl-copy
 
-bindsym --to-code $mod+v exec cliphist list | fuzzel -d -l 20 -w 90 | cliphist decode | wl-copy
+bindsym --to-code Print                        exec $scripts/screenshot.sh region-copy
+bindsym --to-code Shift+Print                  exec $scripts/screenshot.sh grim-copy
+bindsym --release --to-code Mod1+Print         exec $scripts/screenshot.sh window-copy
 
-bindsym --to-code Print               exec $scripts/screenshot.sh region-copy
-bindsym --to-code Shift+Print         exec $scripts/screenshot.sh grim-copy
-bindsym --release --to-code Mod1+Print          exec $scripts/screenshot.sh window-copy
+bindsym --to-code Control+Print                exec $scripts/screenshot.sh region-save
+bindsym --to-code Control+Shift+Print          exec $scripts/screenshot.sh grim-save
+bindsym --release --to-code Control+Mod1+Print exec $scripts/screenshot.sh window-save
 
-bindsym --to-code Control+Print       exec $scripts/screenshot.sh region-save
-bindsym --to-code Control+Shift+Print exec $scripts/screenshot.sh grim-save
-bindsym --release --to-code Control+Mod1+Print  exec $scripts/screenshot.sh window-save
+# ==================================================================================================== #
+# =========== 10. MODES ============================================================================== #
 
-# ==============================================================================
-# 10. MODES
-# ==============================================================================
-
-bindsym --to-code $mod+Print mode Print
-
+bindsym $mod+Print mode Print
 mode Print {
-    bindsym --to-code print exec swaymsg 'mode "default"' && $scripts/screenshot.sh region
+    bindsym --to-code print       exec swaymsg 'mode "default"' && $scripts/screenshot.sh region
     bindsym --to-code Shift+print exec swaymsg 'mode "default"' && $scripts/screenshot.sh fullscreen
     bindsym --release --to-code Mod1+print exec swaymsg 'mode "default"' && $scripts/screenshot.sh window
 
-    bindsym Escape mode "default"
-    bindsym Return mode "default"
-    bindsym $mod+Print mode "default"
+    bindsym Escape                mode "default"
+    bindsym Return                mode "default"
+    bindsym $mod+Print            mode "default"
 }
 
 bindsym $mod+Escape mode Super
-
 mode Super {
-    bindsym --to-code l exec $scripts/lock-ns.sh, mode default
-    bindsym --to-code s exec "swaylock -f && $scripts/sentry.sh", mode default
-    bindsym --to-code e exec $scripts/powermenu.sh logout, mode default
-    bindsym --to-code r exec $scripts/powermenu.sh reboot, mode default
-    bindsym --to-code p exec $scripts/powermenu.sh poweroff, mode default
+    bindsym --to-code l           exec $scripts/lock-ns.sh, mode default
+    bindsym --to-code s           exec "swaylock -f && $scripts/sentry.sh", mode default
+    bindsym --to-code e           exec $scripts/powermenu.sh logout, mode default
+    bindsym --to-code r           exec $scripts/powermenu.sh reboot, mode default
+    bindsym --to-code p           exec $scripts/powermenu.sh poweroff, mode default
 
-    bindsym --to-code t exec $term watch -n 3 -d sensors, mode default
-    bindsym --to-code n exec $scripts/wlsunset.sh, mode default
-    bindsym --to-code v exec pavucontrol, mode default
+    bindsym --to-code t           exec $term watch -n 3 -d sensors, mode default
+    bindsym --to-code n           exec $scripts/wlsunset.sh, mode default
+    bindsym --to-code v           exec pavucontrol, mode default
 
-    bindsym --to-code w exec nmcli radio wifi on && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Network: ON", mode default
-    bindsym --to-code Shift+w exec nmcli radio wifi off && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Network: OFF", mode default
-    bindsym --to-code Control+w exec $f_term nmtui, mode default
+    bindsym --to-code w           exec nmcli radio wifi on \
+        && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Network: ON", mode default
+    bindsym --to-code Shift+w     exec nmcli radio wifi off \
+        && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Network: OFF", mode default
+    bindsym --to-code Control+w   exec $f_term nmtui, mode default
 
-    bindsym --to-code b exec bluetoothctl power on && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Bluetooth: ON", mode default
-    bindsym --to-code Shift+b exec bluetoothctl power off && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Bluetooth: OFF", mode default
-    bindsym --to-code Control+b exec $f_term bluetuith, mode default
+    bindsym --to-code b           exec bluetoothctl power on \
+        && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Bluetooth: ON", mode default
+    bindsym --to-code Shift+b     exec bluetoothctl power off \
+        && notify-send -t 1500 -h string:x-canonical-private-synchronous:sys "Bluetooth: OFF", mode default
+    bindsym --to-code Control+b   exec $f_term bluetuith, mode default
 
-    bindsym Escape mode default
-    bindsym Return mode default
-    bindsym $mod+Escape mode default
+    bindsym Escape                mode default
+    bindsym Return                mode default
+    bindsym $mod+Escape           mode default
 }
 
 bindsym XF86Launch1 mode Power
 bindsym --to-code $mod+p mode Power
-
 mode Power {
-    bindsym --to-code s exec powerprofilesctl set power-saver \
+
+    bindsym --to-code s           exec powerprofilesctl set power-saver \
         && notify-send -t 1500 -h string:x-canonical-private-synchronous:asus "Profile: Power Saver", mode "default"
-
-    bindsym --to-code b exec powerprofilesctl set balanced \
+    bindsym --to-code b           exec powerprofilesctl set balanced \
         && notify-send -t 1500 -h string:x-canonical-private-synchronous:asus "Profile: Balanced", mode "default"
-
-    bindsym --to-code p exec powerprofilesctl set performance \
+    bindsym --to-code p           exec powerprofilesctl set performance \
         && notify-send -t 1500 -h string:x-canonical-private-synchronous:asus "Profile: Performance", mode "default"
 
-    bindsym --to-code l exec asusctl battery limit 60 \
+    bindsym --to-code l           exec asusctl battery limit 60 \
         && notify-send -t 1500 -h string:x-canonical-private-synchronous:asus "Battery: Limit set to 60%", mode default
-
-    bindsym --to-code f exec asusctl battery oneshot \
+    bindsym --to-code f           exec asusctl battery oneshot \
         && notify-send -t 1500 -h string:x-canonical-private-synchronous:asus "Battery: Charging to 100%", mode default
 
-    bindsym Escape mode "default"
-    bindsym Return mode "default"
-    bindsym XF86Launch1 mode "default"
-    bindsym --to-code $mod+p mode "default"
+    bindsym Escape                mode "default"
+    bindsym Return                mode "default"
+    bindsym XF86Launch1           mode "default"
+    bindsym --to-code $mod+p      mode "default"
+}
+
+bindsym --to-code $mod+m mode Monitor
+mode Monitor {
+    bindsym --to-code h           focus output left
+    bindsym --to-code l           focus output right
+    bindsym --to-code Shift+h     move container to output left
+    bindsym --to-code Shift+l     move container to output right
+    bindsym --to-code Control+h   move workspace to output left
+    bindsym --to-code Control+l   move workspace to output right
+
+    bindsym Escape                mode default
+    bindsym Return                mode default
+    bindsym --to-code $mod+m      mode default
+}
+
+bindsym --to-code $mod+z mode Zip
+mode Zip {
+    bindsym 1                     move container to workspace number 1; workspace number 1
+    bindsym 2                     move container to workspace number 2; workspace number 2
+    bindsym 3                     move container to workspace number 3; workspace number 3
+    bindsym 4                     move container to workspace number 4; workspace number 4
+    bindsym 5                     move container to workspace number 5; workspace number 5
+    bindsym 6                     move container to workspace number 6; workspace number 6
+    bindsym 7                     move container to workspace number 7; workspace number 7
+    bindsym 8                     move container to workspace number 8; workspace number 8
+    bindsym 9                     move container to workspace number 9; workspace number 9
+
+    bindsym Escape                mode default
+    bindsym Return                mode default
+    bindsym --to-code $mod+z      mode default
 }
