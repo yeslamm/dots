@@ -8,6 +8,9 @@ export XDG_CURRENT_DESKTOP=sway
 export XDG_SESSION_DESKTOP=sway
 export TERMINAL=foot
 
+export XCURSOR_THEME=capitaine-cursors-r3
+export XCURSOR_SIZE=24
+
 # 2. XDG Data Directories (Required for Flatpak desktop entries)
 export XDG_DATA_DIRS="/usr/local/share:/usr/share:/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/exports/share${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}"
 

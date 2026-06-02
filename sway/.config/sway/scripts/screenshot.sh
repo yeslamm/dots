@@ -53,6 +53,11 @@ if [[ "$1" =~ ^(region|window|fullscreen)$ ]]; then
 fi
 
 # --- DIRECT MODES (Instant) ---
+# Extract geometry up front if targeting a specific window
+if [[ "$1" =~ ^window- ]]; then
+    geometry=$(get_focused_info | cut -d';' -f3)
+fi
+
 case "$1" in
 grim-copy) grim - | wl-copy ;;
 grim-save) grim "$FILE_NAME" ;;
@@ -67,11 +72,9 @@ region-save)
     grim -g "$geometry" "$FILE_NAME"
     ;;
 window-copy)
-    geometry=$(get_focused_info | cut -d';' -f3)
     grim -g "$geometry" - | wl-copy
     ;;
 window-save)
-    geometry=$(get_focused_info | cut -d';' -f3)
     grim -g "$geometry" "$FILE_NAME"
     ;;
 *)
