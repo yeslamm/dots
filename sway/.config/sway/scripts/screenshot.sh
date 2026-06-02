@@ -1,12 +1,12 @@
-#!/bin/bash
-# screenshot.sh - Finalized, Optimized, and Bug-fixed
+#!/usr/bin/env bash
+set -euo pipefail
 
 SAVE_DIR="$HOME/Pictures/Screenshots"
 mkdir -p "$SAVE_DIR"
 FILE_NAME="$SAVE_DIR/Screenshot_$(date +'%Y-%m-%d_%H:%M:%S').png"
 RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+ACTION="${1:-}" # Safe expansion prevents unbound variable crash if no args passed
 
-# Helper: Fast focused window lookup
 get_focused_info() {
     local target
     target=$(swaymsg -t get_tree | jq -r 'first(.. | select(.focused? == true and (.type? == "con" or .type? == "floating_con"))) |
@@ -14,29 +14,27 @@ get_focused_info() {
     echo "$target"
 }
 
-# Helper: Frozen region selection
 get_region() {
     local geom freeze_pid
     wayfreeze &
     freeze_pid=$!
     sleep 0.1
-    geom=$(slurp)
-    kill "$freeze_pid" 2>/dev/null
+    geom=$(slurp) || true
+    kill "$freeze_pid" 2>/dev/null || true
     echo "$geom"
 }
 
-# --- SATTY MODES (Interactive) ---
-if [[ "$1" =~ ^(region|window|fullscreen)$ ]]; then
+if [[ "$ACTION" =~ ^(region|window|fullscreen)$ ]]; then
     win_data=$(get_focused_info)
     IFS=';' read -r win_id is_full geometry <<<"$win_data"
     temp_img="$RUNTIME_DIR/frozen.ppm"
 
     trap 'rm -f "$temp_img"' EXIT
 
-    case "$1" in
+    case "$ACTION" in
     region)
         geometry=$(get_region)
-        [[ -z "$geometry" ]] && exit 1
+        [[ -z "$geometry" ]] && exit 0
         grim -t ppm -g "$geometry" "$temp_img"
         ;;
     window)
@@ -48,27 +46,29 @@ if [[ "$1" =~ ^(region|window|fullscreen)$ ]]; then
     esac
 
     satty --filename "$temp_img"
-    [[ "$is_full" == "1" ]] && swaymsg "[con_id=$win_id] fullscreen enable"
+    [[ "$is_full" == "1" ]] && swaymsg "[con_id=$win_id] fullscreen enable" || true
     exit 0
 fi
 
-# --- DIRECT MODES (Instant) ---
-# Extract geometry up front if targeting a specific window
-if [[ "$1" =~ ^window- ]]; then
+if [[ "$ACTION" =~ ^window- ]]; then
     geometry=$(get_focused_info | cut -d';' -f3)
 fi
 
-case "$1" in
-grim-copy) grim - | wl-copy ;;
-grim-save) grim "$FILE_NAME" ;;
+case "$ACTION" in
+grim-copy)
+    grim - | wl-copy
+    ;;
+grim-save)
+    grim "$FILE_NAME"
+    ;;
 region-copy)
     geometry=$(get_region)
-    [[ -z "$geometry" ]] && exit 1
+    [[ -z "$geometry" ]] && exit 0
     grim -g "$geometry" - | wl-copy
     ;;
 region-save)
     geometry=$(get_region)
-    [[ -z "$geometry" ]] && exit 1
+    [[ -z "$geometry" ]] && exit 0
     grim -g "$geometry" "$FILE_NAME"
     ;;
 window-copy)
@@ -83,9 +83,8 @@ window-save)
     ;;
 esac
 
-# Notifications
-if [[ "$1" =~ -copy$ ]]; then
+if [[ "$ACTION" =~ -copy$ ]]; then
     notify-send -t 2000 "Screenshot" "Copied to clipboard"
-elif [[ "$1" =~ -save$ ]]; then
+elif [[ "$ACTION" =~ -save$ ]]; then
     notify-send -t 2000 "Screenshot" "Saved to $SAVE_DIR"
 fi
