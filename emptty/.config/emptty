@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Native emptty user-session initialization script
+
+# 1. Export core environment variables to the session child tree
+export XDG_SESSION_TYPE=wayland
+export XDG_CURRENT_DESKTOP=sway:wlroots
+export XDG_SESSION_DESKTOP=sway
+export TERMINAL=foot
+
+export XCURSOR_THEME=capitaine-cursors-r3
+export XCURSOR_SIZE=24
+
+export QT_QPA_PLATFORM="wayland;xcb"
+export QT_QPA_PLATFORMTHEME=qt5ct
+export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+export ELECTRON_OZONE_PLATFORM_HINT=auto
+export ELECTRON_ENABLE_FEATURES=VaapiVideoDecoder,UseOzonePlatform
+
+export LIBVA_DRIVER_NAME=radeonsi
+export VDPAU_DRIVER=radeonsi
+export AMD_VULKAN_ICD=radv
+
+# 2. Hand off control cleanly to the window manager with native journaling
+exec systemd-cat -t sway sway

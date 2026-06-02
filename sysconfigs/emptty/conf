@@ -12,8 +12,7 @@ PRINT_MOTD=true
 
 # Preselected user, if AUTOLOGIN is enabled, this user is logged in.
 DEFAULT_USER=r3d
-DEFAULT_SESSION="sway-custom"
-DEFAULT_SESSION_ENV="wayland"
+DEFAULT_ENV=wayland
 
 # Enables Autologin, if DEFAULT_USER is defined and part of nopasswdlogin group. Possible values are "true" or "false".
 AUTOLOGIN=false
