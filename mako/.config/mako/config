@@ -2,7 +2,7 @@
 # GLOBAL NOTIFICATION STYLE (UPSCALED)
 # ==============================================================================
 
-font=JetBrains Mono 12
+font=Inter 12
 background-color=#17181a
 text-color=#ffffff
 border-color=#60686e
