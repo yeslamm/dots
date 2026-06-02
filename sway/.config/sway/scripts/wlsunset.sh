@@ -4,8 +4,9 @@
 
 set -euo pipefail
 
-LAT="31.11167"
-LON="30.94583"
+# shellcheck source=/dev/null
+source "$HOME/.config/sway/geo"
+
 NIGHT_TEMP="4500"
 DAY_TEMP="6500"
 

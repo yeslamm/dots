@@ -57,7 +57,7 @@ mouse_warping output
 exec gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors-r3'
 exec gsettings set org.gnome.desktop.interface cursor-size 24
 exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-exec wlsunset -l 31.11167 -L 30.94583 -t 4500 -T 6500
+exec sh -c 'source ~/.config/sway/geo && wlsunset -l $LAT -L $LON -t 4500 -T 6500'
 
 exec mako
 exec wl-paste --type text --watch cliphist store

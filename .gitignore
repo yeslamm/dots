@@ -1,8 +1,7 @@
-# Backup and temporary files
 *.bak
 *#
 *~
 *.swp
 
-# External Dependencies / Plugins
 yazi/.config/yazi/plugins/
+sway/.config/sway/geo
