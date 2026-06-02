@@ -1,19 +1,17 @@
 #!/usr/bin/env bash
-# powermenu.sh
+set -euo pipefail
 
-ACTION=$1
+ACTION="${1:-}"
+[[ -z "$ACTION" ]] && exit 1
 
-# 1. Capitalize the action for a cleaner UI (e.g., "poweroff" -> "Poweroff")
-# and prompt for confirmation.
 CONFIRM=$(echo -e "Yes\nNo" | fuzzel --dmenu --lines=2 --prompt="Confirm ${ACTION^}? " -w 30)
 
-# 2. If the user presses Esc or selects No, exit immediately.
 [[ "$CONFIRM" != "Yes" ]] && exit 0
 
-# 3. Execute the validated action.
 case "$ACTION" in
 logout)
-    killall swayidle && swaymsg exit
+    killall swayidle 2>/dev/null || true
+    swaymsg exit
     ;;
 reboot)
     systemctl reboot
@@ -22,7 +20,6 @@ poweroff)
     systemctl poweroff
     ;;
 *)
-    # Invalid or empty action passed to script
     exit 1
     ;;
 esac
