@@ -138,7 +138,7 @@
   },
 
   "custom/capslock": {
-    "exec": "~/.config/waybar/capslock.sh",
+    "exec": "stdbuf -oL ~/.config/waybar/capslock.sh",
     "format": "{}",
     "tooltip": false
   },

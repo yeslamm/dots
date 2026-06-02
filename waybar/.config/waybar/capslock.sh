@@ -1,30 +1,58 @@
-#!/bin/bash
-# capslock.sh - Zero-latency monitor with transition alerts
+#!/usr/bin/env bash
+# capslock.sh - Hardened, Zero-Fork Multi-Device Monitor
+set -eu
 
-# Initialize state to prevent a ghost notification when Waybar starts up
-if grep -q '1' /sys/class/leds/*capslock/brightness 2>/dev/null; then
+LED_PATHS=(/sys/class/leds/*capslock/brightness)
+
+if [[ ! -f "${LED_PATHS[0]}" ]]; then
+    echo "Error: No Caps Lock LED nodes found" >&2
+    exit 1
+fi
+
+coproc hold_loop { cat; }
+TIMER_FD="${hold_loop[0]}"
+
+check_caps() {
+    for path in "${LED_PATHS[@]}"; do
+        if [[ -f "$path" ]]; then
+            read -r val <"$path" 2>/dev/null || val=0
+            if [[ "$val" == "1" ]]; then
+                return 0
+            fi
+        fi
+    done
+    return 1
+}
+
+if check_caps; then
     PREV_STATE="ON"
+    echo "CAPS"
 else
     PREV_STATE="OFF"
+    echo ""
 fi
 
 while true; do
-    if grep -q '1' /sys/class/leds/*capslock/brightness 2>/dev/null; then
+    read -t 0.1 -r <&"$TIMER_FD" || true
+
+    if check_caps; then
         CURR_STATE="ON"
-        echo "CAPS"
     else
         CURR_STATE="OFF"
-        echo ""
     fi
 
-    # Trigger notification ONLY when the state explicitly changes
     if [[ "$CURR_STATE" != "$PREV_STATE" ]]; then
+        if [[ "$CURR_STATE" == "ON" ]]; then
+            echo "CAPS"
+        else
+            echo ""
+        fi
+
         notify-send "Caps Lock: ${CURR_STATE}" \
             -t 1000 \
             -h string:x-canonical-private-synchronous:capslock \
             -r 9993
+
         PREV_STATE="$CURR_STATE"
     fi
-
-    sleep 0.1
 done

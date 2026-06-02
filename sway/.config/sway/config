@@ -7,10 +7,10 @@
 include /etc/sway/config.d/*
 
 exec dbus-update-activation-environment --systemd \
-    WAYLAND_DISPLAY \
-    XDG_CURRENT_DESKTOP \
+    XDG_CURRENT_DESKTOP=sway:wlroots \
     XCURSOR_THEME \
-    XCURSOR_SIZE
+    XCURSOR_SIZE \
+    I3SOCK
 
 set $mod         Mod4
 set $term        foot
@@ -94,9 +94,9 @@ smart_borders           on
 gaps inner              4
 smart_gaps              on
 
-font              pango:JetBrains Mono 11
-titlebar_padding  4 2
-title_align       center
+font             pango:JetBrains Mono 11
+titlebar_padding 4 2
+title_align      center
 
 client.focused           #60686e   #60686e   #ffffff   #aaaaaa   #60686e
 client.focused_inactive  #3f4447   #2b2e30   #cccccc   #45494d   #17181a
@@ -123,8 +123,8 @@ for_window [class="(?i).*(pavucontrol).*"] floating enable, sticky enable
 for_window [title="Picture-in-Picture"] floating enable, sticky enable
 for_window [app_id="firefox" title="^Extension:.*"] floating enable
 
-for_window [app_id="(?i).*(mpv|vlc|okular|zathura|qbittorrent|transmission|steam|gamescope|\.exe).*"] inhibit_idle focus
-for_window [class="(?i).*(mpv|vlc|okular|zathura|qbittorrent|transmission|steam|gamescope|\.exe).*"] inhibit_idle focus
+for_window [app_id="(?i).*(mpv|zathura|qbittorrent|transmission|steam|gamescope|\.exe).*"] inhibit_idle focus
+for_window [class="(?i).*(mpv|zathura|qbittorrent|transmission|steam|gamescope|\.exe).*"] inhibit_idle focus
 
 # ==================================================================================================== #
 # =========== 6. KEYBINDINGS: CORE =================================================================== #
