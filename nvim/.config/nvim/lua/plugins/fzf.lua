@@ -36,8 +36,8 @@ return {
                 },
                 fzf = {
                     true,
-                    ['ctrl-j'] = 'down',
-                    ['ctrl-k'] = 'up',
+                    ['ctrl-j'] = 'ignore',
+                    ['ctrl-k'] = 'ignore',
                     ['ctrl-n'] = 'down',
                     ['ctrl-p'] = 'up',
                 },

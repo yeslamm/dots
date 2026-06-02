@@ -97,8 +97,9 @@ unset key
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
-# FZF Configuration (Maximized for fd)
+# FZF Configuration (Maximized for fd & unified Ctrl-n/p list navigation)
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --exclude .git --exclude node_modules --exclude .cache --exclude venv --exclude dist'
+export FZF_DEFAULT_OPTS="--bind 'ctrl-j:ignore,ctrl-k:ignore,ctrl-n:down,ctrl-p:up'"
 export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:500 {}' --preview-window=right:50% --bind 'ctrl-u:preview-half-page-up,ctrl-d:preview-half-page-down'"
 export FZF_ALT_C_OPTS="--preview 'eza -lahG --color=always --icons=never {}' --preview-window=down:50% --bind 'ctrl-u:preview-half-page-up,ctrl-d:preview-half-page-down'"
 
@@ -232,7 +233,7 @@ zstyle ':completion:*:descriptions' format ''
 
 # Pass custom layout and scrolling bindings to fzf-tab
 zstyle ':fzf-tab:*' fzf-flags '--preview-window=right:50%'
-zstyle ':fzf-tab:*' fzf-bindings 'ctrl-u:preview-half-page-up' 'ctrl-d:preview-half-page-down'
+zstyle ':fzf-tab:*' fzf-bindings 'ctrl-u:preview-half-page-up' 'ctrl-d:preview-half-page-down' 'ctrl-j:ignore' 'ctrl-k:ignore' 'ctrl-n:down' 'ctrl-p:up'
 
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1a --color=always $realpath'
 zstyle ':fzf-tab:complete:z:*' fzf-preview 'eza -1a --color=always $realpath'
