@@ -224,6 +224,15 @@ alias img='swayimg'
 alias zura='zathura'
 alias btctl='bluetoothctl'
 
+alias deploy-sys=" \
+    sudo cp ~/dots/systemd/etc/systemd/logind.conf.d/lid.conf /etc/systemd/logind.conf.d/lid.conf && \
+    sudo cp ~/dots/keyd/etc/keyd/default.conf /etc/keyd/default.conf && \
+    sudo cp ~/dots/NetworkManager/etc/NetworkManager/conf.d/wifi_backend.conf /etc/NetworkManager/conf.d/wifi_backend.conf && \
+    sudo cp ~/dots/emptty/etc/emptty/conf /etc/emptty/conf && \
+    sudo cp ~/dots/emptty/etc/emptty/motd /etc/emptty/motd && \
+    sudo systemctl restart systemd-logind keyd NetworkManager && \
+    notify-send 'Infrastructure' 'All root system configurations synced and daemons hot-reloaded.'"
+
 # ----------------------------------------------------------------------
 # FZF-Tab Completion Configuration
 # ----------------------------------------------------------------------
