@@ -1,4 +1,12 @@
-.PHONY: user adopt system packages-install clean
+.PHONY: help user adopt system packages-install clean
+
+help:
+	@echo "Workstation Architecture Controls"
+	@echo "  make user             Initialize XDG structures and link user space configs via stow"
+	@echo "  make adopt            Adopt existing home configs into repository tracking fields"
+	@echo "  make system           Sync framework rules to /etc hierarchy and enable core services"
+	@echo "  make packages-install Synchronize unified manifest (pkglist.txt) via yay"
+	@echo "  make clean            Cleanly sever all home directory environment symlinks"
 
 user:
 	@echo "======================================================================="
