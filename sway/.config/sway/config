@@ -94,7 +94,6 @@ smart_borders           on
 gaps inner              4
 smart_gaps              on
 
-font             pango:JetBrains Mono 11
 titlebar_padding 4 2
 title_align      center
 
