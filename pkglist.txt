@@ -15,7 +15,7 @@ bluez-utils
 bluetuith
 breeze
 brightnessctl
-clang21
+clang
 cliphist
 downgrade
 easyeffects
@@ -47,6 +47,7 @@ libva-utils
 mako
 man-db
 mediainfo
+mpv
 mpv-mpris
 neovim
 networkmanager
@@ -83,14 +84,9 @@ swaylock
 terminus-font
 tmux
 tree
-ttf-0xproto-nerd
 ttf-amiri
 ttf-caladea
 ttf-carlito
-ttf-fira-mono
-ttf-firacode-nerd
-ttf-hack-nerd
-ttf-iosevkaterm-nerd
 ttf-jetbrains-mono
 ttf-jetbrains-mono-nerd
 ttf-liberation
