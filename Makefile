@@ -2,9 +2,16 @@
 
 user:
 	@echo "======================================================================="
+	@echo " Initializing Home Directory System Structures"
+	@echo "======================================================================="
+	mkdir -p ~/.config
+	mkdir -p ~/.local/share
+	mkdir -p ~/.local/state
+	mkdir -p ~/.local/bin
+	@rm -f ~/.gitconfig
+	@echo "======================================================================="
 	@echo " Running Dynamic Stow Allocation"
 	@echo "======================================================================="
-	@rm -f ~/.gitconfig
 	stow -R swayimg satty cliphist lazygit nvim easyeffects zsh emptty tmux waybar fuzzel fontconfig foot mako dev yazi sway git
 
 adopt:
