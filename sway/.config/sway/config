@@ -103,7 +103,7 @@ client.urgent            #232527   #232527   #ffffff   #d93a49   #d93a49
 
 for_window [app_id="qBittorrent"] floating enable, resize set 1300 900, move position center
 for_window [app_id="fterm"] floating enable, resize set 1100 800, move position center
-for_window [app_id="clipfzf"] floating enable, resize set 1820 1100, move position center
+for_window [app_id="clipfzf"] floating enable, resize set 1920 1150, move position center
 
 for_window [app_id="FileRoller|mpv|swayimg|gpu_screen_recorder|xdg-desktop-portal-gtk"] floating enable
 for_window [instance="sun-awt-X11-XDialogPeer"] floating enable
