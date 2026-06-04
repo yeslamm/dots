@@ -1,6 +1,5 @@
 #!/bin/bash
-# vol.sh - Hardened and Optimized Volume Control
-# Treats 0% as muted for visual consistency.
+# vol.sh - Ultra-Optimized Volume Control
 
 set -euo pipefail
 
@@ -22,15 +21,11 @@ mute)
     ;;
 esac
 
-# Atomic status retrieval (one call to wpctl)
 STATUS=$(wpctl get-volume @DEFAULT_SINK@)
 
-# Parse volume and muted state
-# Status looks like: "Volume: 0.45" or "Volume: 0.00 [MUTED]"
-VOL=$(echo "$STATUS" | awk '{printf "%.0f\n", $2 * 100}')
-IS_MUTED=$(echo "$STATUS" | grep -q "\[MUTED\]" && echo "true" || echo "false")
+eval "$(echo "$STATUS" | awk '{printf "VOL=%.0f\nIS_MUTED=%s\n", $2 * 100, ($3 == "[MUTED]" ? "true" : "false")}')"
 
-# Logic: Notify "Muted" if either the toggle is on OR volume is 0
+# UI Logic Notification
 if [[ "$IS_MUTED" == "true" ]] || [[ "$VOL" -eq 0 ]]; then
     notify-send "Muted" \
         -t 1000 \
