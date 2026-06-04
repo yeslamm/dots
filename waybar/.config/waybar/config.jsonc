@@ -77,7 +77,7 @@
   },
 
   "custom/idlemgr": {
-    "exec": "pgrep swayidle > /dev/null && echo '' || echo 'INHIBIT_IDLE'",
+    "exec": "[ -f \"${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/IDLE_ENABLED\" ] && echo '' || echo 'INHIBIT_IDLE'",
     "return-type": "text",
     "interval": "once",
     "signal": 12,
