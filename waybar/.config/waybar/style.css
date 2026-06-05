@@ -1,108 +1,99 @@
+/* ==============================================================================
+   GLOBAL STYLES
+   ============================================================================== */
 * {
   font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font", sans-serif;
   font-size: 16px;
+  font-weight: bold;
   border: none;
   border-radius: 0;
+  min-height: 0;
 }
 
 #waybar {
   background-color: #000000;
-  color: #ffffff;
+  color: #dfdfe0;
+  border-bottom: 1px solid #262626;
 }
 
-/* --- Shared Layout Spacing --- */
+/* ==============================================================================
+   UNIVERSAL MODULE CONTAINER
+   ============================================================================== */
+#workspaces,
+#scratchpad,
+#mode,
+#memory,
 #cpu,
 #temperature,
 #custom-fan,
 #custom-idlemgr,
+#clock,
+#privacy,
 #tray,
+#custom-capslock,
 #language,
 #bluetooth,
 #network,
 #wireplumber,
 #backlight,
-#battery {
-  margin-left: 25px;
+#battery,
+#power-profiles-daemon {
+  padding: 0 8px;
+  background-color: #161616;
+  margin: 0px 2px 6px 2px;
+  border: 1px solid #393939;
 }
 
-/* --- Left Modules --- */
+/* ==============================================================================
+   WORKSPACES
+   ============================================================================== */
 #workspaces button {
-  padding: 0px 8px;
-  min-width: 8px;
-  background: transparent;
-  color: #8a8f93;
-  border-bottom: 1px solid transparent;
-  box-shadow: none;
-  text-shadow: none;
+  padding: 0 4px;
+  color: #6f6f6f;
 }
 
 #workspaces button.focused {
-  background: #60686e;
-  color: #ffffff;
-  border-bottom: 1px solid #ffffff;
-}
-
-#workspaces button.active {
-  background: #2b2e30;
-  color: #ffffff;
-  border-bottom: 1px solid #3995e5;
+  color: #78a9ff;
+  border-bottom: 1px solid #78a9ff;
 }
 
 #workspaces button.urgent {
-  background: rgba(217, 58, 73, 0.3);
-  color: #ffffff;
-  border-bottom: 1px solid #d93a49;
+  color: #ee5396;
 }
 
+/* ==============================================================================
+   INDIVIDUAL MODULE COLOR OVERRIDES
+   ============================================================================== */
+
+/* --- Blue Toggles & Clocks --- */
+#clock,
+#custom-idlemgr,
+#custom-capslock {
+  color: #78a9ff;
+}
+
+/* --- Purple Notices & Indicators --- */
+#privacy,
 #scratchpad,
 #mode {
-  background-color: #60686e;
-  color: #ffffff;
-  padding: 0px 5px;
-  margin-left: 25px;
-  margin-right: 0px;
+  color: #be95ff;
 }
 
-#memory {
-  margin-left: 25px;
+/* --- Battery States --- */
+#battery.charging {
+  color: #25be6a;
 }
 
-#custom-idlemgr {
-  background-color: #60686e;
-  color: #ffffff;
-  padding: 0px 5px;
+#battery.warning {
+  color: #be95ff;
 }
 
-/* --- Center Modules --- */
-#clock {
-  background: transparent;
-  color: #ffffff;
-  font-size: 19px;
+#battery.critical {
+  color: #ee5396;
 }
 
-/* --- Right Modules --- */
-#privacy {
-  background-color: #60686e;
-  padding: 0px 8px;
-}
-
-#tray {
-  background: transparent;
-  color: #ffffff;
-}
-
-#custom-capslock {
-  background-color: #60686e;
-  color: #ffffff;
-  padding: 0px 5px;
-  margin-left: 25px;
-}
-
-#battery {
-  color: #ffffff;
-  margin-right: 10px;
-}
-
-#power-profiles-daemon {
-  margin-right: 5px;
+/* --- Separator --- */
+#custom-sep {
+  color: #393939;
+  padding: 0 5px;
 }

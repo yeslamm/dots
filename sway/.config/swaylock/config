@@ -1,7 +1,9 @@
+# ==============================================================================
 # ~/.config/swaylock/config
+# ==============================================================================
 
 # --- Background & Text ---
-color=000000
+color=#000000
 font=JetBrains Mono
 
 # --- Indicator Geometry ---
@@ -10,3 +12,38 @@ indicator-thickness=8
 show-failed-attempts
 ignore-empty-password
 indicator-caps-lock
+
+# ==============================================================================
+# CARBONFOX COLOR PALETTE
+# ==============================================================================
+
+# --- Inside Circle (Muted Dark Base) ---
+inside-color=#161616
+inside-clear-color=#161616
+inside-ver-color=#161616
+inside-wrong-color=#161616
+inside-caps-lock-color=#161616
+
+# --- Outer Ring (State States) ---
+ring-color=#353535
+ring-clear-color=#25be6a
+ring-ver-color=#78a9ff
+ring-wrong-color=#ee5396
+ring-caps-lock-color=#08bdba
+
+# --- Indicator Text ---
+text-color=#f2f4f8
+text-clear-color=#25be6a
+text-ver-color=#78a9ff
+text-wrong-color=#ee5396
+text-caps-lock-color=#f2f4f8
+
+# --- Keypress Highlights (Neon Flashes) ---
+key-hl-color=#33b1ff
+bs-hl-color=#ee5396
+caps-lock-key-hl-color=#33b1ff
+caps-lock-bs-hl-color=#ee5396
+
+# --- Layout Borders & Separation ---
+separator-color=#000000
+line-uses-inside
