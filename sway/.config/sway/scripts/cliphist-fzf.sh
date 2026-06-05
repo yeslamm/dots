@@ -11,10 +11,10 @@ preview)
     ;;
 
 *)
-    id="$(cliphist list | fzf \
+    id="$(cliphist -preview-width 1000 list | fzf \
         --delimiter '\t' \
         --with-nth 2.. \
-        --preview-window=down:50% \
+        --preview-window=down:50%,wrap \
         --bind "ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up" \
         --preview "$(realpath "$0") preview {}")"
 

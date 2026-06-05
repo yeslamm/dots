@@ -232,7 +232,7 @@ zstyle ':completion:*:descriptions' format ''
 
 # Pass custom layout and scrolling bindings to fzf-tab
 zstyle ':fzf-tab:*' fzf-flags '--preview-window=right:50%'
-zstyle ':fzf-tab:*' fzf-bindings 'ctrl-j:ignore' 'ctrl-k:ignore' 'ctrl-n:down' 'ctrl-p:up'
+zstyle ':fzf-tab:*' fzf-bindings 'ctrl-j:ignore' 'ctrl-k:ignore' 'ctrl-n:down' 'ctrl-p:up' 'ctrl-d:preview-half-page-down' 'ctrl-u:preview-half-page-up'
 
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1a --color=always $realpath'
 zstyle ':fzf-tab:complete:z:*' fzf-preview 'eza -1a --color=always $realpath'
