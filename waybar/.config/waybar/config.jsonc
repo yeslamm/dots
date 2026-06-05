@@ -1,6 +1,11 @@
 {
+  // ==============================================================================
+  // GLOBAL BAR LAYOUT
+  // ==============================================================================
   "position": "top",
+  "layer": "top",
   "output": "eDP-1",
+
   "modules-left": [
     "sway/workspaces",
     "sway/scratchpad",
@@ -25,10 +30,9 @@
     "power-profiles-daemon"
   ],
 
-  // ==========================================
-  // MODULES-LEFT CONFIGURATION
-  // ==========================================
-
+  // ==============================================================================
+  // SWAY / WINDOW MANAGER MODULES
+  // ==============================================================================
   "sway/workspaces": {
     "disable-scroll": true,
     "all-outputs": false,
@@ -36,7 +40,7 @@
   },
 
   "sway/scratchpad": {
-    "format": "[{count}]",
+    "format": "[] {count}",
     "show-empty": false
   },
 
@@ -44,6 +48,16 @@
     "format": "{}"
   },
 
+  "sway/language": {
+    "format": "{shortDescription}",
+    "on-click": "swaymsg input type:keyboard xkb_switch_layout next",
+    "tooltip": true,
+    "tooltip-format": "{long} {variant}"
+  },
+
+  // ==============================================================================
+  // SYSTEM HARDWARE MONITORS
+  // ==============================================================================
   "memory": {
     "interval": 3,
     "format": "{used:0.2f}G",
@@ -54,16 +68,16 @@
 
   "cpu": {
     "interval": 3,
-    "format": "{}%",
+    "format": "{usage}%",
     "on-click": "missioncenter"
   },
 
   "temperature": {
     "interval": 3,
     "tooltip": false,
+    "format": "{temperatureC}°C",
     "hwmon-path-abs": "/sys/devices/pci0000:00/0000:00:18.3/hwmon",
     "input-filename": "temp1_input",
-    "format": "{temperatureC}°C",
     "critical-threshold": 100,
     "format-critical": "CRIT {temperatureC}°C",
     "on-click": "$TERMINAL watch -d sensors"
@@ -73,36 +87,27 @@
     "exec": "~/.config/waybar/fan.sh",
     "interval": 3,
     "tooltip": false,
+    "format": "{}",
     "on-click": "$TERMINAL watch -d sensors"
   },
 
-  "custom/idlemgr": {
-    "exec": "[ -f \"${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/IDLE_ENABLED\" ] && echo '' || echo 'INHIBIT_IDLE'",
-    "return-type": "text",
-    "interval": "once",
-    "signal": 12,
-    "tooltip": false,
-    "on-click": "~/.config/sway/scripts/idlemgr.sh TOGGLE"
-  },
-
-  // ==========================================
-  // MODULES-CENTER CONFIGURATION
-  // ==========================================
-
+  // ==============================================================================
+  // DATE & TIME (CENTER)
+  // ==============================================================================
   "clock": {
     "format": "{:%d/%m - %R}",
     "tooltip-format": "<tt><small>{calendar}</small></tt>",
     "calendar": {
       "mode": "year",
-      "mode-mon-col": 3,
+      "mode-mon-col": 4,
       "weeks-pos": "right",
       "on-scroll": 1,
       "format": {
-        "months": "<span color='#ffead3'><b>{}</b></span>",
-        "days": "<span color='#ecc6d9'><b>{}</b></span>",
-        "weeks": "<span color='#99ffdd'><b>W{}</b></span>",
-        "weekdays": "<span color='#ffcc66'><b>{}</b></span>",
-        "today": "<span color='#ff6699'><b><u>{}</u></b></span>"
+        "months": "<span color='#be95ff'><b>{}</b></span>",
+        "days": "<span color='#dfdfe0'><b>{}</b></span>",
+        "weeks": "<span color='#6f6f6f'><b>W{}</b></span>",
+        "weekdays": "<span color='#25be6a'><b>{}</b></span>",
+        "today": "<span color='#78a9ff'><b><u>{}</u></b></span>"
       }
     },
     "actions": {
@@ -112,72 +117,30 @@
     }
   },
 
-  // ==========================================
-  // MODULES-RIGHT CONFIGURATION
-  // ==========================================
-
-  "privacy": {
-    "icon-spacing": 15,
-    "icon-size": 16,
-    "transition-duration": 0,
-    "modules": [
-      {
-        "type": "screenshare",
-        "icon-name": "screen-shared-symbolic"
-      },
-      {
-        "type": "audio-in",
-        "icon-name": "audio-input-microphone-symbolic"
-      }
-    ]
-  },
-
-  "tray": {
-    "icon-size": 16,
-    "spacing": 15
-  },
-
-  "custom/capslock": {
-    "exec": "stdbuf -oL ~/.config/waybar/capslock.sh",
-    "format": "{}",
-    "tooltip": false
-  },
-
-  "sway/language": {
-    "format": "{shortDescription} {variant}",
-    "on-click": "swaymsg input type:keyboard xkb_switch_layout next",
-    "tooltip": true,
-    "tooltip-format": "{long} {variant}"
-  },
-
+  // ==============================================================================
+  // HARDWARE TOGGLES & CONNECTIVITY
+  // ==============================================================================
   "bluetooth": {
     "format": "ON",
     "format-connected": "{num_connections} CON",
     "format-off": "OFF",
-    "format-disabled": "--",
     "tooltip-format": "{controller_alias}\t{controller_address}",
-    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+    "tooltip-format-connected": "{controller_alias}\t\t{controller_address}\n{device_enumerate}",
     "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
-    "tooltip-format-off": "Bluetooth is powered off",
-    "tooltip-format-disabled": "Bluetooth hardware is disabled",
-    "on-click": "bluetoothctl power on",
-    "on-click-right": "bluetoothctl power off",
-    "on-click-middle": "$TERMINAL bluetuith"
+    "on-click": "$TERMINAL bluetuith"
   },
 
   "network": {
     "format-wifi": "ON",
     "format-ethernet": "ETH",
     "format-disconnected": "OFF",
-    "format-disabled": "--",
+    "format-disabled": "OFFLINE",
     "tooltip-format": "{ifname} via {gwaddr}",
-    "tooltip-format-wifi": "SSID: {essid}\nSignal: {signalStrength}%\nFreq: {frequency}Ghz\n\nIP: {ipaddr}\nGW: {gwaddr}",
-    "tooltip-format-ethernet": "{ifname}\t{ipaddr}",
-    "tooltip-format-disconnected": "No active network connection",
-    "tooltip-format-disabled": "Networking is completely disabled",
-    "on-click": "nmcli radio wifi on",
-    "on-click-right": "nmcli radio wifi off",
-    "on-click-middle": "$TERMINAL nmtui"
+    "tooltip-format-wifi": "SSID: {essid}\nIP: {ipaddr}\nSignal: {signalStrength}%",
+    "tooltip-format-ethernet": "Interface: {ifname}\nIP: {ipaddr}",
+    "tooltip-format-disconnected": "Network Disconnected",
+    "tooltip-format-disabled": "Networking Powered Off",
+    "on-click": "$TERMINAL nmtui"
   },
 
   "wireplumber": {
@@ -199,6 +162,9 @@
     "tooltip": false
   },
 
+  // ==============================================================================
+  // SYSTEM STATUS & PRIVACY
+  // ==============================================================================
   "battery": {
     "bat": "BAT1",
     "interval": 30,
@@ -216,12 +182,40 @@
 
   "power-profiles-daemon": {
     "format": "{icon}",
-    "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
-    "tooltip": true,
     "format-icons": {
-      "performance": "|>",
-      "balanced": "|=",
-      "power-saver": "|-"
+      "performance": "P",
+      "balanced": "B",
+      "power-saver": "S"
     }
+  },
+
+  "privacy": {
+    "icon-spacing": 10,
+    "icon-size": 16,
+    "transition-duration": 0,
+    "modules": [
+      { "type": "screenshare", "icon-name": "screen-shared-symbolic" },
+      { "type": "audio-in", "icon-name": "audio-input-microphone-symbolic" }
+    ]
+  },
+
+  "custom/idlemgr": {
+    "exec": "[ -f \"${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/IDLE_ENABLED\" ] && echo '' || echo 'INHIBIT'",
+    "return-type": "text",
+    "interval": "once",
+    "signal": 12,
+    "tooltip": false,
+    "on-click": "~/.config/sway/scripts/idlemgr.sh TOGGLE"
+  },
+
+  "custom/capslock": {
+    "exec": "stdbuf -oL ~/.config/waybar/capslock.sh",
+    "format": "{}",
+    "tooltip": false
+  },
+
+  "tray": {
+    "icon-size": 16,
+    "spacing": 12
   }
 }
