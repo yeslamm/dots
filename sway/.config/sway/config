@@ -255,8 +255,8 @@ bindsym $rl_lk Control+Mod1+Print           exec $scripts/screenshot.sh window-s
 
 set $shot exec swaymsg 'mode "default"' && $scripts/screenshot.sh
 
-bindsym $mod+Print mode PRINT
-mode PRINT {
+bindsym $mod+Print mode "PRINT"
+mode "PRINT" {
     bindsym $tc print             $shot region
     bindsym $tc Shift+print       $shot fullscreen
     bindsym $rl_lk Mod1+print     $shot window
@@ -268,41 +268,41 @@ mode PRINT {
 
 set $msg_sys notify-send -t 1500 -h string:x-canonical-private-synchronous:sys
 
-bindsym $mod+Escape mode SUPER
-mode SUPER {
-    bindsym $tc l                 exec $scripts/lock-ns.sh, mode default
-    bindsym $tc s                 exec "swaylock -f && $scripts/sentry.sh", mode default
-    bindsym $tc e                 exec $scripts/powermenu.sh logout, mode default
-    bindsym $tc r                 exec $scripts/powermenu.sh reboot, mode default
-    bindsym $tc p                 exec $scripts/powermenu.sh poweroff, mode default
+bindsym $mod+Escape mode "SUPER"
+mode "SUPER" {
+    bindsym $tc l                 exec $scripts/lock-ns.sh; mode "default"
+    bindsym $tc s                 exec "swaylock -f && $scripts/sentry.sh"; mode "default"
+    bindsym $tc e                 exec $scripts/powermenu.sh logout; mode "default"
+    bindsym $tc r                 exec $scripts/powermenu.sh reboot; mode "default"
+    bindsym $tc p                 exec $scripts/powermenu.sh poweroff; mode "default"
 
-    bindsym $tc t                 exec $term watch -n 3 -d sensors, mode default
-    bindsym $tc n                 exec $scripts/wlsunset.sh, mode default
-    bindsym $tc v                 exec pavucontrol, mode default
+    bindsym $tc t                 exec $term watch -n 3 -d sensors; mode "default"
+    bindsym $tc n                 exec $scripts/wlsunset.sh; mode "default"
+    bindsym $tc v                 exec pavucontrol; mode "default"
 
-    bindsym $tc w                 exec nmcli radio wifi on && $msg_sys "Network: ON", mode default
-    bindsym $tc Shift+w           exec nmcli radio wifi off && $msg_sys "Network: OFF", mode default
-    bindsym $tc Control+w         exec $float_term nmtui, mode default
+    bindsym $tc w                 exec nmcli radio wifi on && $msg_sys "Network: ON"; mode "default"
+    bindsym $tc Shift+w           exec nmcli radio wifi off && $msg_sys "Network: OFF"; mode "default"
+    bindsym $tc Control+w         exec $float_term nmtui; mode "default"
 
-    bindsym $tc b                 exec bluetoothctl power on && $msg_sys "Bluetooth: ON", mode default
-    bindsym $tc Shift+b           exec bluetoothctl power off && $msg_sys "Bluetooth: OFF", mode default
-    bindsym $tc Control+b         exec $float_term bluetuith, mode default
+    bindsym $tc b                 exec bluetoothctl power on && $msg_sys "Bluetooth: ON"; mode "default"
+    bindsym $tc Shift+b           exec bluetoothctl power off && $msg_sys "Bluetooth: OFF"; mode "default"
+    bindsym $tc Control+b         exec $float_term bluetuith; mode "default"
 
-    bindsym Escape                mode default
-    bindsym Return                mode default
-    bindsym $mod+Escape           mode default
+    bindsym Escape                mode "default"
+    bindsym Return                mode "default"
+    bindsym $mod+Escape           mode "default"
 }
 
 set $msg_asus notify-send -t 1500 -h string:x-canonical-private-synchronous:asus
 
-bindsym XF86Launch1 mode POWER
-bindsym $tc $mod+p mode POWER
-mode POWER {
-    bindsym $tc s                 exec powerprofilesctl set power-saver && $msg_asus "Profile: Power Saver", mode "default"
-    bindsym $tc b                 exec powerprofilesctl set balanced && $msg_asus "Profile: Balanced", mode "default"
-    bindsym $tc p                 exec powerprofilesctl set performance && $msg_asus "Profile: Performance", mode "default"
-    bindsym $tc l                 exec asusctl battery limit 60 && $msg_asus "Battery: Limit set to 60%", mode default
-    bindsym $tc f                 exec asusctl battery oneshot && $msg_asus "Battery: Charging to 100%", mode default
+bindsym XF86Launch1 mode "POWER"
+bindsym $tc $mod+p mode "POWER"
+mode "POWER" {
+    bindsym $tc s                 exec powerprofilesctl set power-saver && $msg_asus "Profile: Power Saver"; mode "default"
+    bindsym $tc b                 exec powerprofilesctl set balanced && $msg_asus "Profile: Balanced"; mode "default"
+    bindsym $tc p                 exec powerprofilesctl set performance && $msg_asus "Profile: Performance"; mode "default"
+    bindsym $tc l                 exec asusctl battery limit 60 && $msg_asus "Battery: Limit set to 60%"; mode "default"
+    bindsym $tc f                 exec asusctl battery oneshot && $msg_asus "Battery: Charging to 100%"; mode "default"
 
     bindsym Escape                mode "default"
     bindsym Return                mode "default"
@@ -310,8 +310,8 @@ mode POWER {
     bindsym $tc $mod+p            mode "default"
 }
 
-bindsym $tc $mod+m mode MONITOR
-mode MONITOR {
+bindsym $tc $mod+m mode "MONITOR"
+mode "MONITOR" {
     bindsym $tc h                 focus output left
     bindsym $tc l                 focus output right
     bindsym $tc Shift+h           move container to output left
@@ -319,13 +319,13 @@ mode MONITOR {
     bindsym $tc Control+h         move workspace to output left
     bindsym $tc Control+l         move workspace to output right
 
-    bindsym Escape                mode default
-    bindsym Return                mode default
-    bindsym $tc $mod+m            mode default
+    bindsym Escape                mode "default"
+    bindsym Return                mode "default"
+    bindsym $tc $mod+m            mode "default"
 }
 
-bindsym $tc $mod+z mode ZIP
-mode ZIP {
+bindsym $tc $mod+z mode "ZIP"
+mode "ZIP" {
     bindsym 1                     move container to workspace number 1; workspace number 1
     bindsym 2                     move container to workspace number 2; workspace number 2
     bindsym 3                     move container to workspace number 3; workspace number 3
@@ -336,7 +336,20 @@ mode ZIP {
     bindsym 8                     move container to workspace number 8; workspace number 8
     bindsym 9                     move container to workspace number 9; workspace number 9
 
-    bindsym Escape                mode default
-    bindsym Return                mode default
-    bindsym $tc $mod+z            mode default
+    bindsym Escape                mode "default"
+    bindsym Return                mode "default"
+    bindsym $tc $mod+z            mode "default"
+}
+
+bindsym $tc $mod+Shift+z mode "ZONE"
+
+mode "ZONE" {
+    bindsym h                     floating enable; resize set width 50ppt height 50ppt; move position 0 0
+    bindsym j                     floating enable; resize set width 50ppt height 50ppt; move position 0 50ppt
+    bindsym k                     floating enable; resize set width 50ppt height 50ppt; move position 50ppt 0
+    bindsym l                     floating enable; resize set width 50ppt height 50ppt; move position 50ppt 50ppt
+
+    bindsym Escape                mode "default"
+    bindsym Return                mode "default"
+    bindsym $tc $mod+Shift+z mode "default"
 }
