@@ -67,6 +67,10 @@ exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec sh -c 'source ~/.config/sway/geo && wlsunset -l $LAT -L $LON -t 4500 -T 6500'
 
 exec mako
+exec rm -f "$XDG_RUNTIME_DIR/wobpipe" \
+    && mkfifo "$XDG_RUNTIME_DIR/wobpipe" \
+    && tail -f "$XDG_RUNTIME_DIR/wobpipe" | wob -c ~/.config/wob/wob.ini
+
 exec wl-paste --type text  --watch cliphist store
 exec wl-paste --type image --watch cliphist store
 exec_always pkill -x -USR2 waybar || (sleep 0.5 && waybar)
