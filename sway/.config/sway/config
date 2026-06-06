@@ -64,16 +64,16 @@ mouse_warping output
 exec gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors-r3'
 exec gsettings set org.gnome.desktop.interface cursor-size 24
 exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-exec sh -c 'source ~/.config/sway/geo && wlsunset -l $LAT -L $LON -t 4500 -T 6500'
 
+exec_always pkill -x -USR2 waybar || (sleep 0.5 && waybar)
 exec mako
 exec rm -f "$XDG_RUNTIME_DIR/wobpipe" \
     && mkfifo "$XDG_RUNTIME_DIR/wobpipe" \
     && tail -f "$XDG_RUNTIME_DIR/wobpipe" | wob -c ~/.config/wob/wob.ini
 
+exec sh -c 'source ~/.config/sway/geo && wlsunset -l $LAT -L $LON -t 4500 -T 6500'
 exec wl-paste --type text  --watch cliphist store
 exec wl-paste --type image --watch cliphist store
-exec_always pkill -x -USR2 waybar || (sleep 0.5 && waybar)
 
 exec wpctl set-volume @DEFAULT_SINK@ 0.30
 exec wpctl set-volume @DEFAULT_SOURCE@ 0.40
@@ -90,7 +90,7 @@ exec wayland-pipewire-idle-inhibit -q
 default_border           pixel 1
 default_floating_border  normal 1
 smart_borders            on
-gaps inner               0
+gaps inner               2
 smart_gaps               on
 
 font pango:JetBrainsMono NF, Vazirmatn 11
@@ -101,8 +101,8 @@ title_align      center
 # class                  border   backgr.  text     indic.   child_border
 client.focused           #78a9ff  #262626  #dfdfe0  #08bdba  #78a9ff
 client.focused_tab_title #262626  #262626  #dfdfe0
-client.focused_inactive  #393939  #262626  #dfdfe0  #08bdba  #393939
-client.unfocused         #393939  #161616  #6f6f6f  #161616  #393939
+client.focused_inactive  #363636  #262626  #dfdfe0  #08bdba  #363636
+client.unfocused         #363636  #161616  #6f6f6f  #161616  #363636
 client.urgent            #ee5396  #262626  #ffffff  #ee5396  #ee5396
 
 # ==================================================================================================== #
