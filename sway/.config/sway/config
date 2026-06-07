@@ -342,14 +342,60 @@ mode "ZIP" {
 }
 
 bindsym $tc $mod+Shift+z mode "ZONE"
-
 mode "ZONE" {
-    bindsym h                     floating enable; resize set width 50ppt height 50ppt; move position 0 0
-    bindsym j                     floating enable; resize set width 50ppt height 50ppt; move position 0 50ppt
-    bindsym k                     floating enable; resize set width 50ppt height 50ppt; move position 50ppt 0
-    bindsym l                     floating enable; resize set width 50ppt height 50ppt; move position 50ppt 50ppt
+    bindsym 1                    floating enable; resize set width 50ppt height 50ppt; move position 0 0
+    bindsym 2                    floating enable; resize set width 50ppt height 50ppt; move position 0 50ppt
+    bindsym 3                    floating enable; resize set width 50ppt height 50ppt; move position 50ppt 0
+    bindsym 4                    floating enable; resize set width 50ppt height 50ppt; move position 50ppt 50ppt
 
-    bindsym Escape                mode "default"
-    bindsym Return                mode "default"
-    bindsym $tc $mod+Shift+z mode "default"
+    bindsym $tc h                move left  20 px
+    bindsym $tc j                move down  20 px
+    bindsym $tc k                move up    20 px
+    bindsym $tc l                move right 20 px
+
+    bindsym $tc Shift+h          move left  60 px
+    bindsym $tc Shift+j          move down  60 px
+    bindsym $tc Shift+k          move up    60 px
+    bindsym $tc Shift+l          move right 60 px
+
+    bindsym $tc Control+Shift+h  move left  80 px
+    bindsym $tc Control+Shift+j  move down  80 px
+    bindsym $tc Control+Shift+k  move up    80 px
+    bindsym $tc Control+Shift+l  move right 80 px
+
+    bindsym $tc Control+h        move left  5 px
+    bindsym $tc Control+j        move down  5 px
+    bindsym $tc Control+k        move up    5 px
+    bindsym $tc Control+l        move right 5 px
+
+    bindsym Escape               mode "default"
+    bindsym Return               mode "default"
+    bindsym $tc $mod+Shift+z     mode "default"
+}
+
+bindsym $tc $mod+r mode "RESIZE"
+mode "RESIZE" {
+    bindsym $tc h                resize shrink width  20 px
+    bindsym $tc j                resize grow   height 20 px
+    bindsym $tc k                resize shrink height 20 px
+    bindsym $tc l                resize grow   width  20 px
+
+    bindsym $tc Shift+h          resize shrink width  60 px
+    bindsym $tc Shift+j          resize grow   height 60 px
+    bindsym $tc Shift+k          resize shrink height 60 px
+    bindsym $tc Shift+l          resize grow   width  60 px
+
+    bindsym $tc Control+Shift+h  resize shrink width  80 px
+    bindsym $tc Control+Shift+j  resize grow   height 80 px
+    bindsym $tc Control+Shift+k  resize shrink height 80 px
+    bindsym $tc Control+Shift+l  resize grow   width  80 px
+
+    bindsym $tc Control+h        resize shrink width  5 px
+    bindsym $tc Control+j        resize grow   height 5 px
+    bindsym $tc Control+k        resize shrink height 5 px
+    bindsym $tc Control+l        resize grow   width  5 px
+
+    bindsym Escape               mode "default"
+    bindsym Return               mode "default"
+    bindsym $tc $mod+r           mode "default"
 }
