@@ -72,8 +72,8 @@ exec rm -f "$XDG_RUNTIME_DIR/wobpipe" \
     && tail -f "$XDG_RUNTIME_DIR/wobpipe" | wob -c ~/.config/wob/wob.ini
 
 exec sh -c 'source ~/.config/sway/geo && wlsunset -l $LAT -L $LON -t 4500 -T 6500'
-exec wl-paste --type text  --watch cliphist store
-exec wl-paste --type image --watch cliphist store
+exec wl-paste --type text --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
+exec wl-paste --type image --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
 
 exec wpctl set-volume @DEFAULT_SINK@ 0.30
 exec wpctl set-volume @DEFAULT_SOURCE@ 0.40
