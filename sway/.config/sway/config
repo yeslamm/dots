@@ -109,9 +109,9 @@ client.urgent            #ee5396  #262626  #ffffff  #ee5396  #ee5396
 # =========== 5. WINDOW RULES ======================================================================== #
 # ==================================================================================================== #
 
-for_window [app_id="qBittorrent"] floating enable, resize set 1300 900, move position center
-for_window [app_id="fterm"] floating enable, resize set 1100 800, move position center
-for_window [app_id="clipfzf"] floating enable, resize set 1920 1150, move position center
+for_window [app_id="qBittorrent"] floating enable, resize set width 70 ppt height 75 ppt, move position center
+for_window [app_id="fterm"] floating enable, resize set width 60 ppt height 70 ppt, move position center
+for_window [app_id="clipfzf"] floating enable, resize set width 85 ppt height 85 ppt, move position center
 
 for_window [app_id="FileRoller|mpv|swayimg|gpu_screen_recorder|xdg-desktop-portal-gtk"] floating enable
 for_window [instance="sun-awt-X11-XDialogPeer"] floating enable
