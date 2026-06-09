@@ -162,7 +162,7 @@ bindsym $tc Control+$mod+k        resize shrink height 40 px
 bindsym $tc Control+$mod+l        resize grow   width  40 px
 
 bindsym $tc $mod+w                layout tabbed
-bindsym $tc $mod+e                layout toggle split
+bindsym $tc $mod+Shift+w          layout toggle split
 bindsym $tc $mod+apostrophe       split h
 bindsym $tc $mod+semicolon        split v
 bindsym $tc $mod+Shift+apostrophe split none
@@ -268,8 +268,8 @@ mode "PRINT" {
 
 set $msg_sys notify-send -t 1500 -h string:x-canonical-private-synchronous:sys
 
-bindsym $mod+Escape mode "SUPER"
-mode "SUPER" {
+bindsym $mod+e mode "EXEC"
+mode "EXEC" {
     bindsym $tc l                 exec $scripts/lock-ns.sh; mode "default"
     bindsym $tc s                 exec "swaylock -f && $scripts/sentry.sh"; mode "default"
     bindsym $tc e                 exec $scripts/powermenu.sh logout; mode "default"
@@ -290,7 +290,7 @@ mode "SUPER" {
 
     bindsym Escape                mode "default"
     bindsym Return                mode "default"
-    bindsym $mod+Escape           mode "default"
+    bindsym $mod+e                mode "default"
 }
 
 set $msg_asus notify-send -t 1500 -h string:x-canonical-private-synchronous:asus
