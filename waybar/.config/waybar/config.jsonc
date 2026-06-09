@@ -3,7 +3,6 @@
   // GLOBAL BAR LAYOUT
   // ==============================================================================
   "position": "top",
-  "layer": "top",
   "output": "eDP-1",
 
   "modules-left": [
