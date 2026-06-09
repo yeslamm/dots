@@ -99,9 +99,9 @@ export LC_ALL=en_US.UTF-8
 
 # FZF Configuration (Maximized for fd & unified Ctrl-n/p list navigation)
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --exclude .git --exclude node_modules --exclude .cache --exclude venv --exclude dist'
-export FZF_DEFAULT_OPTS="--bind 'ctrl-j:ignore,ctrl-k:ignore,ctrl-n:down,ctrl-p:up,ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up'"
-export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:500 {}' --preview-window=down:50%"
-export FZF_ALT_C_OPTS="--preview 'eza -lahG --color=always --icons=never {}' --preview-window=down:50%"
+export FZF_DEFAULT_OPTS="--layout=reverse --bind 'ctrl-j:ignore,ctrl-k:ignore,ctrl-n:down,ctrl-p:up,ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up'"
+export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:500 {}' --preview-window=right:50%"
+export FZF_ALT_C_OPTS="--preview 'eza -lahG --color=always --icons=never {}' --preview-window=right:50%"
 
 # Tool Initializations
 eval "$(fzf --zsh)"
@@ -132,7 +132,7 @@ fznvim() {
   else
     local file
     file=$(fzf --preview='bat --color=always --style=numbers --line-range=:500 {}' \
-               --preview-window=down:50%)
+               --preview-window=right:50%)
     [[ -n "$file" ]] && nvim "$file"
   fi
 }

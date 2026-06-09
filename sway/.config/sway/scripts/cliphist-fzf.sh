@@ -15,6 +15,7 @@ preview)
 
 *)
     id="$($CH_CMD -preview-width 1000 list | fzf \
+        --layout=reverse \
         --delimiter '\t' \
         --with-nth 2.. \
         --preview-window=right:55%,wrap \
