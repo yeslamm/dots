@@ -5,7 +5,7 @@ help:
 	@echo "  make user             Initialize XDG structures and link user space configs via stow"
 	@echo "  make adopt            Adopt existing home configs into repository tracking fields"
 	@echo "  make system           Sync framework rules to /etc hierarchy and enable core services"
-	@echo "  make packages-install Synchronize unified manifest (pkglist.txt) via yay"
+	@echo "  make install          Synchronize unified manifest (pkglist.txt) via yay"
 	@echo "  make clean            Cleanly sever all home directory environment symlinks"
 
 user:
@@ -20,11 +20,11 @@ user:
 	@echo "======================================================================="
 	@echo " Running Dynamic Stow Allocation"
 	@echo "======================================================================="
-	stow -R swayimg satty cliphist lazygit nvim easyeffects zsh emptty tmux waybar fuzzel fontconfig foot mako dev yazi sway git
+	stow -R bin swayimg satty cliphist lazygit nvim easyeffects zsh tmux waybar fuzzel fontconfig foot mako dev yazi sway git
 
 adopt:
 	@echo "Adopting existing configuration templates into tracking tree..."
-	stow -A swayimg satty cliphist lazygit nvim easyeffects zsh emptty tmux waybar fuzzel fontconfig foot mako dev yazi sway git
+	stow -A bin swayimg satty cliphist lazygit nvim easyeffects zsh tmux waybar fuzzel fontconfig foot mako dev yazi sway git
 
 system:
 	@echo "======================================================================="
@@ -36,16 +36,12 @@ system:
 	sudo cp sysconfigs/keyd/default.conf /etc/keyd/default.conf
 	sudo mkdir -p /etc/NetworkManager/conf.d
 	sudo cp sysconfigs/NetworkManager/wifi_backend.conf /etc/NetworkManager/conf.d/wifi_backend.conf
-	sudo mkdir -p /etc/emptty
-	sudo cp sysconfigs/emptty/conf /etc/emptty/conf
-	sudo cp sysconfigs/emptty/motd /etc/emptty/motd
 	sudo systemctl daemon-reload
 	sudo systemctl enable --now keyd || true
 	sudo systemctl enable --now NetworkManager || true
-	sudo systemctl enable emptty || true
 	@echo "Infrastructure deployed and system daemons initialized successfully."
 
-packages-install:
+install:
 	@echo "======================================================================="
 	@echo " Restoring Consolidated Core Manifesto via yay"
 	@echo "======================================================================="
@@ -53,4 +49,4 @@ packages-install:
 
 clean:
 	@echo "Severing home folder environment symlinks cleanly..."
-	stow -D swayimg satty cliphist lazygit nvim easyeffects zsh emptty tmux waybar fuzzel fontconfig foot mako dev yazi sway git
+	stow -D bin swayimg satty cliphist lazygit nvim easyeffects zsh tmux waybar fuzzel fontconfig foot mako dev yazi sway git

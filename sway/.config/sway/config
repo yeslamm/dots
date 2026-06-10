@@ -9,10 +9,8 @@
 include /etc/sway/config.d/*
 
 exec dbus-update-activation-environment --systemd \
-    XDG_CURRENT_DESKTOP=sway:wlroots \
     XCURSOR_THEME \
     XCURSOR_SIZE \
-    I3SOCK
 
 set $mod         Mod4
 set $term        foot
