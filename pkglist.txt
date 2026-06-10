@@ -21,7 +21,6 @@ clang
 cliphist
 downgrade
 easyeffects
-emptty
 evtest
 eza
 fastfetch
