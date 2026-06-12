@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
 # /usr/local/bin/sway-session
 
+if [ -n "$WAYLAND_DISPLAY" ]; then
+    echo "You are already inside an active Wayland session!"
+    exit 0
+fi
+
+if pgrep -u "$USER" -x sway >/dev/null; then
+    echo "Error: Sway is already running for user $USER on another TTY!"
+    echo "Returning to console safely to prevent D-Bus socket corruption."
+    sleep 2
+    exit 1
+fi
+
 export XDG_SESSION_TYPE=wayland
 export XDG_CURRENT_DESKTOP=sway
 export XDG_SESSION_DESKTOP=sway
