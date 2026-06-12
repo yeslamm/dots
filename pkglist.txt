@@ -40,7 +40,6 @@ gst-plugin-pipewire
 inotify-tools
 inter-font
 iptables
-iwd
 jq
 keyd
 lazygit
@@ -52,6 +51,8 @@ mpv
 mpv-mpris
 neovim
 networkmanager
+wpa_supplicant
+nmtui-go
 noto-fonts
 noto-fonts-cjk
 noto-fonts-emoji
