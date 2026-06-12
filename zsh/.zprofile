@@ -12,6 +12,6 @@ if [ -z "$WAYLAND_DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
     if [[ "$REPLY" =~ ^[Yy]$ ]]; then
         exec sway-run
     else
-        echo "Staying in TTY. Type 'sway-run' to launch later."
+        echo "Staying in TTY. Type 'sway-run' to launch later.\n"
     fi
 fi
