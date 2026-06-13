@@ -124,8 +124,8 @@
     "format-connected": "{num_connections} CON",
     "format-off": "OFF",
     "tooltip-format": "{controller_alias}\t{controller_address}",
-    "tooltip-format-connected": "{controller_alias}\t\t{controller_address}\n{device_enumerate}",
-    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    "tooltip-format-connected": "{controller_alias}\n{controller_address}\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\nt{device_address}",
     "on-click": "$TERMINAL --app-id=fterm bluetuith"
   },
 
