@@ -2,7 +2,7 @@
 # bright.sh - Brightness control with wob feedback
 
 STEP=5
-WOB_PIPE="${XDG_RUNTIME_DIR}/wobpipe"
+WOB_SOCK="${XDG_RUNTIME_DIR}/wob.sock"
 
 case "$1" in
 up) brightnessctl set "${STEP}%+" -q ;;
@@ -14,4 +14,4 @@ down) brightnessctl set "${STEP}%-" -q ;;
 esac
 
 IFS=',' read -r _ _ _ PERC _ <<<"$(brightnessctl -m)"
-echo "${PERC%%%}" >"$WOB_PIPE"
+echo "${PERC%%%}" >"$WOB_SOCK"

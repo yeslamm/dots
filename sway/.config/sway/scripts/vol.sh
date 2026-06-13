@@ -2,7 +2,7 @@
 # vol.sh - Volume control with wob feedback
 
 STEP="5%"
-WOB_PIPE="${XDG_RUNTIME_DIR}/wobpipe"
+WOB_SOCK="${XDG_RUNTIME_DIR}/wob.sock"
 
 case "$1" in
 up) wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ "$STEP"+ ;;
@@ -17,8 +17,8 @@ esac
 VAL_RAW=$(wpctl get-volume @DEFAULT_AUDIO_SINK@)
 
 if [[ "$VAL_RAW" == *"[MUTED]"* ]]; then
-    echo 0 >"$WOB_PIPE"
+    echo 0 >"$WOB_SOCK"
 else
     read -r _ VOL_DEC _ <<<"$VAL_RAW"
-    echo "$((10#${VOL_DEC/./}))" >"$WOB_PIPE"
+    echo "$((10#${VOL_DEC/./}))" >"$WOB_SOCK"
 fi
