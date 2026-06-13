@@ -20,8 +20,7 @@ set $scripts     ~/.config/sway/scripts
 
 set $tc          --to-code
 set $lk          --locked
-set $tc_lk       --to-code --locked
-set $rl_lk       --release --to-code
+set $rl          --release
 
 # ==================================================================================================== #
 # =========== 2. HARDWARE: INPUT & OUTPUT ============================================================ #
@@ -61,15 +60,20 @@ mouse_warping output
 
 exec gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors-r3'
 exec gsettings set org.gnome.desktop.interface cursor-size 24
+
 exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 
+exec keyd-application-mapper -d
+
 exec_always pkill -x -USR2 waybar || (sleep 0.5 && waybar)
+
 exec mako
 exec rm -f "$XDG_RUNTIME_DIR/wob.sock" \
     && mkfifo "$XDG_RUNTIME_DIR/wob.sock" \
     && tail -f "$XDG_RUNTIME_DIR/wob.sock" | wob -c ~/.config/wob/wob.ini
 
 exec sh -c 'source ~/.config/sway/geo && wlsunset -l $LAT -L $LON -t 4500 -T 6500'
+
 exec wl-paste --type text --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
 exec wl-paste --type image --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
 
@@ -178,35 +182,35 @@ bindsym $tc $mod+a                focus parent
 bindsym $tc $mod+c                focus child
 floating_modifier $mod normal
 
-bindsym $tc $mod+grave           workspace back_and_forth
-bindsym $tc $mod+Shift+grave     move container to workspace back_and_forth; workspace back_and_forth
+bindsym $tc $mod+grave            workspace back_and_forth
+bindsym $tc $mod+Shift+grave      move container to workspace back_and_forth; workspace back_and_forth
 
-bindsym $tc $mod+s               scratchpad show
-bindsym $tc $mod+Shift+s         move scratchpad
+bindsym $tc $mod+s                scratchpad show
+bindsym $tc $mod+Shift+s          move scratchpad
 
 # ==================================================================================================== #
 # =========== 8. WORKSPACES ========================================================================== #
 # ==================================================================================================== #
 
-bindsym $tc $mod+1 workspace number 1
-bindsym $tc $mod+2 workspace number 2
-bindsym $tc $mod+3 workspace number 3
-bindsym $tc $mod+4 workspace number 4
-bindsym $tc $mod+5 workspace number 5
-bindsym $tc $mod+6 workspace number 6
-bindsym $tc $mod+7 workspace number 7
-bindsym $tc $mod+8 workspace number 8
-bindsym $tc $mod+9 workspace number 9
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
 
-bindsym $tc $mod+Shift+1 move container to workspace number 1
-bindsym $tc $mod+Shift+2 move container to workspace number 2
-bindsym $tc $mod+Shift+3 move container to workspace number 3
-bindsym $tc $mod+Shift+4 move container to workspace number 4
-bindsym $tc $mod+Shift+5 move container to workspace number 5
-bindsym $tc $mod+Shift+6 move container to workspace number 6
-bindsym $tc $mod+Shift+7 move container to workspace number 7
-bindsym $tc $mod+Shift+8 move container to workspace number 8
-bindsym $tc $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
 
 # ==================================================================================================== #
 # =========== 9. UTILITIES & HARDWARE ================================================================ #
@@ -219,18 +223,18 @@ bindsym $lk XF86AudioPlay                   exec $scripts/media.sh play-pause
 bindsym $lk XF86AudioNext                   exec playerctl next
 bindsym $lk XF86AudioPrev                   exec playerctl previous
 
-bindsym $tc_lk $mod+equal                   exec $scripts/vol.sh up
-bindsym $tc_lk $mod+minus                   exec $scripts/vol.sh down
-bindsym $tc_lk $mod+0                       exec $scripts/vol.sh mute
+bindsym $lk $mod+equal                      exec $scripts/vol.sh up
+bindsym $lk $mod+minus                      exec $scripts/vol.sh down
+bindsym $lk $mod+0                          exec $scripts/vol.sh mute
 
-bindsym $tc_lk $mod+period                  exec playerctl next
-bindsym $tc_lk $mod+comma                   exec playerctl previous
-bindsym $tc_lk $mod+slash                   exec $scripts/media.sh play-pause
+bindsym $tc $lk $mod+period                 exec playerctl next
+bindsym $tc $lk $mod+comma                  exec playerctl previous
+bindsym $tc $lk $mod+slash                  exec $scripts/media.sh play-pause
 
 bindsym $lk XF86MonBrightnessUp             exec $scripts/bright.sh up
 bindsym $lk XF86MonBrightnessDown           exec $scripts/bright.sh down
-bindsym $tc_lk $mod+bracketright            exec $scripts/bright.sh up
-bindsym $tc_lk $mod+bracketleft             exec $scripts/bright.sh down
+bindsym $tc $lk $mod+bracketright           exec $scripts/bright.sh up
+bindsym $tc $lk $mod+bracketleft            exec $scripts/bright.sh down
 
 bindsym $tc $mod+Shift+bracketright         opacity plus 0.1
 bindsym $tc $mod+Shift+bracketleft          opacity minus 0.1
@@ -243,13 +247,13 @@ bindsym $tc $mod+o                          exec $scripts/idlemgr.sh OFF
 set $clip_term                              $term --app-id=clipfzf
 bindsym $tc $mod+v                          exec $clip_term $scripts/cliphist-fzf.sh
 
-bindsym $tc Print                           exec $scripts/screenshot.sh region-copy
-bindsym $tc Shift+Print                     exec $scripts/screenshot.sh grim-copy
-bindsym $rl_lk Mod1+Print                   exec $scripts/screenshot.sh window-copy
+bindsym $rl Print                           exec $scripts/screenshot.sh region-copy
+bindsym Shift+Print                         exec $scripts/screenshot.sh grim-copy
+bindsym Mod1+Print                          exec $scripts/screenshot.sh window-copy
 
-bindsym $tc Control+Print                   exec $scripts/screenshot.sh region-save
-bindsym $tc Control+Shift+Print             exec $scripts/screenshot.sh grim-save
-bindsym $rl_lk Control+Mod1+Print           exec $scripts/screenshot.sh window-save
+bindsym $rl Control+Print                   exec $scripts/screenshot.sh region-save
+bindsym Control+Shift+Print                 exec $scripts/screenshot.sh grim-save
+bindsym Control+Mod1+Print           exec $scripts/screenshot.sh window-save
 
 # ==================================================================================================== #
 # =========== 10. MODES ============================================================================== #
@@ -368,7 +372,7 @@ mode "EXEC" {
 
     bindsym $tc t                 exec $term watch -n 3 -d sensors; mode "default"
     bindsym $tc n                 exec $scripts/wlsunset.sh; mode "default"
-    bindsym $tc v                 exec pavucontrol; mode "default"
+    bindsym $tc v                 exec $scripts/vsync_toggle.sh; mode "default"
 
     bindsym $tc w                 exec 'nmcli radio wifi on && $msg_sys "Network: ON"'; mode "default"
     bindsym $tc Shift+w           exec 'nmcli radio wifi off && $msg_sys "Network: OFF"'; mode "default"
@@ -388,9 +392,9 @@ set $shot exec swaymsg 'mode "default"' && $scripts/screenshot.sh
 
 bindsym $mod+Print mode "PRINT"
 mode "PRINT" {
-    bindsym $tc print             $shot region
-    bindsym $tc Shift+print       $shot fullscreen
-    bindsym $rl_lk Mod1+print     $shot window
+    bindsym $rl print             $shot region
+    bindsym Shift+print           $shot fullscreen
+    bindsym Mod1+print            $shot window
 
     bindsym Escape                mode "default"
     bindsym Return                mode "default"
