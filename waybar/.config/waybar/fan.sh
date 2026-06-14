@@ -1,18 +1,17 @@
-#!/bin/bash
-# fan.sh - Readable, reliable CPU fan monitor
+#!/bin/sh
+# ~/dots/waybar/.config/waybar/fan.sh
 
 for dev in /sys/class/hwmon/hwmon*; do
-    if [[ -f "$dev/name" ]] && [[ "$(<"$dev/name")" == "asus" ]]; then
+    [ -f "$dev/name" ] || continue
 
-        # 2. Grab the actual CPU fan speed
-        if [[ -f "$dev/fan1_input" ]]; then
-            RPM=$(<"$dev/fan1_input")
+    read -r name <"$dev/name"
 
-            # 3. Only print if it's spinning (otherwise print nothing to auto-hide)
-            if [[ ${RPM:-0} -gt 0 ]]; then
-                echo "${RPM} RPM"
-                exit 0
-            fi
+    if [ "$name" = "asus" ] && [ -f "$dev/fan1_input" ]; then
+        read -r RPM <"$dev/fan1_input"
+
+        if [ "${RPM:-0}" -gt 0 ]; then
+            echo "${RPM} RPM"
+            exit 0
         fi
     fi
 done
