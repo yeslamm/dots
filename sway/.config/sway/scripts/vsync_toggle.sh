@@ -6,21 +6,15 @@ STATE_FILE="$RUNTIME_DIR/vsync-flag"
 if [ ! -f "$STATE_FILE" ]; then
     CURRENT_STATE="on"
 else
-    CURRENT_STATE=$(cat "$STATE_FILE")
+    CURRENT_STATE=$(<"$STATE_FILE")
 fi
 
 if [ "$CURRENT_STATE" = "on" ]; then
-    swaymsg "output * allow_tearing yes"
-    swaymsg "output * max_render_time off"
-
+    swaymsg "output * allow_tearing yes; output * max_render_time off"
     echo "off" >"$STATE_FILE"
-
     notify-send -t 2000 -h string:x-canonical-private-synchronous:vsync "Vsync: OFF"
 else
-    swaymsg "output * allow_tearing no"
-    swaymsg "output * max_render_time 3"
-
+    swaymsg "output * allow_tearing no; output * max_render_time 3"
     echo "on" >"$STATE_FILE"
-
     notify-send -t 2000 -h string:x-canonical-private-synchronous:vsync "Vsync: ON"
 fi
