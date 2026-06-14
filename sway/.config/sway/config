@@ -26,7 +26,7 @@ set $rl          --release
 # =========== 2. HARDWARE: INPUT & OUTPUT ============================================================ #
 # ==================================================================================================== #
 
-output * bg #000000 solid_color
+output * bg #0f0f0f solid_color
 output eDP-1 max_render_time 3
 
 input type:keyboard {
@@ -93,11 +93,11 @@ default_border           pixel 1
 default_floating_border  normal 1
 smart_borders            on
 gaps inner               0
-gaps outer               2
+gaps outer               0
 smart_gaps               on
 
 font pango:JetBrainsMono NF, Vazirmatn 11
-titlebar_padding 4 4
+titlebar_padding 2 2
 titlebar_border_thickness 1
 title_align      center
 
@@ -253,7 +253,7 @@ bindsym Mod1+Print                          exec $scripts/screenshot.sh window-c
 
 bindsym $rl Control+Print                   exec $scripts/screenshot.sh region-save
 bindsym Control+Shift+Print                 exec $scripts/screenshot.sh grim-save
-bindsym Control+Mod1+Print           exec $scripts/screenshot.sh window-save
+bindsym Control+Mod1+Print                  exec $scripts/screenshot.sh window-save
 
 # ==================================================================================================== #
 # =========== 10. MODES ============================================================================== #
