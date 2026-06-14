@@ -34,7 +34,6 @@ fzf
 git
 github-cli
 glow
-gnome-themes-extra
 grim
 gst-plugin-pipewire
 inotify-tools
