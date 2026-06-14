@@ -1,4 +1,5 @@
 #!/bin/bash
+# ~/dots/sway/.config/sway/scripts/brightness.sh
 
 STEP=5
 WOB_SOCK="${XDG_RUNTIME_DIR}/wob.sock"

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# ~/dots/sway/.config/sway/scripts/vsync-toggle.sh
 
 RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 STATE_FILE="$RUNTIME_DIR/vsync-flag"

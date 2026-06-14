@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# ~/dots/sway/.config/sway/scripts/power-menu.sh
+
 set -euo pipefail
 
 ACTION="${1:-}"

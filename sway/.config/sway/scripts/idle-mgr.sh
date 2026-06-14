@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
+# ~/dots/sway/.config/sway/scripts/idle-mgr.sh
+
 set -euo pipefail
 
 ACTION=$(echo "$1" | tr '[:lower:]' '[:upper:]')
-START_IDLE="$HOME/.config/sway/scripts/start_idle.sh"
+START_IDLE="$HOME/.config/sway/scripts/start-idle.sh"
 RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 IDLE_FLAG="$RUNTIME_DIR/IDLE_ENABLED"
 

@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# ~/dots/sway/.config/sway/scripts/start-idle.sh
+
 set -euo pipefail
 
 RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
@@ -8,7 +10,7 @@ POWER_FLAG="$RUNTIME_DIR/display_off"
 rm -f "$BRIGHT_FLAG" "$POWER_FLAG"
 killall swayidle 2>/dev/null || true
 
-GATEKEEPER="$HOME/.config/sway/scripts/check_procs.sh"
+GATEKEEPER="$HOME/.config/sway/scripts/check-procs.sh"
 LOCK_CMD="pgrep -x swaylock >/dev/null || swaylock -f"
 
 swayidle -w \
