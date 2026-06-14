@@ -1,27 +1,17 @@
-#!/bin/bash
-# media.sh - Play/Pause Specialist
-# Optimized for a single responsibility: toggling and notifying.
+#!/bin/sh
+# ~/dots/sway/.config/sway/scripts/media.sh
 
-set -euo pipefail
+playerctl play-pause && sleep 0.08
 
-# Perform the action
-playerctl play-pause
+STATUS=$(playerctl status 2>/dev/null) || exit 0
 
-# Tiny delay to allow the player to update its status
-sleep 0.08
+METADATA=$(playerctl metadata --format "{{markup_escape(artist)}} - {{markup_escape(title)}}" 2>/dev/null)
 
-# Fetch status and metadata
-STATUS=$(playerctl status 2>/dev/null || echo "Stopped")
-METADATA=$(playerctl metadata --format "{{ artist }} - {{ title }}" 2>/dev/null || echo "Unknown Track")
-
-# Exit if nothing is happening
-[[ "$STATUS" == "Stopped" ]] && exit 0
-
-# Send the notification
-if [[ "$STATUS" == "Playing" ]]; then
-    notify-send "Now Playing" "$METADATA" \
-        -t 1500 -h string:x-canonical-private-synchronous:media
-else
-    notify-send "Paused" "$METADATA" \
-        -t 1500 -h string:x-canonical-private-synchronous:media
+if [ -z "$METADATA" ]; then
+    METADATA="Unknown Track"
 fi
+
+TITLE="Paused"
+[ "$STATUS" = "Playing" ] && TITLE="Now Playing"
+
+notify-send "$TITLE" "$METADATA" -t 1500 -h string:x-canonical-private-synchronous:media
