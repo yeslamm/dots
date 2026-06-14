@@ -24,6 +24,10 @@ setopt CORRECT
 SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
 WORDCHARS=${WORDCHARS//[\/]}
 
+# Help
+unalias run-help
+autoload -Uz run-help
+
 # ----------------------------------------------------------------------
 # Zim Module Configuration
 # ----------------------------------------------------------------------

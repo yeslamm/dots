@@ -5,13 +5,15 @@ if [ -z "$WAYLAND_DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
         echo ""
     fi
 
-    echo -n "Start Sway? [y/N]: "
-    read -k 1 REPLY
+    read -k 1 "REPLY?Start Sway? [Y/n]: "
     echo ""
 
-    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-        exec sway-run
-    else
-        echo "Staying in TTY. Type 'sway-run' to launch later.\n"
-    fi
+    case "$REPLY" in
+        [Yy]|$'\n')
+            exec sway-run
+            ;;
+        *)
+            echo "Staying in TTY. Type 'sway-run' to launch later.\n"
+            ;;
+    esac
 fi
