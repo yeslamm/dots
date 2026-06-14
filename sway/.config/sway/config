@@ -49,7 +49,7 @@ input type:touchpad {
 bindgesture swipe:3:right workspace next
 bindgesture swipe:3:left  workspace prev
 
-bindswitch $lk lid:on exec $scripts/lid_action.sh
+bindswitch $lk lid:on exec $scripts/lid-action.sh
 seat * xcursor_theme capitaine-cursors-r3 24
 seat * hide_cursor when-typing enable
 mouse_warping output
@@ -60,30 +60,29 @@ mouse_warping output
 
 exec gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors-r3'
 exec gsettings set org.gnome.desktop.interface cursor-size 24
-
 exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-
 exec keyd-application-mapper -d
+exec playerctld daemon
 
-exec_always pkill -x -USR2 waybar || (sleep 0.5 && waybar)
-
-exec mako
-exec rm -f "$XDG_RUNTIME_DIR/wob.sock" \
-    && mkfifo "$XDG_RUNTIME_DIR/wob.sock" \
-    && tail -f "$XDG_RUNTIME_DIR/wob.sock" | wob -c ~/.config/wob/wob.ini
+exec sh -c 'wpctl set-volume @DEFAULT_SINK@ 0.30 \
+           & wpctl set-volume @DEFAULT_SOURCE@ 0.40 \
+           & amixer -c 1 set "Internal Mic Boost" 0 &'
 
 exec sh -c 'source ~/.config/sway/geo && wlsunset -l $LAT -L $LON -t 4500 -T 6500'
 
+exec easyeffects --hide-window
+exec wayland-pipewire-idle-inhibit -q
+
 exec wl-paste --type text --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
 exec wl-paste --type image --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
+exec $scripts/idle-mgr.sh ON
+exec mako
 
-exec wpctl set-volume @DEFAULT_SINK@ 0.30
-exec wpctl set-volume @DEFAULT_SOURCE@ 0.40
-exec easyeffects --hide-window
-exec amixer -c 1 set 'Internal Mic Boost' 0
+exec sh -c 'rm -f "$XDG_RUNTIME_DIR/wob.sock" \
+           && mkfifo "$XDG_RUNTIME_DIR/wob.sock" \
+           && tail -f "$XDG_RUNTIME_DIR/wob.sock" | wob -c ~/.config/wob/wob.ini'
 
-exec $scripts/idlemgr.sh ON
-exec wayland-pipewire-idle-inhibit -q
+exec_always sh -c 'pkill -x -USR2 waybar || (sleep 0.5 && waybar)'
 
 # ==================================================================================================== #
 # =========== 4. APPEARANCE & THEME ================================================================== #
@@ -216,33 +215,38 @@ bindsym $mod+Shift+9 move container to workspace number 9
 # =========== 9. UTILITIES & HARDWARE ================================================================ #
 # ==================================================================================================== #
 
-bindsym $lk XF86AudioRaiseVolume            exec $scripts/vol.sh up
-bindsym $lk XF86AudioLowerVolume            exec $scripts/vol.sh down
-bindsym $lk XF86AudioMute                   exec $scripts/vol.sh mute
+bindsym $lk XF86AudioRaiseVolume            exec $scripts/volume.sh up
+bindsym $lk XF86AudioLowerVolume            exec $scripts/volume.sh down
+bindsym $lk XF86AudioMute                   exec $scripts/volume.sh mute
 bindsym $lk XF86AudioPlay                   exec $scripts/media.sh play-pause
 bindsym $lk XF86AudioNext                   exec playerctl next
 bindsym $lk XF86AudioPrev                   exec playerctl previous
 
-bindsym $lk $mod+equal                      exec $scripts/vol.sh up
-bindsym $lk $mod+minus                      exec $scripts/vol.sh down
-bindsym $lk $mod+0                          exec $scripts/vol.sh mute
+bindsym $lk $mod+equal                      exec $scripts/volume.sh up
+bindsym $lk $mod+minus                      exec $scripts/volume.sh down
+bindsym $lk $mod+0                          exec $scripts/volume.sh mute
 
-bindsym $tc $lk $mod+period                 exec playerctl next
-bindsym $tc $lk $mod+comma                  exec playerctl previous
+bindsym $tc $lk $mod+Shift+minus            exec playerctl position 5-
+bindsym $tc $lk $mod+Shift+equal            exec playerctl position 5+
+bindsym $tc $lk $mod+Shift+period           exec playerctl next
+bindsym $tc $lk $mod+Shift+comma            exec playerctl previous
+bindsym $tc $lk $mod+period                 exec playerctld shift
+bindsym $tc $lk $mod+comma                  exec playerctld unshift
 bindsym $tc $lk $mod+slash                  exec $scripts/media.sh play-pause
+bindsym $tc $lk $mod+Shift+0                exec playerctl position 0
 
-bindsym $lk XF86MonBrightnessUp             exec $scripts/bright.sh up
-bindsym $lk XF86MonBrightnessDown           exec $scripts/bright.sh down
-bindsym $tc $lk $mod+bracketright           exec $scripts/bright.sh up
-bindsym $tc $lk $mod+bracketleft            exec $scripts/bright.sh down
+bindsym $lk XF86MonBrightnessUp             exec $scripts/brightness.sh up
+bindsym $lk XF86MonBrightnessDown           exec $scripts/brightness.sh down
+bindsym $tc $lk $mod+bracketright           exec $scripts/brightness.sh up
+bindsym $tc $lk $mod+bracketleft            exec $scripts/brightness.sh down
 
 bindsym $tc $mod+Shift+bracketright         opacity plus 0.1
 bindsym $tc $mod+Shift+bracketleft          opacity minus 0.1
 
 bindsym $tc $mod+n                          exec makoctl dismiss
 bindsym $tc $mod+Shift+n                    exec makoctl invoke
-bindsym $tc $mod+i                          exec $scripts/idlemgr.sh ON
-bindsym $tc $mod+o                          exec $scripts/idlemgr.sh OFF
+bindsym $tc $mod+i                          exec $scripts/idle-mgr.sh ON
+bindsym $tc $mod+o                          exec $scripts/idle-mgr.sh OFF
 
 set $clip_term                              $term --app-id=clipfzf
 bindsym $tc $mod+v                          exec $clip_term $scripts/cliphist-fzf.sh
@@ -366,13 +370,13 @@ bindsym $tc $mod+e mode "EXEC"
 mode "EXEC" {
     bindsym $tc l                 exec $scripts/lock-ns.sh; mode "default"
     bindsym $tc s                 exec "swaylock -f && $scripts/sentry.sh"; mode "default"
-    bindsym $tc e                 exec $scripts/powermenu.sh logout; mode "default"
-    bindsym $tc r                 exec $scripts/powermenu.sh reboot; mode "default"
-    bindsym $tc p                 exec $scripts/powermenu.sh poweroff; mode "default"
+    bindsym $tc e                 exec $scripts/power-menu.sh logout; mode "default"
+    bindsym $tc r                 exec $scripts/power-menu.sh reboot; mode "default"
+    bindsym $tc p                 exec $scripts/power-menu.sh poweroff; mode "default"
 
     bindsym $tc t                 exec $term watch -n 3 -d sensors; mode "default"
     bindsym $tc n                 exec $scripts/wlsunset.sh; mode "default"
-    bindsym $tc v                 exec $scripts/vsync_toggle.sh; mode "default"
+    bindsym $tc v                 exec $scripts/vsync-toggle.sh; mode "default"
 
     bindsym $tc w                 exec 'nmcli radio wifi on && $msg_sys "Network: ON"'; mode "default"
     bindsym $tc Shift+w           exec 'nmcli radio wifi off && $msg_sys "Network: OFF"'; mode "default"
