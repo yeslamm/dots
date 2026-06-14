@@ -1,4 +1,5 @@
 #!/bin/bash
+# ~/dots/sway/.config/sway/scripts/kill-menu.sh
 
 set -euo pipefail
 

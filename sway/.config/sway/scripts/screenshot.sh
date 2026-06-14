@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# ~/dots/sway/.config/sway/scripts/screenshot.sh
+
 set -euo pipefail
 
 SAVE_DIR="$HOME/Pictures/Screenshots"

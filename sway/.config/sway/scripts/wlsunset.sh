@@ -1,6 +1,5 @@
 #!/bin/bash
-# wlsunset.sh - Feedback-enabled Blue Light Filter
-# Toggles wlsunset and notifies the user.
+# ~/dots/sway/.config/sway/scripts/wlsunset.sh
 
 set -euo pipefail
 
@@ -15,7 +14,6 @@ if pgrep -x wlsunset >/dev/null; then
     notify-send "Blue Light Filter: OFF" \
         -t 1500 -h string:x-canonical-private-synchronous:gamma
 else
-    # Run in background to let the script finish
     wlsunset -l "$LAT" -L "$LON" -t "$NIGHT_TEMP" -T "$DAY_TEMP" &
     notify-send "Blue Light Filter: ON" \
         -t 1500 -h string:x-canonical-private-synchronous:gamma
