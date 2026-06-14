@@ -8,7 +8,7 @@
     "sway/scratchpad",
     "memory",
     "cpu",
-    "custom/temp",
+    "temperature",
     "custom/fan"
   ],
   "modules-center": ["clock"],
@@ -49,11 +49,12 @@
     "format": "{usage}%"
   },
 
-  "custom/temp": {
-    "exec": "~/.config/waybar/temp.sh",
+  "temperature": {
+    "hwmon-path-abs": "/sys/devices/pci0000:00/0000:00:18.3/hwmon",
+    "input-filename": "temp1_input",
     "interval": 3,
-    "tooltip": false,
-    "format": "{}"
+    "format": "{temperatureC}°C",
+    "tooltip": false
   },
 
   "custom/fan": {
@@ -64,8 +65,8 @@
   },
 
   "clock": {
-    "format": "{:%d/%m - %H:%M:%S}",
-    "interval": 1,
+    "format": "{:%d/%m - %H:%M}",
+    "interval": 60,
     "tooltip-format": "<tt><small>{calendar}</small></tt>",
     "calendar": {
       "mode": "year",
