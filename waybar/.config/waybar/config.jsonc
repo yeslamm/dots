@@ -1,41 +1,35 @@
 {
-  // ==============================================================================
-  // GLOBAL BAR LAYOUT
-  // ==============================================================================
-  "position": "top",
+  "position": "bottom",
   "output": "eDP-1",
 
   "modules-left": [
     "sway/workspaces",
-    "sway/scratchpad",
     "sway/mode",
+    "sway/scratchpad",
     "memory",
     "cpu",
-    "temperature",
-    "custom/fan",
-    "custom/idlemgr"
+    "custom/temp",
+    "custom/fan"
   ],
   "modules-center": ["clock"],
   "modules-right": [
     "privacy",
     "tray",
-    "custom/capslock",
-    "sway/language",
-    "bluetooth",
+    "custom/idlemgr",
     "network",
     "wireplumber",
-    "backlight",
     "battery",
     "power-profiles-daemon"
   ],
 
-  // ==============================================================================
-  // SWAY / WINDOW MANAGER MODULES
-  // ==============================================================================
   "sway/workspaces": {
     "disable-scroll": true,
     "all-outputs": false,
     "format": "{name}"
+  },
+
+  "sway/mode": {
+    "format": "{}"
   },
 
   "sway/scratchpad": {
@@ -43,58 +37,35 @@
     "show-empty": false
   },
 
-  "sway/mode": {
-    "format": "{}"
-  },
-
-  "sway/language": {
-    "format": "{shortDescription}",
-    "on-click": "swaymsg input type:keyboard xkb_switch_layout next",
-    "tooltip": true,
-    "tooltip-format": "{long} {variant}"
-  },
-
-  // ==============================================================================
-  // SYSTEM HARDWARE MONITORS
-  // ==============================================================================
   "memory": {
     "interval": 3,
     "format": "{used:0.2f}G",
-    "on-click": "$TERMINAL btop",
     "tooltip": true,
     "tooltip-format": "Used: {used:0.2f}G\nSwap: {swapUsed:0.2f}G\nTotal: {total:0.2f}G"
   },
 
   "cpu": {
     "interval": 3,
-    "format": "{usage}%",
-    "on-click": "missioncenter"
+    "format": "{usage}%"
   },
 
-  "temperature": {
+  "custom/temp": {
+    "exec": "~/.config/waybar/temp.sh",
     "interval": 3,
     "tooltip": false,
-    "format": "{temperatureC}°C",
-    "hwmon-path-abs": "/sys/devices/pci0000:00/0000:00:18.3/hwmon",
-    "input-filename": "temp1_input",
-    "critical-threshold": 100,
-    "format-critical": "CRIT {temperatureC}°C",
-    "on-click": "$TERMINAL watch -d sensors"
+    "format": "{}"
   },
 
   "custom/fan": {
     "exec": "~/.config/waybar/fan.sh",
     "interval": 3,
     "tooltip": false,
-    "format": "{}",
-    "on-click": "$TERMINAL watch -d sensors"
+    "format": "{}"
   },
 
-  // ==============================================================================
-  // DATE & TIME (CENTER)
-  // ==============================================================================
   "clock": {
-    "format": "{:%d/%m - %R}",
+    "format": "{:%d/%m - %H:%M:%S}",
+    "interval": 1,
     "tooltip-format": "<tt><small>{calendar}</small></tt>",
     "calendar": {
       "mode": "year",
@@ -117,53 +88,26 @@
   },
 
   // ==============================================================================
-  // HARDWARE TOGGLES & CONNECTIVITY
+  // HARDWARE STATUS & CONNECTIVITY
   // ==============================================================================
-  "bluetooth": {
-    "format": "ON",
-    "format-connected": "{num_connections} CON",
-    "format-off": "OFF",
-    "tooltip-format": "{controller_alias}\t{controller_address}",
-    "tooltip-format-connected": "{controller_alias}\n{controller_address}\n\n{device_enumerate}",
-    "tooltip-format-enumerate-connected": "{device_alias}\nt{device_address}",
-    "on-click": "$TERMINAL --app-id=fterm bluetuith"
-  },
-
   "network": {
-    "format-wifi": "ON",
+    "format-wifi": "{essid}",
     "format-ethernet": "ETH",
     "format-disconnected": "OFF",
     "format-disabled": "OFFLINE",
+    "max-length": 15,
     "tooltip-format": "{ifname} via {gwaddr}",
     "tooltip-format-wifi": "SSID: {essid}\nIP: {ipaddr}\nSignal: {signalStrength}%",
     "tooltip-format-ethernet": "Interface: {ifname}\nIP: {ipaddr}",
     "tooltip-format-disconnected": "Network Disconnected",
-    "tooltip-format-disabled": "Networking Powered Off",
-    "on-click": "$TERMINAL --app-id=fterm nmtui-go"
+    "tooltip-format-disabled": "Networking Powered Off"
   },
 
   "wireplumber": {
     "format": "{volume}%",
-    "format-muted": "Muted",
-    "scroll-step": 5,
-    "on-click": "wpctl set-mute @DEFAULT_SINK@ toggle",
-    "on-click-right": "~/.config/sway/scripts/media.sh",
-    "on-click-middle": "pavucontrol"
+    "format-muted": "Muted"
   },
 
-  "backlight": {
-    "device": "amdgpu_bl1",
-    "format": "{percent}%",
-    "scroll-step": 5,
-    "on-click": "brightnessctl set 85%",
-    "on-click-right": "brightnessctl set 70%",
-    "on-click-middle": "brightnessctl set 50%",
-    "tooltip": false
-  },
-
-  // ==============================================================================
-  // SYSTEM STATUS & PRIVACY
-  // ==============================================================================
   "battery": {
     "bat": "BAT1",
     "interval": 30,
@@ -188,6 +132,18 @@
     }
   },
 
+  "custom/idlemgr": {
+    "exec": "[ -f \"${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/IDLE_ENABLED\" ] && echo '' || echo 'INHIBIT'",
+    "return-type": "text",
+    "interval": "once",
+    "signal": 12,
+    "tooltip": false
+  },
+
+  "tray": {
+    "icon-size": 16,
+    "spacing": 10
+  },
   "privacy": {
     "icon-spacing": 10,
     "icon-size": 16,
@@ -196,25 +152,5 @@
       { "type": "screenshare", "icon-name": "screen-shared-symbolic" },
       { "type": "audio-in", "icon-name": "audio-input-microphone-symbolic" }
     ]
-  },
-
-  "custom/idlemgr": {
-    "exec": "[ -f \"${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/IDLE_ENABLED\" ] && echo '' || echo 'INHIBIT'",
-    "return-type": "text",
-    "interval": "once",
-    "signal": 12,
-    "tooltip": false,
-    "on-click": "~/.config/sway/scripts/idlemgr.sh TOGGLE"
-  },
-
-  "custom/capslock": {
-    "exec": "stdbuf -oL ~/.config/waybar/capslock.sh",
-    "format": "{}",
-    "tooltip": false
-  },
-
-  "tray": {
-    "icon-size": 16,
-    "spacing": 12
   }
 }
