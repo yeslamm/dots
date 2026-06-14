@@ -3,7 +3,6 @@ fullscreen = true
 floating-hack = true
 initial-tool = "arrow"
 early-exit = true
-early-exit-save-as = true
 corner-roundness = 12
 copy-command = "wl-copy"
 annotation-size-factor = 1
@@ -22,7 +21,6 @@ brush-smooth-history-size = 0
 pan-step-size = 50.0
 zoom-factor = 1.1
 text-move-length = 50.0
-input-scale = 2.0
 
 # Tool selection keyboard shortcuts
 [keybinds]

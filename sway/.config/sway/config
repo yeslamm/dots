@@ -396,9 +396,9 @@ set $shot exec swaymsg 'mode "default"' && $scripts/screenshot.sh
 
 bindsym $mod+Print mode "PRINT"
 mode "PRINT" {
-    bindsym $rl print             $shot region
-    bindsym Shift+print           $shot fullscreen
-    bindsym Mod1+print            $shot window
+    bindsym $rl Print             $shot region
+    bindsym Shift+Print           $shot fullscreen
+    bindsym Mod1+Print            $shot window
 
     bindsym Escape                mode "default"
     bindsym Return                mode "default"
