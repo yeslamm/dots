@@ -26,7 +26,7 @@ system:
 	@echo " Syncing Infrastructure Frameworks to System Hierarchy"
 	@echo "======================================================================="
 	sudo mkdir -p /etc/systemd/logind.conf.d
-	sudo cp sysconfigs/systemd/lid.conf /etc/systemd/logind.conf.d/lid.conf
+	sudo cp sysconfigs/systemd/login.conf /etc/systemd/logind.conf.d/login.conf
 	sudo mkdir -p /etc/keyd
 	sudo cp sysconfigs/keyd/default.conf /etc/keyd/default.conf
 	sudo systemctl daemon-reload
@@ -49,6 +49,7 @@ user:
 	@echo " Running Dynamic Stow Allocation"
 	@echo "======================================================================="
 	stow -R $(STOW_FOLDERS)
+	systemctl --user daemon-reload
 
 adopt:
 	@echo "Adopting existing configuration templates into tracking tree..."
