@@ -32,4 +32,4 @@ export LIBVA_DRIVER_NAME=radeonsi
 export VDPAU_DRIVER=radeonsi
 export AMD_VULKAN_ICD=radv
 
-exec systemd-cat -t sway dbus-run-session sway
+exec sway
