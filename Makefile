@@ -1,15 +1,16 @@
-STOW_FOLDERS = btop fastfetch bin swayimg satty cliphist lazygit nvim \
+STOW_FOLDERS = btop fastfetch bin swayimg satty lazygit nvim \
 				easyeffects zsh tmux waybar fuzzel foot mako dev yazi sway git keyd
 
 .PHONY: help user adopt system install clean
 
 help:
-	@echo "Workstation Architecture Controls"
-	@echo "  make install        Synchronize unified manifest (pkglist.txt) via yay"
-	@echo "  make system         Sync framework rules to /etc hierarchy and enable core services"
-	@echo "  make user           Initialize XDG structures and link user space configs via stow"
-	@echo "  make adopt          Adopt existing home configs into repository tracking fields"
-	@echo "  make clean          Cleanly sever all home directory environment symlinks"
+	@echo "Usage: make [target]"
+	@echo ""
+	@echo "  install   Install package list via yay"
+	@echo "  system    Sync system-wide configurations"
+	@echo "  user      Link user dotfiles with stow"
+	@echo "  adopt     Adopt existing local configs"
+	@echo "  clean     Remove all configuration symlinks"
 
 install:
 	@echo "======================================================================="
@@ -53,7 +54,7 @@ user:
 
 adopt:
 	@echo "Adopting existing configuration templates into tracking tree..."
-	stow -A $(STOW_FOLDERS)
+	stow $(STOW_FOLDERS)
 
 clean:
 	@echo "Severing home folder environment symlinks cleanly..."
