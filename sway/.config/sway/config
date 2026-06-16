@@ -68,19 +68,19 @@ exec sh -c 'wpctl set-volume @DEFAULT_SINK@ 0.30 \
            & wpctl set-volume @DEFAULT_SOURCE@ 0.40 \
            & amixer -c 1 set "Internal Mic Boost" 0 &'
 
-exec sh -c 'source ~/.config/sway/geo && wlsunset -l $LAT -L $LON -t 4500 -T 6500'
+exec $scripts/wlsunset.sh on
 
 exec easyeffects --hide-window
 exec wayland-pipewire-idle-inhibit -q
 
 exec wl-paste --type text --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
 exec wl-paste --type image --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
-exec $scripts/idle-mgr.sh ON
+
+exec $scripts/idle-mgr.sh on
+
 exec mako
 
-exec sh -c 'rm -f "$XDG_RUNTIME_DIR/wob.sock" \
-           && mkfifo "$XDG_RUNTIME_DIR/wob.sock" \
-           && tail -f "$XDG_RUNTIME_DIR/wob.sock" | wob -c ~/.config/wob/wob.ini'
+exec_always $scripts/start-wob.sh
 
 exec_always sh -c 'pkill -x -USR2 waybar || (sleep 0.5 && waybar)'
 
@@ -95,7 +95,7 @@ gaps inner               0
 gaps outer               0
 smart_gaps               on
 
-font pango:JetBrainsMono NF, Vazirmatn 11
+font pango:JetBrainsMono NF, Vazirmatn semi-bold 11
 titlebar_padding 2 2
 titlebar_border_thickness 1
 title_align      center
@@ -115,7 +115,6 @@ for_window [app_id="qBittorrent"] floating enable, resize set width 70 ppt heigh
 for_window [app_id="fterm"] floating enable, resize set width 70 ppt height 75 ppt, move position center
 for_window [app_id="clipfzf"] floating enable, resize set width 85 ppt height 85 ppt, move position center
 
-for_window [all] border pixel 1
 for_window [app_id="FileRoller|mpv|swayimg|gpu_screen_recorder|xdg-desktop-portal-gtk"] floating enable
 for_window [instance="sun-awt-X11-XDialogPeer"] floating enable
 for_window [window_role="^(pop-up|bubble|task_dialog|dialog|menu)$"] floating enable
@@ -226,38 +225,33 @@ bindsym $lk $mod+equal                      exec $scripts/volume.sh up
 bindsym $lk $mod+minus                      exec $scripts/volume.sh down
 bindsym $lk $mod+0                          exec $scripts/volume.sh mute
 
-bindsym $tc $lk $mod+Shift+minus            exec playerctl position 5-
-bindsym $tc $lk $mod+Shift+equal            exec playerctl position 5+
-bindsym $tc $lk $mod+Shift+period           exec playerctl next
-bindsym $tc $lk $mod+Shift+comma            exec playerctl previous
-bindsym $tc $lk $mod+period                 exec playerctld shift
-bindsym $tc $lk $mod+comma                  exec playerctld unshift
+bindsym $lk $mod+Shift+equal                exec playerctl position 5+
+bindsym $lk $mod+Shift+minus                exec playerctl position 5-
+bindsym $lk $mod+Shift+0                    exec playerctl position 0
+bindsym $tc $lk $mod+period                 exec playerctl next
+bindsym $tc $lk $mod+comma                  exec playerctl previous
 bindsym $tc $lk $mod+slash                  exec $scripts/media.sh play-pause
-bindsym $tc $lk $mod+Shift+0                exec playerctl position 0
+bindsym $tc $lk $mod+Shift+slash            exec playerctld shift
 
 bindsym $lk XF86MonBrightnessUp             exec $scripts/brightness.sh up
 bindsym $lk XF86MonBrightnessDown           exec $scripts/brightness.sh down
 bindsym $tc $lk $mod+bracketright           exec $scripts/brightness.sh up
 bindsym $tc $lk $mod+bracketleft            exec $scripts/brightness.sh down
 
-bindsym $tc $mod+Shift+bracketright         opacity plus 0.1
-bindsym $tc $mod+Shift+bracketleft          opacity minus 0.1
-
 bindsym $tc $mod+n                          exec makoctl dismiss
 bindsym $tc $mod+Shift+n                    exec makoctl invoke
-bindsym $tc $mod+i                          exec $scripts/idle-mgr.sh ON
-bindsym $tc $mod+o                          exec $scripts/idle-mgr.sh OFF
+bindsym $tc $mod+i                          exec $scripts/idle-mgr.sh toggle
 
 set $clip_term                              $term --app-id=clipfzf
 bindsym $tc $mod+v                          exec $clip_term $scripts/cliphist-fzf.sh
 
 bindsym $rl Print                           exec $scripts/screenshot.sh region-copy
-bindsym Shift+Print                         exec $scripts/screenshot.sh grim-copy
-bindsym Mod1+Print                          exec $scripts/screenshot.sh window-copy
+bindsym $rl Shift+Print                     exec $scripts/screenshot.sh fullscreen-copy
+bindsym $rl Mod1+Print                      exec $scripts/screenshot.sh window-copy
 
-bindsym $rl Control+Print                   exec $scripts/screenshot.sh region-save
-bindsym Control+Shift+Print                 exec $scripts/screenshot.sh grim-save
-bindsym Control+Mod1+Print                  exec $scripts/screenshot.sh window-save
+bindsym $rl $mod+Print                      exec $scripts/screenshot.sh region
+bindsym $rl $mod+Shift+Print                exec $scripts/screenshot.sh fullscreen
+bindsym $rl $mod+Control+Print              exec $scripts/screenshot.sh window
 
 # ==================================================================================================== #
 # =========== 10. MODES ============================================================================== #
@@ -375,7 +369,7 @@ mode "EXEC" {
     bindsym $tc p                 exec $scripts/power-menu.sh poweroff; mode "default"
 
     bindsym $tc t                 exec $term watch -n 3 -d sensors; mode "default"
-    bindsym $tc n                 exec $scripts/wlsunset.sh; mode "default"
+    bindsym $tc n                 exec $scripts/wlsunset.sh toggle; mode "default"
     bindsym $tc v                 exec $scripts/vsync-toggle.sh; mode "default"
 
     bindsym $tc w                 exec 'nmcli radio wifi on && $msg_sys "Network: ON"'; mode "default"
@@ -389,18 +383,4 @@ mode "EXEC" {
     bindsym Escape                mode "default"
     bindsym Return                mode "default"
     bindsym $tc $mod+e            mode "default"
-}
-
-
-set $shot exec swaymsg 'mode "default"' && $scripts/screenshot.sh
-
-bindsym $mod+Print mode "PRINT"
-mode "PRINT" {
-    bindsym $rl Print             $shot region
-    bindsym Shift+Print           $shot fullscreen
-    bindsym Mod1+Print            $shot window
-
-    bindsym Escape                mode "default"
-    bindsym Return                mode "default"
-    bindsym $mod+Print            mode "default"
 }
