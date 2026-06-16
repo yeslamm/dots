@@ -3,35 +3,34 @@
 
 set -euo pipefail
 
-ACTION=$(echo "$1" | tr '[:lower:]' '[:upper:]')
+ACTION="${1:-}"
 START_IDLE="$HOME/.config/sway/scripts/start-idle.sh"
 RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 IDLE_FLAG="$RUNTIME_DIR/IDLE_ENABLED"
 
 case "$ACTION" in
-ON)
+on)
     touch "$IDLE_FLAG"
     if ! pgrep -x swayidle >/dev/null; then
         "$START_IDLE"
     fi
-    notify-send -t 1500 -h string:x-canonical-private-synchronous:idlemgr 'IDLE: ON'
-    pkill -RTMIN+12 waybar || true
     ;;
-OFF)
+off)
     rm -f "$IDLE_FLAG"
     killall -q swayidle -u "$USER" || true
-    notify-send -t 1500 -h string:x-canonical-private-synchronous:idlemgr 'IDLE: OFF'
     pkill -RTMIN+12 waybar || true
     ;;
-TOGGLE)
+toggle)
     if [ -f "$IDLE_FLAG" ]; then
-        "$0" OFF
+        "$0" off
+        notify-send -t 1500 -h string:x-canonical-private-synchronous:idlemgr 'IDLE: OFF'
     else
-        "$0" ON
+        "$0" on
+        notify-send -t 1500 -h string:x-canonical-private-synchronous:idlemgr 'IDLE: ON'
     fi
     ;;
 *)
-    echo "Usage: $0 {ON|OFF|TOGGLE}"
+    echo "Usage: $0 {on|off|toggle}"
     exit 1
     ;;
 esac

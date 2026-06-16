@@ -3,15 +3,14 @@
 
 set -euo pipefail
 
-MODE="${1:-TERM}"
-MODE="${MODE^^}"
+MODE="${1:-term}"
 
 case "$MODE" in
-"KILL")
+kill)
     SIGNAL="KILL"
     PROMPT="SIGKILL: "
     ;;
-"TERM" | *)
+term | *)
     SIGNAL="TERM"
     PROMPT="SIGTERM: "
     ;;
