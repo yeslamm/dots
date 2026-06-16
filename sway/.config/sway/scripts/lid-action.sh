@@ -6,11 +6,7 @@ IDLE_FLAG="$RUNTIME_DIR/IDLE_ENABLED"
 
 if [[ -f "$IDLE_FLAG" ]]; then
     pgrep -x "swaylock" >/dev/null || swaylock -f
-
-    pgrep -f "sentry.sh" >/dev/null || "$HOME/.config/sway/scripts/sentry.sh" &
-
-    systemctl suspend
-
+    pgrep -x "sentry.sh" >/dev/null || "$HOME/.config/sway/scripts/sentry.sh" &
 else
     pgrep -x "swaylock" >/dev/null || "$HOME/.config/sway/scripts/lock-ns.sh"
 fi

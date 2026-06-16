@@ -18,7 +18,7 @@ trap '
        killall swayidle 2>/dev/null
 
        if [ "$WAS_IDLE_ACTIVE" = true ]; then
-           ~/.config/sway/scripts/start-idle.sh &
+           "$HOME/.config/sway/scripts/idle-mgr.sh" on
        fi
 
        pkill -RTMIN+12 waybar 2>/dev/null
