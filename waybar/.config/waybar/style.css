@@ -40,7 +40,7 @@
 }
 
 #workspaces button.focused {
-  color: #78a9ff;
+  color: #dfdfe0;
   background-color: #262626;
   border: 1px solid #78a9ff;
 }
@@ -49,17 +49,19 @@
   color: #ee5396;
 }
 
-#clock,
 #privacy,
 #scratchpad,
 #custom-idlemgr {
+  color: #78a9ff;
+}
+
+#clock {
   color: #78a9ff;
   font-weight: bold;
 }
 
 #mode {
   color: #be95ff;
-  font-weight: bold;
 }
 
 #battery.charging {
