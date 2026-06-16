@@ -1,20 +1,21 @@
 [general]
 fullscreen = true
 floating-hack = true
+resize = { mode = "smart" }
+auto-copy = false
+corner-roundness = 10
 initial-tool = "arrow"
-early-exit = true
-corner-roundness = 12
 copy-command = "wl-copy"
 annotation-size-factor = 1
+output-filename = "/home/r3d/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H:%M:%S.png"
 save-after-copy = false
 default-hide-toolbars = false
-output-filename = "/home/r3d/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H:%M:%S.png"
 focus-toggles-toolbars = false
 default-fill-shapes = false
 primary-highlighter = "block"
 disable-notifications = true
 actions-on-right-click = []
-actions-on-enter = ["save-to-clipboard", "exit"]
+actions-on-enter = ["save-to-clipboard", "save-to-file", "exit"]
 actions-on-escape = ["exit"]
 no-window-decoration = true
 brush-smooth-history-size = 0
@@ -22,7 +23,6 @@ pan-step-size = 50.0
 zoom-factor = 1.1
 text-move-length = 50.0
 
-# Tool selection keyboard shortcuts
 [keybinds]
 pointer = "p"
 crop = "c"
@@ -36,7 +36,6 @@ marker = "m"
 blur = "b"
 highlight = "h"
 
-# Font to use for text annotations
 [font]
 family = "Roboto"
 style = "Regular"
@@ -52,7 +51,6 @@ fallback = [
   "Source Han Sans",
 ]
 
-# Custom colours for the colour palette
 [color-palette]
 palette = ["#00ffff", "#a52a2a", "#dc143c", "#ff1493", "#ffd700", "#008000"]
 
