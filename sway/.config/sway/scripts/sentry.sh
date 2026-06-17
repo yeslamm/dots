@@ -13,7 +13,7 @@ fi
 check_lock_status() {
     if ! pgrep -x "swaylock" >/dev/null; then
         if [[ "$WAS_IDLE_ACTIVE" == "true" ]]; then
-            exec "$HOME/.config/sway/scripts/start-idle.sh"
+            exec "$HOME/.config/sway/scripts/idle-mgr.sh" on
         else
             pkill -RTMIN+12 waybar || true
             exit 0

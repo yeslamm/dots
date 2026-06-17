@@ -6,6 +6,17 @@ set -euo pipefail
 RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 ACTION="${1:-}"
 TEMP_IMG="$RUNTIME_DIR/frozen.ppm"
+FREEZE_PID=""
+
+cleanup() {
+    if [[ -n "$FREEZE_PID" ]]; then
+        kill "$FREEZE_PID" 2>/dev/null || true
+    fi
+    if [[ "$ACTION" != *"-copy" && -f "$TEMP_IMG" ]]; then
+        rm -f "$TEMP_IMG"
+    fi
+}
+trap cleanup EXIT
 
 get_window_geometry() {
     swaymsg -t get_tree |
@@ -14,26 +25,17 @@ get_window_geometry() {
         head -n1
 }
 
-get_region() {
-    local geom freeze_pid
-    wayfreeze &
-    freeze_pid=$!
-    sleep 0.03
-
-    geom=$(slurp \
-        -d \
-        -w 1 \
-        -c "#78a9ff" \
-        -s "#78a9ff1a" \
-        -b "#0f0f0f55") || true
-
-    kill "$freeze_pid" 2>/dev/null || true
-    echo "$geom"
-}
-
 case "$ACTION" in
 region | region-copy)
-    GEOM=$(get_region)
+    wayfreeze &
+    FREEZE_PID=$!
+
+    while ! pgrep -x wayfreeze >/dev/null; do
+        kill -0 "$FREEZE_PID" 2>/dev/null || exit 1
+        sleep 0.005
+    done
+
+    GEOM=$(slurp -d -w 1 -c "#78a9ff" -s "#78a9ff1a" -b "#0f0f0f55") || exit 0
     [[ -z "$GEOM" ]] && exit 0
     ;;
 window | window-copy)
@@ -56,9 +58,12 @@ fi
 
 if [[ "$ACTION" =~ -copy$ ]]; then
     grim "${grim_args[@]}" - | wl-copy
+    kill "$FREEZE_PID" 2>/dev/null || true
+    FREEZE_PID=""
     notify-send -t 2000 "Screenshot" "Copied to clipboard"
 else
-    trap 'rm -f "$TEMP_IMG"' EXIT
     grim -t ppm "${grim_args[@]}" "$TEMP_IMG"
+    kill "$FREEZE_PID" 2>/dev/null || true
+    FREEZE_PID=""
     satty --filename "$TEMP_IMG"
 fi

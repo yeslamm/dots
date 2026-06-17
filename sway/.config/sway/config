@@ -64,9 +64,7 @@ exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec keyd-application-mapper -d
 exec playerctld daemon
 
-exec sh -c 'wpctl set-volume @DEFAULT_SINK@ 0.30 \
-           & wpctl set-volume @DEFAULT_SOURCE@ 0.40 \
-           & amixer -c 1 set "Internal Mic Boost" 0 &'
+exec $scripts/init-audio.sh
 
 exec $scripts/wlsunset.sh on
 
@@ -82,7 +80,7 @@ exec mako
 
 exec_always $scripts/start-wob.sh
 
-exec_always sh -c 'pkill -x -USR2 waybar || (sleep 0.5 && waybar)'
+exec_always pkill -x -USR2 waybar || (sleep 0.2 && waybar)
 
 # ==================================================================================================== #
 # =========== 4. APPEARANCE & THEME ================================================================== #
@@ -122,6 +120,7 @@ for_window [app_id="pavucontrol"] floating enable, sticky enable
 for_window [title="Picture-in-Picture"] floating enable, sticky enable
 for_window [app_id="firefox" title="^Extension:.*"] floating enable
 
+for_window [all] inhibit_idle fullscreen
 for_window [app_id="(?i)mpv|zathura|qbittorrent|steam|gamescope|\.exe"] inhibit_idle focus
 for_window [class="(?i)mpv|zathura|qbittorrent|steam|gamescope|\.exe"] inhibit_idle focus
 
@@ -214,16 +213,16 @@ bindsym $mod+Shift+9 move container to workspace number 9
 # =========== 9. UTILITIES & HARDWARE ================================================================ #
 # ==================================================================================================== #
 
-bindsym $lk XF86AudioRaiseVolume            exec $scripts/volume.sh up
-bindsym $lk XF86AudioLowerVolume            exec $scripts/volume.sh down
-bindsym $lk XF86AudioMute                   exec $scripts/volume.sh mute
+bindsym $lk XF86AudioRaiseVolume            exec $scripts/osd.sh volume up
+bindsym $lk XF86AudioLowerVolume            exec $scripts/osd.sh volume down
+bindsym $lk XF86AudioMute                   exec $scripts/osd.sh volume mute
 bindsym $lk XF86AudioPlay                   exec $scripts/media.sh play-pause
 bindsym $lk XF86AudioNext                   exec playerctl next
 bindsym $lk XF86AudioPrev                   exec playerctl previous
 
-bindsym $lk $mod+equal                      exec $scripts/volume.sh up
-bindsym $lk $mod+minus                      exec $scripts/volume.sh down
-bindsym $lk $mod+0                          exec $scripts/volume.sh mute
+bindsym $lk $mod+equal                      exec $scripts/osd.sh volume up
+bindsym $lk $mod+minus                      exec $scripts/osd.sh volume down
+bindsym $lk $mod+0                          exec $scripts/osd.sh volume mute
 
 bindsym $lk $mod+Shift+equal                exec playerctl position 5+
 bindsym $lk $mod+Shift+minus                exec playerctl position 5-
@@ -233,10 +232,10 @@ bindsym $tc $lk $mod+comma                  exec playerctl previous
 bindsym $tc $lk $mod+slash                  exec $scripts/media.sh play-pause
 bindsym $tc $lk $mod+Shift+slash            exec playerctld shift
 
-bindsym $lk XF86MonBrightnessUp             exec $scripts/brightness.sh up
-bindsym $lk XF86MonBrightnessDown           exec $scripts/brightness.sh down
-bindsym $tc $lk $mod+bracketright           exec $scripts/brightness.sh up
-bindsym $tc $lk $mod+bracketleft            exec $scripts/brightness.sh down
+bindsym $lk XF86MonBrightnessUp             exec $scripts/osd.sh brightness up
+bindsym $lk XF86MonBrightnessDown           exec $scripts/osd.sh brightness down
+bindsym $tc $lk $mod+bracketright           exec $scripts/osd.sh brightness up
+bindsym $tc $lk $mod+bracketleft            exec $scripts/osd.sh brightness down
 
 bindsym $tc $mod+n                          exec makoctl dismiss
 bindsym $tc $mod+Shift+n                    exec makoctl invoke
@@ -247,7 +246,7 @@ bindsym $tc $mod+v                          exec $clip_term $scripts/cliphist-fz
 
 bindsym $rl Print                           exec $scripts/screenshot.sh region-copy
 bindsym $rl Shift+Print                     exec $scripts/screenshot.sh fullscreen-copy
-bindsym $rl Mod1+Print                      exec $scripts/screenshot.sh window-copy
+bindsym $rl Control+Print                   exec $scripts/screenshot.sh window-copy
 
 bindsym $rl $mod+Print                      exec $scripts/screenshot.sh region
 bindsym $rl $mod+Shift+Print                exec $scripts/screenshot.sh fullscreen

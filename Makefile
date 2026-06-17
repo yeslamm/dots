@@ -1,5 +1,5 @@
-STOW_FOLDERS = btop fastfetch bin swayimg satty lazygit nvim \
-				easyeffects zsh tmux waybar fuzzel foot mako dev yazi sway git keyd
+STOW_FOLDERS = fastfetch bin swayimg satty lazygit nvim easyeffects \
+				zsh tmux waybar fuzzel foot mako dev yazi sway git keyd
 
 .PHONY: help user adopt system install clean
 

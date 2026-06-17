@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 # ~/dots/sway/.config/sway/scripts/vsync-toggle.sh
 
-RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-STATE_FILE="$RUNTIME_DIR/vsync-flag"
+set -euo pipefail
 
-if [ ! -f "$STATE_FILE" ]; then
-    CURRENT_STATE="on"
-else
+STATE_FILE="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/vsync-flag"
+
+CURRENT_STATE="on"
+
+if [[ -f "$STATE_FILE" ]]; then
     CURRENT_STATE=$(<"$STATE_FILE")
 fi
 
-if [ "$CURRENT_STATE" = "on" ]; then
+if [[ "$CURRENT_STATE" == "on" ]]; then
     swaymsg "output * allow_tearing yes; output * max_render_time off"
     echo "off" >"$STATE_FILE"
     notify-send -t 2000 -h string:x-canonical-private-synchronous:vsync "Vsync: OFF"
