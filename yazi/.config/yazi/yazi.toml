@@ -16,7 +16,7 @@ edit = [{ run = 'nvim "$@"', block = true, desc = "Edit" }]
 
 [plugin]
 prepend_previewers = [
-  { url = "*.md", run = "glow" },
+  { url = "*.md", run = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"' },
   { mime = "audio/*", run = "mediainfo" },
   { mime = "video/*", run = "mediainfo" },
 ]
