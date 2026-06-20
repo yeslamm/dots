@@ -99,6 +99,17 @@ return {
         map('n', '<leader><leader>', fzf.buffers, { desc = 'Buffers' })
         map('n', '<leader>/', fzf.blines, { desc = 'Fuzz Search Buffer' })
 
+        map('n', '<leader>vf', function()
+            fzf.files { cwd = '~/vault', prompt = 'Vault Files> ' }
+        end, { desc = 'Files' })
+
+        map('n', '<leader>vg', function()
+            fzf.live_grep {
+                cwd = '~/vault',
+                prompt = 'Vault Grep> ',
+            }
+        end, { desc = 'Grep' })
+
         map('n', '<leader>sn', function()
             fzf.files { cwd = vim.fn.stdpath 'config' }
         end, { desc = 'Neovim Files' })
