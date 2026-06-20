@@ -47,6 +47,7 @@
 
 #workspaces button.urgent {
   color: #ee5396;
+  border: 1px solid #ee5396;
 }
 
 #privacy,
