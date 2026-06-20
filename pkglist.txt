@@ -70,6 +70,7 @@ power-profiles-daemon
 python-pip
 python-pipx
 python-pynvim
+nwg-look
 qt5ct
 qt6ct
 reflector
