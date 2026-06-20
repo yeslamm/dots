@@ -17,7 +17,6 @@ sudo pacman -S --needed base-devel git stow
 # Bootstrap yay (AUR Helper) from source binaries
 git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
 cd /tmp/yay-bin && makepkg -si
-
 ```
 
 ### 2. System-Level Dependency Layer
@@ -27,7 +26,6 @@ Install the managed package manifest containing all binaries, fonts, and graphic
 ```bash
 # Provision hardware and software applications from package manifest
 yay -S --needed - < pkglist.txt
-
 ```
 
 ### 3. Privileged Infrastructure Configurations
@@ -48,7 +46,6 @@ sudo systemctl enable --now keyd
 
 # Append active user to the keyd hardware input group
 sudo usermod -aG keyd $USER
-
 ```
 
 > **Note:** A system logout or reboot is mandatory for user group modifications to inherit active session permissions.
@@ -62,7 +59,6 @@ Use GNU Stow to map configuration profiles into your `$HOME` directory.
 ```bash
 # Force initialize target parent paths to prevent Stow folder trapping
 mkdir -p ~/.config ~/.local/share ~/.local/state ~/.local/bin
-
 ```
 
 Select the profile layout matching your current host machine requirements:
@@ -74,7 +70,6 @@ Maps only terminal configurations and developer tools without touching graphical
 ```bash
 cd ~/dots
 stow -t ~ -R nvim tmux zsh lazygit yazi fastfetch dev
-
 ```
 
 #### Profile B: Full Workstation Environment (Complete Wayland Desktop)
@@ -85,7 +80,6 @@ Maps the complete system environment including the window manager, audio process
 cd ~/dots
 stow -t ~ -R icons xdg gtk fastfetch bin swayimg satty lazygit nvim \
             easyeffects zsh tmux waybar fuzzel foot mako dev yazi sway git keyd
-
 ```
 
 ---
@@ -98,7 +92,6 @@ To simulate deployment mutations and verify path conflicts without touching the 
 
 ```bash
 stow -t ~ -nvR <folder_names>
-
 ```
 
 ### Purging Symlinks
@@ -107,5 +100,4 @@ To cleanly dismantle mapped configurations and sever home directory links withou
 
 ```bash
 stow -t ~ -D <folder_names>
-
 ```

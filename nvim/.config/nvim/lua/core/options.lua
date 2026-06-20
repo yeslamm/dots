@@ -50,7 +50,7 @@ opt.breakindent = true -- Wrapped lines keep indentation
 -- [[ 4. Text Formatting ]]
 opt.wrap = false
 opt.linebreak = true -- Wrap at words, not characters
-opt.conceallevel = 2 -- Hide MD/JSON markup
+opt.conceallevel = 0 -- Hide MD/JSON markup
 opt.virtualedit = 'block' -- Allow cursor to move past end of line in block mode
 
 -- [[ 5. Search Logic ]]

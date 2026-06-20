@@ -32,7 +32,7 @@ return {
                 },
             }
             vim.api.nvim_create_autocmd('FileType', {
-                pattern = { 'help', 'lazy', 'mason', 'notify', 'toggleterm', 'oil' },
+                pattern = { 'help', 'lazy', 'mason', 'notify', 'toggleterm', 'oil', 'markdown', 'quarto', 'rmd' },
                 callback = function()
                     vim.b.miniindentscope_disable = true
                 end,
