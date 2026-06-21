@@ -20,11 +20,10 @@ return {
 
             require('mason-nvim-dap').setup {
                 automatic_installation = true,
-                handlers = {}, -- This line automatically wires up the adapters for the tools below
+                handlers = {},
                 ensure_installed = { 'debugpy', 'codelldb', 'coreclr' },
             }
 
-            -- 3. C, C++, and Rust Configuration (Using codelldb)
             dap.configurations.c = {
                 {
                     name = 'Launch C/C++ executable',
@@ -40,7 +39,6 @@ return {
             }
             dap.configurations.cpp = dap.configurations.c
 
-            -- 4. Python Configuration (Smart VENV detection)
             dap.configurations.python = {
                 {
                     type = 'python',
@@ -58,7 +56,6 @@ return {
                 },
             }
 
-            -- 5. C# Configuration
             dap.configurations.cs = {
                 {
                     type = 'coreclr',
@@ -70,24 +67,20 @@ return {
                     cwd = '${workspaceFolder}',
                 },
             }
-            -- 6. Essential Keybindings
 
-            -- Setup & Toggles (Low frequency -> Use <leader>)
-            vim.keymap.set('n', '<leader>db', dap.toggle_breakpoint, { desc = 'Toggle Breakpoint', silent = true })
-            vim.keymap.set('n', '<leader>dc', dap.continue, { desc = 'Start/Continue', silent = true })
-            vim.keymap.set('n', '<leader>dx', dap.terminate, { desc = 'Terminate', silent = true })
-            vim.keymap.set('n', '<leader>dr', function()
+            vim.keymap.set('n', '<leader>Db', dap.toggle_breakpoint, { desc = 'Toggle Breakpoint', silent = true })
+            vim.keymap.set('n', '<leader>Dc', dap.continue, { desc = 'Start/Continue', silent = true })
+            vim.keymap.set('n', '<leader>Dx', dap.terminate, { desc = 'Terminate', silent = true })
+            vim.keymap.set('n', '<leader>Dr', function()
                 require('dap').repl.toggle(nil, 'botright 50vsplit')
             end, { desc = 'Toggle REPL', silent = true })
 
-            -- Action & Stepping (High frequency -> Single keypress!)
             vim.keymap.set('n', '<F10>', dap.step_over, { desc = 'Step Over', silent = true })
             vim.keymap.set('n', '<F11>', dap.step_into, { desc = 'Step Into', silent = true })
             vim.keymap.set('n', '<F12>', dap.step_out, { desc = 'Step Out', silent = true })
         end,
     },
 
-    -- 2. Virtual Text Plugin
     {
         'thehamsta/nvim-dap-virtual-text',
         dependencies = {
