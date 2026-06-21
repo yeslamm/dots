@@ -2,33 +2,19 @@ return {
     'folke/which-key.nvim',
     event = 'VimEnter',
     opts = {
-        preset = 'helix',
+        preset = 'classic',
         delay = 0,
-        icons = {
-            breadcrumb = '»',
-            separator = '➜',
-            group = '+',
-            mappings = false,
-        },
-        win = {
-            border = 'single',
-            padding = { 1, 2 },
-            title = true,
-            title_pos = 'center',
-        },
-        layout = {
-            align = 'center',
-        },
+        icons = { mappings = false },
+        win = { border = 'none' },
         spec = {
             { '<leader>g', group = 'Git', mode = { 'n', 'v' } },
             { '<leader>s', group = 'Search' },
             { '<leader>t', group = 'Tabs' },
-            { '<leader>d', group = 'Debug' },
+            { '<leader>D', group = 'Debug' },
             { '<leader>v', group = 'Vault' },
+            { '<leader>x', group = 'Trouble' },
 
-            -- Individual Mappings
-            { '<leader>f', desc = 'Quickfix list' },
-            { '<leader>q', desc = 'Close Buffer' },
+            { '<leader>q', desc = 'Quit Buffer' },
             { '<leader>Q', desc = 'Quit All' },
         },
     },
