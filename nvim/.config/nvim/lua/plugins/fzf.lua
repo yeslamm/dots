@@ -6,19 +6,17 @@ return {
         local fzf = require 'fzf-lua'
 
         fzf.setup {
-            -- 1. FZF NATIVE OPTIONS
             fzf_opts = {
                 ['--layout'] = 'default',
             },
 
-            -- 2. UI: List on TOP, Preview on BOTTOM, Input in MIDDLE
             winopts = {
                 height = 0.85,
                 width = 0.80,
                 border = 'single',
                 preview = {
                     layout = 'vertical',
-                    vertical = 'down:50%', -- Preview BELOW the list
+                    vertical = 'down:50%',
                     border = 'single',
                     winopts = {
                         number = true,
@@ -28,7 +26,6 @@ return {
                 },
             },
 
-            -- 3. GLOBAL KEYMAPS
             keymap = {
                 builtin = {
                     ['<C-d>'] = 'preview-page-down',
@@ -43,7 +40,6 @@ return {
                 },
             },
 
-            -- 4. BUFFER SETTINGS
             buffers = {
                 prompt = 'Buffers> ',
                 actions = {
@@ -53,11 +49,9 @@ return {
                 },
             },
 
-            -- 5. FIXED GREP SETTINGS
             grep = {
-                -- MOVED -e to the end so it correctly captures your input as the pattern
                 rg_opts = '--column --line-number --no-heading --color=never --smart-case --hidden --max-columns=4096 --glob="!.git/" -e',
-                rg_glob = true, -- Add this line!
+                rg_glob = true,
             },
 
             files = {
@@ -72,23 +66,21 @@ return {
             fzf_colors = true,
 
             lsp = {
-                jump_to_single_result = true, -- Automatically jump if there's only 1 match
+                jump_to_single_result = true,
                 jump_to_single_result_action = require('fzf-lua.actions').file_edit,
             },
         }
 
-        -- Tell FZF to handle menus, but use a tiny popup without a preview
         fzf.register_ui_select {
             winopts = {
-                height = 0.25, -- Very short
-                width = 0.35, -- Very narrow
-                row = 0.5, -- Dead center vertically
-                col = 0.5, -- Dead center horizontally
-                preview = { hidden = 'hidden' }, -- Disable the giant preview window
+                height = 0.25,
+                width = 0.35,
+                row = 0.5,
+                col = 0.5,
+                preview = { hidden = 'hidden' },
             },
         }
 
-        -- 6. Keymaps
         local map = vim.keymap.set
         map('n', '<leader>sf', fzf.files, { desc = 'Files' })
         map('n', '<leader>ss', fzf.builtin, { desc = 'Builtin' })
@@ -98,6 +90,7 @@ return {
         map('n', '<leader>s.', fzf.oldfiles, { desc = 'Recent Files' })
         map('n', '<leader><leader>', fzf.buffers, { desc = 'Buffers' })
         map('n', '<leader>/', fzf.blines, { desc = 'Fuzz Search Buffer' })
+        map('n', '<leader>sr', fzf.registers, { desc = 'Registers' })
 
         map('n', '<leader>vf', function()
             fzf.files { cwd = '~/vault', prompt = 'Vault Files> ' }
