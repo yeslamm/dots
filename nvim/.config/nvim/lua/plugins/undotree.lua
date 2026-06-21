@@ -3,9 +3,8 @@ return {
     dependencies = 'nvim-lua/plenary.nvim',
     config = function()
         require('undotree').setup {
-            float_diff = true, -- using float window previews diff, set this `true` will disable layout option
-            -- layout = 'left_bottom', -- "left_bottom", "left_left_bottom"
-            position = 'right', -- "right", "bottom"
+            float_diff = true,
+            position = 'right',
             ignore_filetype = { 'undotree', 'undotreeDiff', 'qf', 'FzfLua', 'spectre_panel', 'tsplayground', 'dashboard', 'NvimTree' },
             window = {
                 border = 'single',

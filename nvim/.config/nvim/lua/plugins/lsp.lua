@@ -24,7 +24,6 @@ return {
                         vim.keymap.set(mode or 'n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
                     end
 
-                    -- NATIVE Neovim LSP Commands
                     map('grn', vim.lsp.buf.rename, 'Rename')
                     map('gra', vim.lsp.buf.code_action, 'Code Action', { 'n', 'x' })
                     map('grr', vim.lsp.buf.references, 'References')
@@ -43,7 +42,6 @@ return {
                         return
                     end
 
-                    -- Neovim version-safe wrapper for method checking
                     local function client_supports_method(c, method, bufnr)
                         if vim.fn.has 'nvim-0.11' == 1 then
                             return c:supports_method(method, { bufnr = bufnr })
@@ -52,7 +50,6 @@ return {
                         end
                     end
 
-                    -- Document Highlight
                     if client_supports_method(client, vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
                         local highlight_group = vim.api.nvim_create_augroup('custom-lsp-highlight', { clear = false })
                         vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
@@ -74,7 +71,6 @@ return {
                         })
                     end
 
-                    -- Inlay Hints
                     if client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
                         map('<leader>h', function()
                             local filter = { bufnr = event.buf }
@@ -149,7 +145,6 @@ return {
                 'prettier',
                 'stylelint',
                 'clang-format',
-                'netcoredbg',
                 'csharpier',
             })
             require('mason-tool-installer').setup { ensure_installed = ensure_installed }

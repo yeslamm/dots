@@ -24,7 +24,7 @@ return { -- Autoformat
             },
         },
         formatters_by_ft = {
-            lua = { 'stylua' }, -- Keep single formatter, fallback handles LSP
+            lua = { 'stylua' },
             c = { 'clang-format' },
             cpp = { 'clang-format' },
             json = { 'prettier' },
@@ -35,7 +35,6 @@ return { -- Autoformat
             cs = { 'csharpier' },
             toml = { 'taplo' },
 
-            -- Add these lines:
             css = { 'prettier' },
             scss = { 'prettier' },
             less = { 'prettier' },

@@ -16,7 +16,6 @@ return {
                 for _, client in pairs(clients) do
                     table.insert(names, client.name)
                 end
-                -- Only show full list if there's room, otherwise just the first
                 local client_str = table.concat(names, '|')
                 if #client_str > 20 and not hide_in_width() then
                     return ' ' .. clients[1].name
