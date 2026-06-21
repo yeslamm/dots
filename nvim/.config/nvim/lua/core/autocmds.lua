@@ -1,6 +1,5 @@
 local augroup = vim.api.nvim_create_augroup('UserConfig', { clear = true })
 
--- Highlight yanked text (Visual feedback when you copy something)
 vim.api.nvim_create_autocmd('TextYankPost', {
     group = augroup,
     callback = function()
@@ -8,7 +7,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     end,
 })
 
--- Restore cursor to file position in previous editing session
 vim.api.nvim_create_autocmd('BufReadPost', {
     callback = function(args)
         local mark = vim.api.nvim_buf_get_mark(args.buf, '"')
@@ -19,7 +17,6 @@ vim.api.nvim_create_autocmd('BufReadPost', {
     end,
 })
 
--- Set conceallevel AND wrap for specific filetypes
 vim.api.nvim_create_autocmd('FileType', {
     pattern = { 'text', 'markdown', 'markdown_inline', 'help' },
     callback = function()
@@ -32,7 +29,6 @@ vim.api.nvim_create_autocmd('FileType', {
     end,
 })
 
--- Stop newline continuation of comments
 vim.api.nvim_create_autocmd({ 'BufEnter', 'FileType' }, {
     desc = "Don't automatically continue comments on newline",
     pattern = '*',
@@ -41,15 +37,12 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'FileType' }, {
     end,
 })
 
--- auto resize splits when the terminal's window is resized
 vim.api.nvim_create_autocmd('VimResized', {
     command = 'wincmd =',
 })
 
--- Create a single group for both autocommands so they don't step on each other
 local cursorline_group = vim.api.nvim_create_augroup('active_cursorline', { clear = true })
 
--- Turn cursorline ON when entering a window or buffer
 vim.api.nvim_create_autocmd({ 'WinEnter', 'BufEnter' }, {
     group = cursorline_group,
     callback = function()
@@ -57,7 +50,6 @@ vim.api.nvim_create_autocmd({ 'WinEnter', 'BufEnter' }, {
     end,
 })
 
--- Turn cursorline OFF when leaving a window
 vim.api.nvim_create_autocmd({ 'WinLeave' }, {
     group = cursorline_group,
     callback = function()
@@ -68,28 +60,25 @@ vim.api.nvim_create_autocmd({ 'WinLeave' }, {
 vim.api.nvim_create_autocmd('FileType', {
     pattern = 'msg',
     callback = function(args)
-        -- Wait a tiny bit for the window to actually exist
         vim.schedule(function()
             local win = vim.fn.bufwinid(args.buf)
             if win and win > -1 then
                 vim.api.nvim_win_set_config(win, {
                     relative = 'editor',
-                    anchor = 'NE', -- Top-right corner of the float
-                    row = 1, -- 1 line down from the top
-                    col = vim.o.columns - 1, -- Hug the right edge
+                    anchor = 'NE',
+                    row = 1,
+                    col = vim.o.columns - 1,
                     focusable = false,
                     border = 'single',
-                    style = 'minimal', -- Removes extra UI elements
+                    style = 'minimal',
                 })
 
-                -- Optional: Force a specific color for the notification window
                 vim.wo[win].winhighlight = 'Normal:NormalFloat,FloatBorder:FloatBorder'
             end
         end)
     end,
 })
 
--- Hide diagnostics completely in Insert AND Select (snippet) modes
 local diag_group = vim.api.nvim_create_augroup('HideDiagnostics', { clear = true })
 
 vim.api.nvim_create_autocmd('ModeChanged', {
@@ -97,7 +86,6 @@ vim.api.nvim_create_autocmd('ModeChanged', {
     callback = function(args)
         local mode = vim.api.nvim_get_mode().mode
 
-        -- 'i' is Insert mode, 's' is Select mode, '\x13' is Block-Select mode
         if mode:sub(1, 1) == 'i' or mode:sub(1, 1) == 's' or mode:sub(1, 1) == '\x13' then
             vim.diagnostic.enable(false, { bufnr = args.buf })
         else
