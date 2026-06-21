@@ -172,9 +172,7 @@ alias wlpa='wl-paste'
 
 alias fetch='fastfetch'
 alias error='journalctl -b -p err'
-export CC=clang
-export CFLAGS="-fsanitize=integer -fsanitize=undefined -ggdb3 -O0 -std=c11 -Wall -Werror -Wextra"
-export LDLIBS="-lcrypt -lcs50 -lm"
+alias cc='clang -fsanitize=integer -fsanitize=undefined -ggdb3 -O0 -std=c11 -Wall -Werror -Wextra -lcs50 -lm'
 
 alias rr='nvim ~/.zshrc'
 alias swayconf='nvim ~/.config/sway/config'
