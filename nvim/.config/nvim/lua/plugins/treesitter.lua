@@ -2,12 +2,9 @@ return {
     'nvim-treesitter/nvim-treesitter',
     branch = 'main',
     build = ':TSUpdate',
-    event = { 'BufReadPre', 'BufNewFile' },
+    lazy = false,
     config = function()
-        -- 1. Setup the base plugin
         require('nvim-treesitter').setup()
-
-        -- 2. Install parsers (This replaces ensure_installed & auto_install)
         require('nvim-treesitter').install {
             'bash',
             'c',
@@ -24,20 +21,21 @@ return {
             'toml',
         }
 
-        -- 3. Native Highlighting (This replaces highlight = { enable = true })
-        vim.api.nvim_create_autocmd('FileType', {
-            pattern = '*',
-            callback = function(args)
-                -- We use pcall to prevent errors if you open a filetype without a parser
-                pcall(vim.treesitter.start, args.buf)
-            end,
-        })
+        local ts_group = vim.api.nvim_create_augroup('NvimTreesitterConfig', { clear = true })
 
-        -- 4. Native Indentation (This replaces indent = { enable = true })
         vim.api.nvim_create_autocmd('FileType', {
-            pattern = '*',
-            callback = function()
-                vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            group = ts_group,
+            callback = function(args)
+                local buf = args.buf
+
+                local success = pcall(vim.treesitter.start, buf)
+
+                if success then
+                    vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+
+                    vim.opt_local.foldmethod = 'expr'
+                    vim.opt_local.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+                end
             end,
         })
     end,
