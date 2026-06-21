@@ -23,8 +23,6 @@ return {
                     line_up = '<A-k>',
                 },
             }
-            require('mini.surround').setup()
-            require('mini.pairs').setup()
             require('mini.indentscope').setup {
                 symbol = '│',
                 draw = {
