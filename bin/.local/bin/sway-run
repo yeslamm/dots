@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ~/.local/bin/sway-run
+# ~/dots/bin/.local/bin/sway-run
 
 if [ -n "$WAYLAND_DISPLAY" ]; then
     echo "You are already inside an active Wayland session!"
