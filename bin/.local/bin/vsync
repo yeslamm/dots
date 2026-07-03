@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ~/dots/sway/.config/sway/scripts/vsync-toggle.sh
+# ~/dots/bin/.local/bin/vsync
 
 set -euo pipefail
 

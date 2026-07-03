@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ~/dots/sway/.config/sway/scripts/wlsunset.sh
+# ~/dots/bin/.local/bin/bluelight
 
 set -euo pipefail
 
@@ -25,17 +25,17 @@ off)
 
 toggle)
     if pkill -x wlsunset; then
-        notify-send "Blue Light Filter: OFF" \
+        notify-send "Bluelight Filter: OFF" \
             -t 1500 -h string:x-canonical-private-synchronous:gamma
     else
         run_sunset
-        notify-send "Blue Light Filter: ON" \
+        notify-send "Bluelight Filter: ON" \
             -t 1500 -h string:x-canonical-private-synchronous:gamma
     fi
     ;;
 
 *)
-    echo "Usage: $0 {on|off|toggle}"
+    echo "Usage: $(basename "$0") [on|off|toggle]" >&2
     exit 1
     ;;
 esac

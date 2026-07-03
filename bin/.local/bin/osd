@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ~/dots/sway/.config/sway/scripts/osd.sh
+# ~/dots/bin/.local/bin/osd
 
 set -euo pipefail
 
@@ -8,6 +8,11 @@ ACTION="${2:-}"
 WOB_SOCK="${XDG_RUNTIME_DIR}/wob.sock"
 STEP="5"
 
+if [[ -z "$TARGET" ]]; then
+    echo "Usage: $(basename "$0") [volume|brightness] [action]" >&2
+    exit 1
+fi
+
 case "$TARGET" in
 volume)
     case "$ACTION" in
@@ -15,7 +20,7 @@ volume)
     down) wpctl set-volume @DEFAULT_AUDIO_SINK@ "${STEP}%-" ;;
     mute) wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle ;;
     *)
-        echo "Usage: $0 volume {up|down|mute}"
+        echo "Usage: $(basename "$0") volume [up|down|mute]" >&2
         exit 1
         ;;
     esac
@@ -25,13 +30,13 @@ brightness)
     up) brightnessctl set "${STEP}%+" -q ;;
     down) brightnessctl set "${STEP}%-" -q ;;
     *)
-        echo "Usage: $0 brightness {up|down}"
+        echo "Usage: $(basename "$0") brightness [up|down]" >&2
         exit 1
         ;;
     esac
     ;;
 *)
-    echo "Usage: $0 {volume|brightness} {up|down|mute}"
+    echo "Usage: $(basename "$0") [volume|brightness] [action]" >&2
     exit 1
     ;;
 esac

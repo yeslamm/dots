@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ~/dots/sway/.config/sway/scripts/cliphist-fzf.sh
+# ~/dots/bin/.local/bin/clipfzf
 
 DB_PATH="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/cliphist.db"
 CH_CMD="cliphist -db-path $DB_PATH"

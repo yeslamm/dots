@@ -84,7 +84,6 @@ client.urgent            #ee5396  #262626  #ffffff  #ee5396  #ee5396
 # == 4. WINDOW RULES ========================================================= #
 # ============================================================================ #
 
-for_window [app_id="qBittorrent"] floating enable, resize set width 70 ppt height 75 ppt, move position center
 for_window [app_id="fterm"] floating enable, resize set width 70 ppt height 75 ppt, move position center
 for_window [app_id="clipfzf"] floating enable, resize set width 85 ppt height 85 ppt, move position center
 
@@ -113,8 +112,8 @@ bindsym $tc $mod+b                  exec $term btop
 bindsym $tc $mod+Shift+b            exec $float_term btop
 
 bindsym $tc $mod+q                  kill
-bindsym $tc $mod+x                  exec $scripts/kill-menu.sh term
-bindsym $tc $mod+Shift+x            exec $scripts/kill-menu.sh kill
+bindsym $tc $mod+x                  exec killmenu term
+bindsym $tc $mod+Shift+x            exec killmenu kill
 bindsym --whole-window $mod+button2 kill
 bindsym $tc $mod+Shift+r            reload
 
@@ -188,44 +187,45 @@ bindsym $mod+Shift+9 move container to workspace number 9
 # == 8. UTILITIES & HARDWARE ================================================= #
 # ============================================================================ #
 
-bindsym $lk XF86AudioRaiseVolume            exec $scripts/osd.sh volume up
-bindsym $lk XF86AudioLowerVolume            exec $scripts/osd.sh volume down
-bindsym $lk XF86AudioMute                   exec $scripts/osd.sh volume mute
-bindsym $lk XF86AudioPlay                   exec $scripts/media.sh play-pause
+bindsym $lk XF86AudioRaiseVolume            exec osd volume up
+bindsym $lk XF86AudioLowerVolume            exec osd volume down
+bindsym $lk XF86AudioMute                   exec osd volume mute
+bindsym $lk XF86AudioPlay                   exec media play-pause
 bindsym $lk XF86AudioNext                   exec playerctl next
 bindsym $lk XF86AudioPrev                   exec playerctl previous
 
-bindsym $lk $mod+equal                      exec $scripts/osd.sh volume up
-bindsym $lk $mod+minus                      exec $scripts/osd.sh volume down
-bindsym $lk $mod+0                          exec $scripts/osd.sh volume mute
+bindsym $lk $mod+equal                      exec osd volume up
+bindsym $lk $mod+minus                      exec osd volume down
+bindsym $lk $mod+0                          exec osd volume mute
 
 bindsym $lk $mod+Shift+equal                exec playerctl position 5+
 bindsym $lk $mod+Shift+minus                exec playerctl position 5-
 bindsym $lk $mod+Shift+0                    exec playerctl position 0
 bindsym $tc $lk $mod+period                 exec playerctl next
 bindsym $tc $lk $mod+comma                  exec playerctl previous
-bindsym $tc $lk $mod+slash                  exec $scripts/media.sh play-pause
-bindsym $tc $lk $mod+Shift+slash            exec playerctld shift
+bindsym $tc $lk $mod+Shift+comma            exec playerctld shift
+bindsym $tc $lk $mod+Shift+period           exec playerctld unshift
+bindsym $tc $lk $mod+slash                  exec media play-pause
 
-bindsym $lk XF86MonBrightnessUp             exec $scripts/osd.sh brightness up
-bindsym $lk XF86MonBrightnessDown           exec $scripts/osd.sh brightness down
-bindsym $tc $lk $mod+bracketright           exec $scripts/osd.sh brightness up
-bindsym $tc $lk $mod+bracketleft            exec $scripts/osd.sh brightness down
+bindsym $lk XF86MonBrightnessUp             exec osd brightness up
+bindsym $lk XF86MonBrightnessDown           exec osd brightness down
+bindsym $tc $lk $mod+bracketright           exec osd brightness up
+bindsym $tc $lk $mod+bracketleft            exec osd brightness down
 
 bindsym $tc $mod+n                          exec makoctl dismiss
 bindsym $tc $mod+Shift+n                    exec makoctl invoke
 bindsym $tc $mod+i                          exec $scripts/idle-mgr.sh toggle
 
 set $clip_term                              $term --app-id=clipfzf
-bindsym $tc $mod+v                          exec $clip_term $scripts/cliphist-fzf.sh
+bindsym $tc $mod+v                          exec $clip_term clipfzf
 
-bindsym $rl Print                           exec $scripts/screenshot.sh region-copy
-bindsym $rl Shift+Print                     exec $scripts/screenshot.sh fullscreen-copy
-bindsym $rl Control+Print                   exec $scripts/screenshot.sh window-copy
+bindsym $rl Print                           exec screenshot region-copy
+bindsym $rl Shift+Print                     exec screenshot fullscreen-copy
+bindsym $rl Control+Print                   exec screenshot window-copy
 
-bindsym $rl $mod+Print                      exec $scripts/screenshot.sh region
-bindsym $rl $mod+Shift+Print                exec $scripts/screenshot.sh fullscreen
-bindsym $rl $mod+Control+Print              exec $scripts/screenshot.sh window
+bindsym $rl $mod+Print                      exec screenshot region
+bindsym $rl $mod+Shift+Print                exec screenshot fullscreen
+bindsym $rl $mod+Control+Print              exec screenshot window
 
 # ============================================================================ #
 # == 9. AUTOSTART ============================================================ #
@@ -356,13 +356,13 @@ bindsym $tc $mod+e mode "EXEC"
 mode "EXEC" {
     bindsym $tc l                  exec $scripts/lock-ns.sh; mode "default"
     bindsym $tc s                  exec "swaylock -f && $scripts/sentry.sh"; mode "default"
-    bindsym $tc e                  exec $scripts/power-menu.sh logout; mode "default"
-    bindsym $tc r                  exec $scripts/power-menu.sh reboot; mode "default"
-    bindsym $tc p                  exec $scripts/power-menu.sh poweroff; mode "default"
+    bindsym $tc e                  exec powermenu logout; mode "default"
+    bindsym $tc r                  exec powermenu reboot; mode "default"
+    bindsym $tc p                  exec powermenu poweroff; mode "default"
 
     bindsym $tc t                  exec $term watch -n 3 -d sensors; mode "default"
-    bindsym $tc n                  exec $scripts/wlsunset.sh toggle; mode "default"
-    bindsym $tc v                  exec $scripts/vsync-toggle.sh; mode "default"
+    bindsym $tc n                  exec bluelight toggle; mode "default"
+    bindsym $tc v                  exec vsync; mode "default"
 
     bindsym $tc w                  exec 'nmcli radio wifi on && $msg_sys "Network: ON"'; mode "default"
     bindsym $tc Shift+w            exec 'nmcli radio wifi off && $msg_sys "Network: OFF"'; mode "default"

@@ -1,5 +1,5 @@
 #!/bin/bash
-# ~/dots/sway/.config/sway/scripts/kill-menu.sh
+# ~/dots/bin/.local/bin/killmenu
 
 set -euo pipefail
 
@@ -10,9 +10,13 @@ kill)
     SIGNAL="KILL"
     PROMPT="SIGKILL: "
     ;;
-term | *)
+term)
     SIGNAL="TERM"
     PROMPT="SIGTERM: "
+    ;;
+*)
+    echo "Usage: $(basename "$0") [term|kill]" >&2
+    exit 1
     ;;
 esac
 

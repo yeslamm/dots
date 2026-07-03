@@ -1,5 +1,5 @@
 #!/bin/sh
-# ~/dots/sway/.config/sway/scripts/media.sh
+# ~/dots/bin/.local/bin/media
 
 playerctl play-pause && sleep 0.08
 

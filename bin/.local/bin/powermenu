@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# ~/dots/sway/.config/sway/scripts/power-menu.sh
+# ~/dots/bin/.local/bin/powermenu
 
 set -euo pipefail
 
 ACTION="${1:-}"
-[[ -z "$ACTION" ]] && exit 1
+
+[[ -z "$ACTION" ]] && echo "Usage: $(basename "$0") [logout|reboot|poweroff]" >&2 && exit 1
 
 CONFIRM=$(echo -e "Yes\nNo" | fuzzel --dmenu --lines=2 --prompt="Confirm ${ACTION^}? " -w 30 || true)
 
@@ -21,6 +22,7 @@ poweroff)
     systemctl poweroff
     ;;
 *)
+    echo "Usage: $(basename "$0") [logout|reboot|poweroff]" >&2
     exit 1
     ;;
 esac
