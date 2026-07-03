@@ -53,3 +53,6 @@ map('n', ']t', '<cmd>tabnext<CR>', { desc = 'Next Tab' })
 map('n', '<leader>tn', '<cmd>tabnew<CR>', { desc = 'New Tab' })
 map('n', '<leader>tx', '<cmd>tabclose<CR>', { desc = 'Close Tab' })
 map('n', '<leader>to', '<cmd>tabonly<CR>', { desc = 'Only This Tab' })
+
+map('n', '<leader>r', '<cmd>registers<CR>', { desc = 'Registers' })
+map('n', '<leader>m', '<cmd>marks<CR>', { desc = 'Marks' })
