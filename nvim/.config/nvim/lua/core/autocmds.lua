@@ -93,3 +93,21 @@ vim.api.nvim_create_autocmd('ModeChanged', {
         end
     end,
 })
+
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = {
+        'help',
+        'qf',
+        'man',
+        'lspinfo',
+        'checkhealth',
+        'lazy',
+        'mason',
+        'notify',
+        'trouble',
+        'gitsigns-blame',
+    },
+    callback = function()
+        vim.keymap.set('n', 'q', '<cmd>close<CR>', { buffer = true, silent = true })
+    end,
+})
