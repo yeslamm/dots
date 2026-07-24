@@ -8,9 +8,7 @@
 
 include /etc/sway/config.d/*
 
-exec dbus-update-activation-environment --systemd \
-    XCURSOR_THEME \
-    XCURSOR_SIZE \
+exec dbus-update-activation-environment --systemd XCURSOR_THEME XCURSOR_SIZE
 
 set $mod         Mod4
 set $term        foot
@@ -63,15 +61,18 @@ default_floating_border   normal 1
 smart_borders             on
 gaps inner                0
 gaps outer                0
-smart_gaps                on
 
 font pango:JetBrainsMono NF, Vazirmatn semi-bold 12
 titlebar_padding 2 2
 titlebar_border_thickness 1
 title_align      center
 
-exec gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors-r3'
-exec gsettings set org.gnome.desktop.interface cursor-size 24
+exec {
+    gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors-r3'
+    gsettings set org.gnome.desktop.interface cursor-size 24
+    gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+}
 
 # class                  border   backgr.  text     indic.   child_border
 client.focused           #78a9ff  #262626  #dfdfe0  #08bdba  #78a9ff
@@ -236,13 +237,14 @@ exec keyd-application-mapper -d
 exec playerctld daemon
 
 exec $scripts/init-audio.sh
-exec $scripts/wlsunset.sh on
+exec bluelight on
 exec easyeffects --hide-window
 exec wayland-pipewire-idle-inhibit -q
 
 exec wl-paste --type text --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
 exec wl-paste --type image --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
 
+exec $scripts/power-watcher.sh
 exec $scripts/idle-mgr.sh on
 exec mako
 
@@ -282,12 +284,17 @@ mode "RESIZE" {
     bindsym $tc $mod+r             mode "default"
 }
 
-bindsym $tc $mod+z mode "ZONE"
-mode "ZONE" {
-    bindsym 1                      floating enable; resize set width 50ppt height 50ppt; move position 0 0
-    bindsym 2                      floating enable; resize set width 50ppt height 50ppt; move position 0 50ppt
-    bindsym 3                      floating enable; resize set width 50ppt height 50ppt; move position 50ppt 0
-    bindsym 4                      floating enable; resize set width 50ppt height 50ppt; move position 50ppt 50ppt
+bindsym $tc $mod+m mode "MOVE"
+mode "MOVE" {
+    bindsym 1                      move container to workspace number 1; workspace number 1
+    bindsym 2                      move container to workspace number 2; workspace number 2
+    bindsym 3                      move container to workspace number 3; workspace number 3
+    bindsym 4                      move container to workspace number 4; workspace number 4
+    bindsym 5                      move container to workspace number 5; workspace number 5
+    bindsym 6                      move container to workspace number 6; workspace number 6
+    bindsym 7                      move container to workspace number 7; workspace number 7
+    bindsym 8                      move container to workspace number 8; workspace number 8
+    bindsym 9                      move container to workspace number 9; workspace number 9
 
     bindsym $tc Control+h          move left  5 px
     bindsym $tc Control+j          move down  5 px
@@ -313,24 +320,7 @@ mode "ZONE" {
 
     bindsym Escape                 mode "default"
     bindsym Return                 mode "default"
-    bindsym $tc $mod+z             mode "default"
-}
-
-bindsym $tc $mod+Shift+z mode "ZIP"
-mode "ZIP" {
-    bindsym 1                      move container to workspace number 1; workspace number 1
-    bindsym 2                      move container to workspace number 2; workspace number 2
-    bindsym 3                      move container to workspace number 3; workspace number 3
-    bindsym 4                      move container to workspace number 4; workspace number 4
-    bindsym 5                      move container to workspace number 5; workspace number 5
-    bindsym 6                      move container to workspace number 6; workspace number 6
-    bindsym 7                      move container to workspace number 7; workspace number 7
-    bindsym 8                      move container to workspace number 8; workspace number 8
-    bindsym 9                      move container to workspace number 9; workspace number 9
-
-    bindsym Escape                 mode "default"
-    bindsym Return                 mode "default"
-    bindsym $tc $mod+Shift+z       mode "default"
+    bindsym $tc $mod+m             mode "default"
 }
 
 set $msg_asus notify-send -t 1500 -h string:x-canonical-private-synchronous:asus
@@ -354,15 +344,14 @@ set $msg_sys notify-send -t 1500 -h string:x-canonical-private-synchronous:sys
 
 bindsym $tc $mod+e mode "EXEC"
 mode "EXEC" {
-    bindsym $tc l                  exec $scripts/lock-ns.sh; mode "default"
+    bindsym $tc l                  exec $scripts/lock-nosentry.sh; mode "default"
     bindsym $tc s                  exec "swaylock -f && $scripts/sentry.sh"; mode "default"
     bindsym $tc e                  exec powermenu logout; mode "default"
     bindsym $tc r                  exec powermenu reboot; mode "default"
     bindsym $tc p                  exec powermenu poweroff; mode "default"
 
-    bindsym $tc t                  exec $term watch -n 3 -d sensors; mode "default"
+    bindsym $tc t                  exec tearing; mode "default"
     bindsym $tc n                  exec bluelight toggle; mode "default"
-    bindsym $tc v                  exec vsync; mode "default"
 
     bindsym $tc w                  exec 'nmcli radio wifi on && $msg_sys "Network: ON"'; mode "default"
     bindsym $tc Shift+w            exec 'nmcli radio wifi off && $msg_sys "Network: OFF"'; mode "default"
