@@ -1,7 +1,7 @@
 layer=overlay
 anchor=top-right
 
-font=JetBrainsMono Nerd Font Bold 12
+font=JetBrainsMono Nerd Font, Vazirmatn Bold 12
 markup=1
 
 width=500
