@@ -7,7 +7,7 @@ ACTION="${1:-}"
 
 [[ -z "$ACTION" ]] && echo "Usage: $(basename "$0") [logout|reboot|poweroff]" >&2 && exit 1
 
-CONFIRM=$(echo -e "Yes\nNo" | fuzzel --dmenu --lines=2 --prompt="Confirm ${ACTION^}? " -w 30 || true)
+CONFIRM=$(printf "Yes\nNo\n" | fuzzel --dmenu --lines=2 --prompt="Confirm ${ACTION^}? " -w 30 || true)
 
 [[ "$CONFIRM" != "Yes" ]] && exit 0
 

@@ -5,13 +5,8 @@ set -euo pipefail
 
 TARGET="${1:-}"
 ACTION="${2:-}"
-WOB_SOCK="${XDG_RUNTIME_DIR}/wob.sock"
+WOB_SOCK="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/wob.sock"
 STEP="5"
-
-if [[ -z "$TARGET" ]]; then
-    echo "Usage: $(basename "$0") [volume|brightness] [action]" >&2
-    exit 1
-fi
 
 case "$TARGET" in
 volume)
@@ -43,24 +38,20 @@ esac
 
 if pgrep -x wob >/dev/null && [[ -p "$WOB_SOCK" ]]; then
     VALUE=""
-
     case "$TARGET" in
     volume)
         VAL_RAW=$(wpctl get-volume @DEFAULT_AUDIO_SINK@)
         if [[ "$VAL_RAW" == *"[MUTED]"* ]]; then
             VALUE=0
         else
-            read -r _ VOL_DEC _ <<<"$VAL_RAW"
-            VALUE="$((10#${VOL_DEC/./}))"
+            VALUE=$(awk '{printf "%.0f", $2 * 100}' <<<"$VAL_RAW")
         fi
         ;;
     brightness)
         IFS=',' read -r _ _ _ PERC _ <<<"$(brightnessctl -m)"
-        VALUE="${PERC%%%}"
+        VALUE="${PERC%?}"
         ;;
     esac
 
-    if [[ -n "$VALUE" ]]; then
-        echo "$VALUE" >"$WOB_SOCK"
-    fi
+    [[ -n "$VALUE" ]] && echo "$VALUE" >"$WOB_SOCK"
 fi

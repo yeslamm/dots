@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# ~/dots/bin/.local/bin/tearing
+
+set -euo pipefail
+
+STATE_FILE="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/tear-flag"
+
+CURRENT_STATE="off"
+[[ -f "$STATE_FILE" ]] && CURRENT_STATE=$(<"$STATE_FILE")
+
+if [[ "$CURRENT_STATE" == "off" ]]; then
+    swaymsg "output * allow_tearing yes; output * max_render_time off"
+    echo "on" >"$STATE_FILE"
+    notify-send -t 2000 -h string:x-canonical-private-synchronous:vsync "Allow Tearing: ON"
+else
+    swaymsg "output * allow_tearing no; output * max_render_time 3"
+    echo "off" >"$STATE_FILE"
+    notify-send -t 2000 -h string:x-canonical-private-synchronous:vsync "Allow Tearing: OFF"
+fi

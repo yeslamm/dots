@@ -3,8 +3,8 @@
 
 set -euo pipefail
 
-LAT="31.1"
-LON="30.9"
+LAT="24.7"
+LON="46.7"
 NIGHT_TEMP="4500"
 DAY_TEMP="6500"
 

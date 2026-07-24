@@ -5,18 +5,26 @@ set -euo pipefail
 
 ACTION="${1:-}"
 FREEZE_PID=""
-
+TMP_IMG=""
 IS_COPY=false
-TARGET="$ACTION"
+
 if [[ "$ACTION" == *"-copy" ]]; then
     IS_COPY=true
     TARGET="${ACTION%-copy}"
+else
+    TARGET="$ACTION"
 fi
 
-cleanup() {
+unfreeze() {
     if [[ -n "$FREEZE_PID" ]]; then
         kill "$FREEZE_PID" 2>/dev/null || true
+        FREEZE_PID=""
     fi
+}
+
+cleanup() {
+    unfreeze
+    [[ -n "$TMP_IMG" && -f "$TMP_IMG" ]] && rm -f "$TMP_IMG"
 }
 trap cleanup EXIT
 
@@ -31,9 +39,7 @@ case "$TARGET" in
 region)
     wayfreeze &
     FREEZE_PID=$!
-
     sleep 0.1
-
     GEOM=$(slurp -d -w 1 -c "#78a9ff" -s "#78a9ff1a" -b "#0f0f0f55") || exit 0
     [[ -z "$GEOM" ]] && exit 0
     ;;
@@ -45,29 +51,23 @@ fullscreen)
     GEOM=""
     ;;
 *)
-    echo "Usage: $0 [region|window|fullscreen|region-copy|window-copy|fullscreen-copy]"
+    echo "Usage: $(basename "$0") [region|window|fullscreen|region-copy|window-copy|fullscreen-copy]" >&2
     exit 1
     ;;
 esac
 
 declare -a grim_args=()
-if [[ -n "$GEOM" ]]; then
-    grim_args+=(-g "$GEOM")
-fi
+[[ -n "$GEOM" ]] && grim_args+=(-g "$GEOM")
 
 if [[ "$IS_COPY" == true ]]; then
     grim "${grim_args[@]}" - | wl-copy
-    if [[ -n "$FREEZE_PID" ]]; then
-        kill "$FREEZE_PID" 2>/dev/null || true
-        FREEZE_PID=""
-    fi
+    unfreeze
     notify-send -t 2000 "Screenshot" "Copied to clipboard"
 else
-    (
-        grim -t ppm "${grim_args[@]}" -
-        if [[ -n "$FREEZE_PID" ]]; then
-            kill "$FREEZE_PID" 2>/dev/null || true
-            FREEZE_PID=""
-        fi
-    ) | satty --filename -
+    TMP_IMG="$(mktemp "${XDG_RUNTIME_DIR:-/tmp}/satty-XXXXXX.ppm")"
+    grim -t ppm "${grim_args[@]}" "$TMP_IMG"
+
+    unfreeze
+
+    satty --filename "$TMP_IMG"
 fi

@@ -6,8 +6,8 @@ if [ -n "$WAYLAND_DISPLAY" ]; then
     exit 0
 fi
 
-if pgrep -u "$USER" -x sway >/dev/null; then
-    echo "Error: Sway is already running for user $USER on another TTY!"
+if pgrep -u "$(id -u)" -x sway >/dev/null; then
+    echo "Error: Sway is already running for user ${USER:-$(id -un)} on another TTY!"
     echo "Returning to console safely to prevent D-Bus socket corruption."
     sleep 2
     exit 1

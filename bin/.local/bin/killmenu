@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # ~/dots/bin/.local/bin/killmenu
 
 set -euo pipefail
@@ -20,7 +20,7 @@ term)
     ;;
 esac
 
-SELECTION=$(ps -u "$USER" -o pid,etime,comm,args --no-headers |
+SELECTION=$(ps -u "$(id -u)" -o pid,etime,comm,args --no-headers |
     awk -v self_pid="$$" '
         $1 == self_pid {next}
         {
