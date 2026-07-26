@@ -4,6 +4,18 @@ My curated, low-bloat Arch Linux workstation environment tailored for Wayland (`
 
 ---
 
+## Architecture Overview
+
+Configurations are organized into **role-based mega-packages** managed via GNU Stow:
+
+* **`bin/`** — Executable user scripts (`~/.local/bin`)
+* **`shell/`** — Zsh runtime, Powerlevel10k, `.gitconfig`, and XDG specifications
+* **`apps/`** — Terminal applications (`nvim`, `tmux`, `yazi`, `aria2`, `lazygit`, `fastfetch`, `swayimg`)
+* **`dev/`** — Code formatters & language tools (`.clang-format`, `.prettierrc.json`, `stylua`, `taplo`)
+* **`desktop/`** — Wayland environment (`sway`, `waybar`, `foot`, `mako`, `fuzzel`, `easyeffects`, GTK themes, cursors)
+
+---
+
 ## Deployment Architecture
 
 ### 1. Host Environment Prerequisites
@@ -15,9 +27,9 @@ Before symlinking configurations, provision the local environment with required 
 sudo pacman -S --needed base-devel git stow
 
 # Bootstrap yay (AUR Helper) from source binaries
-git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
+git clone [https://aur.archlinux.org/yay-bin.git](https://aur.archlinux.org/yay-bin.git) /tmp/yay-bin
 cd /tmp/yay-bin && makepkg -si
-```
+
 
 ### 2. System-Level Dependency Layer
 
@@ -26,6 +38,7 @@ Install the managed package manifest containing all binaries, fonts, and graphic
 ```bash
 # Provision hardware and software applications from package manifest
 yay -S --needed - < pkglist.txt
+
 ```
 
 ### 3. Privileged Infrastructure Configurations
@@ -46,6 +59,7 @@ sudo systemctl enable --now keyd
 
 # Append active user to the keyd hardware input group
 sudo usermod -aG keyd $USER
+
 ```
 
 > **Note:** A system logout or reboot is mandatory for user group modifications to inherit active session permissions.
@@ -59,27 +73,29 @@ Use GNU Stow to map configuration profiles into your `$HOME` directory.
 ```bash
 # Force initialize target parent paths to prevent Stow folder trapping
 mkdir -p ~/.config ~/.local/share ~/.local/state ~/.local/bin
+
 ```
 
 Select the profile layout matching your current host machine requirements:
 
-#### Profile A: Core CLI Only (Safe for Headless Servers, WSL, or minimal VMs)
+#### Profile A: Core CLI & Developer Tooling (Safe for Headless Servers, WSL, or minimal VMs)
 
-Maps only terminal configurations and developer tools without touching graphical window managers:
+Maps shell environments, terminal applications, developer tooling, and personal scripts without touching graphical window managers:
 
 ```bash
 cd ~/dots
-stow -t ~ -R nvim tmux zsh lazygit yazi fastfetch dev
+stow -t ~ -R bin shell apps dev
+
 ```
 
 #### Profile B: Full Workstation Environment (Complete Wayland Desktop)
 
-Maps the complete system environment including the window manager, audio processing layers, status bars, and notification daemons:
+Maps the complete system environment, including the window manager, audio processing layers, status bars, and notification daemons:
 
 ```bash
 cd ~/dots
-stow -t ~ -R icons xdg gtk fastfetch bin swayimg satty lazygit nvim \
-            easyeffects zsh tmux waybar fuzzel foot mako dev yazi sway git keyd
+stow -t ~ -R bin shell apps dev desktop
+
 ```
 
 ---
@@ -91,7 +107,9 @@ stow -t ~ -R icons xdg gtk fastfetch bin swayimg satty lazygit nvim \
 To simulate deployment mutations and verify path conflicts without touching the filesystem, pass the verbose simulation flags:
 
 ```bash
-stow -t ~ -nvR <folder_names>
+cd ~/dots
+stow -t ~ -nvR bin shell apps dev desktop
+
 ```
 
 ### Purging Symlinks
@@ -99,5 +117,7 @@ stow -t ~ -nvR <folder_names>
 To cleanly dismantle mapped configurations and sever home directory links without deleting source data:
 
 ```bash
-stow -t ~ -D <folder_names>
+cd ~/dots
+stow -t ~ -D bin shell apps dev desktop
+
 ```
