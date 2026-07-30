@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# ~/.local/bin/screenrec
+
+set -euo pipefail
+
+ACTION="${1:-}"
+VID_DIR="$HOME/Videos"
+LOG_FILE="${XDG_RUNTIME_DIR:-/tmp}/screenrec.log"
+FREEZE_PID=""
+
+unfreeze() {
+    if [[ -n "$FREEZE_PID" ]]; then
+        kill "$FREEZE_PID" 2>/dev/null || true
+        FREEZE_PID=""
+    fi
+}
+trap unfreeze EXIT
+
+get_window_geometry() {
+    swaymsg -t get_tree |
+        jq -r '.. | select(.focused? == true and (.type? == "con" or .type? == "floating_con")) | 
+               "\(.rect.width)x\(.rect.height)+\(.rect.x)+\(.rect.y)"' |
+        head -n1
+}
+
+if [[ ! -t 1 ]]; then
+    exec >"$LOG_FILE" 2>&1
+fi
+
+if pgrep -f "^gpu-screen-recorder" >/dev/null; then
+    pkill -SIGINT -f "^gpu-screen-recorder"
+    notify-send -t 2000 "Screen Recorder" "Recording stopped and saved to ~/Videos"
+    exit 0
+fi
+
+if [[ -z "$ACTION" ]]; then
+    echo "Usage: $(basename "$0") [region|window|fullscreen]" >&2
+    exit 1
+fi
+
+mkdir -p "$VID_DIR"
+OUTPUT_FILE="$VID_DIR/rec_$(date +%Y-%m-%d_%H-%M-%S).mp4"
+
+case "$ACTION" in
+region)
+    wayfreeze &
+    FREEZE_PID=$!
+    sleep 0.1
+
+    GEOM=$(slurp -d -w 1 -c "#78a9ff" -s "#78a9ff1a" -b "#0f0f0f55" -f "%wx%h+%x+%y") || exit 0
+    [[ -z "$GEOM" ]] && exit 0
+    unfreeze
+
+    notify-send -t 1500 "Screen Recorder" "Recording region..."
+    exec gpu-screen-recorder -w region -region "$GEOM" -f 60 -a "default_output|default_input" -o "$OUTPUT_FILE"
+    ;;
+
+window)
+    GEOM=$(get_window_geometry)
+    [[ -z "$GEOM" ]] && exit 0
+
+    notify-send -t 1500 "Screen Recorder" "Recording window..."
+    exec gpu-screen-recorder -w region -region "$GEOM" -f 60 -a "default_output|default_input" -o "$OUTPUT_FILE"
+    ;;
+
+fullscreen)
+    notify-send -t 1500 "Screen Recorder" "Recording screen..."
+    exec gpu-screen-recorder -w screen -f 60 -a "default_output|default_input" -o "$OUTPUT_FILE"
+    ;;
+
+*)
+    echo "Usage: $(basename "$0") [region|window|fullscreen]" >&2
+    exit 1
+    ;;
+esac
