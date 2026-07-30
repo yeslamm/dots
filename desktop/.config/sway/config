@@ -12,9 +12,17 @@ exec dbus-update-activation-environment --systemd XCURSOR_THEME XCURSOR_SIZE
 
 set $mod         Mod4
 set $term        foot
-set $float_term  $term --app-id=fterm
 set $menu        fuzzel
+
 set $scripts     ~/.config/sway/scripts
+
+set $float_term  $term --app-id=fterm
+set $clip_term   $term --app-id=clipfzf
+set $pulse_term  $term --app-id=pulsemixer
+
+set $msg_mic     notify-send -t 1500 -h string:x-canonical-private-synchronous:mic
+set $msg_asus    notify-send -t 1500 -h string:x-canonical-private-synchronous:asus
+set $msg_sys     notify-send -t 1500 -h string:x-canonical-private-synchronous:sys
 
 set $tc          --to-code
 set $lk          --locked
@@ -28,10 +36,10 @@ output * bg #0f0f0f solid_color
 output eDP-1 max_render_time 3
 
 input type:keyboard {
-    xkb_layout   "us,ara"
-    xkb_options  grp:win_space_toggle
-    repeat_delay 190
-    repeat_rate  60
+    xkb_layout      "us,ara"
+    xkb_options     grp:win_space_toggle
+    repeat_delay    190
+    repeat_rate     60
 }
 
 input type:touchpad {
@@ -44,8 +52,8 @@ input type:touchpad {
 }
 
 input type:pointer {
-    accel_profile flat
-    pointer_accel 0.4
+    accel_profile   flat
+    pointer_accel   0.4
 }
 
 bindgesture swipe:3:right workspace next
@@ -63,8 +71,7 @@ mouse_warping output
 
 default_border            pixel 1
 default_floating_border   normal 1
-floating_maximum_size     1700 x 1000
-floating_minimum_size     400 x 300
+floating_maximum_size     1850 x 1100
 smart_borders             on
 gaps inner                0
 gaps outer                0
@@ -72,7 +79,7 @@ gaps outer                0
 font pango:JetBrainsMono NF, Vazirmatn semi-bold 12
 titlebar_padding 2 2
 titlebar_border_thickness 1
-title_align      center
+title_align center
 
 exec {
     gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors-r3'
@@ -81,12 +88,12 @@ exec {
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 }
 
-# class                  border   backgr.  text     indic.   child_border
-client.focused           #78a9ff  #262626  #dfdfe0  #08bdba  #78a9ff
-client.focused_tab_title #262626  #262626  #dfdfe0
-client.focused_inactive  #363636  #262626  #dfdfe0  #08bdba  #363636
-client.unfocused         #363636  #161616  #6f6f6f  #161616  #363636
-client.urgent            #ee5396  #262626  #ffffff  #ee5396  #ee5396
+# class                   border   backgr.  text     indic.   child_border
+client.focused            #78a9ff  #262626  #dfdfe0  #08bdba  #78a9ff
+client.focused_tab_title  #262626  #262626  #dfdfe0
+client.focused_inactive   #363636  #262626  #dfdfe0  #08bdba  #363636
+client.unfocused          #363636  #161616  #6f6f6f  #161616  #363636
+client.urgent             #ee5396  #262626  #ffffff  #ee5396  #ee5396
 
 # ============================================================================ #
 # == 4. WINDOW RULES ========================================================= #
@@ -94,13 +101,15 @@ client.urgent            #ee5396  #262626  #ffffff  #ee5396  #ee5396
 
 for_window [app_id="fterm"] floating enable, resize set width 70 ppt height 75 ppt, move position center
 for_window [app_id="clipfzf"] floating enable, resize set width 85 ppt height 85 ppt, move position center
+for_window [app_id="pulsemixer"] floating enable, resize set width 70 ppt height 70 ppt, move position center, move scratchpad, scratchpad show
 
-for_window [app_id="FileRoller|mpv|swayimg|gpu_screen_recorder|xdg-desktop-portal-gtk"] floating enable
+for_window [app_id="FileRoller|mpv|gpu_screen_recorder|xdg-desktop-portal-gtk|pavucontrol"] floating enable
 for_window [instance="sun-awt-X11-XDialogPeer"] floating enable
 for_window [window_role="^(pop-up|bubble|task_dialog|dialog|menu)$"] floating enable
-for_window [app_id="pavucontrol"] floating enable, sticky enable
 for_window [title="Picture-in-Picture"] floating enable, sticky enable
 for_window [app_id="firefox" title="^Extension:.*"] floating enable
+
+for_window [app_id="swayimg"] fullscreen enable
 
 for_window [all] inhibit_idle fullscreen
 for_window [app_id="(?i)mpv|zathura|qbittorrent|steam|gamescope|\.exe"] inhibit_idle focus
@@ -129,42 +138,43 @@ bindsym $tc $mod+Shift+r            reload
 # == 6. NAVIGATION & LAYOUT ================================================== #
 # ============================================================================ #
 
-bindsym $mod+tab focus mode_toggle
-
-bindsym $tc $mod+h                 focus left
-bindsym $tc $mod+j                 focus down
-bindsym $tc $mod+k                 focus up
-bindsym $tc $mod+l                 focus right
-
-bindsym $tc $mod+Shift+h           move left  40 px
-bindsym $tc $mod+Shift+j           move down  40 px
-bindsym $tc $mod+Shift+k           move up    40 px
-bindsym $tc $mod+Shift+l           move right 40 px
-
-bindsym $tc Control+$mod+h         resize shrink width  40 px
-bindsym $tc Control+$mod+j         resize grow   height 40 px
-bindsym $tc Control+$mod+k         resize shrink height 40 px
-bindsym $tc Control+$mod+l         resize grow   width  40 px
-
-bindsym $tc $mod+w                 layout tabbed
-bindsym $tc $mod+Shift+w           layout toggle split
-bindsym $tc $mod+apostrophe        split h
-bindsym $tc $mod+semicolon         split v
-bindsym $tc $mod+Shift+apostrophe  split none
-bindsym $tc $mod+Shift+semicolon   split none
-
-bindsym $tc $mod+f                 fullscreen
-bindsym $tc $mod+Shift+f           floating toggle
-bindsym $tc $mod+Shift+c           move position center
-bindsym $tc $mod+a                 focus parent
-bindsym $tc $mod+c                 focus child
 floating_modifier $mod normal
 
-bindsym $tc $mod+grave             workspace back_and_forth
-bindsym $tc $mod+Shift+grave       move container to workspace back_and_forth; workspace back_and_forth
+bindsym $tc $mod+h                  focus left
+bindsym $tc $mod+j                  focus down
+bindsym $tc $mod+k                  focus up
+bindsym $tc $mod+l                  focus right
 
-bindsym $tc $mod+s                 scratchpad show
-bindsym $tc $mod+Shift+s           move scratchpad
+bindsym $tc $mod+Shift+h            move left  40 px
+bindsym $tc $mod+Shift+j            move down  40 px
+bindsym $tc $mod+Shift+k            move up    40 px
+bindsym $tc $mod+Shift+l            move right 40 px
+
+bindsym $tc Control+$mod+h          resize shrink width  40 px
+bindsym $tc Control+$mod+j          resize grow   height 40 px
+bindsym $tc Control+$mod+k          resize shrink height 40 px
+bindsym $tc Control+$mod+l          resize grow   width  40 px
+
+bindsym $tc $mod+w                  layout tabbed
+bindsym $tc $mod+Shift+w            layout toggle split
+bindsym $tc $mod+apostrophe         split h
+bindsym $tc $mod+semicolon          split v
+bindsym $tc $mod+Shift+apostrophe   split none
+bindsym $tc $mod+Shift+semicolon    split none
+
+bindsym $tc $mod+f                  fullscreen
+bindsym $tc $mod+Shift+f            floating toggle
+bindsym $tc $mod+Shift+c            move position center
+bindsym $tc $mod+a                  focus parent
+bindsym $tc $mod+c                  focus child
+
+bindsym $tc $mod+grave              workspace back_and_forth
+bindsym $tc $mod+Shift+grave        move container to workspace back_and_forth; workspace back_and_forth
+
+bindsym $mod+tab                    focus mode_toggle
+
+bindsym $tc $mod+s                  scratchpad show
+bindsym $tc $mod+Shift+s            move scratchpad
 
 # ============================================================================ #
 # == 7. WORKSPACES =========================================================== #
@@ -197,6 +207,7 @@ bindsym $mod+Shift+9 move container to workspace number 9
 bindsym $lk XF86AudioRaiseVolume            exec osd volume up
 bindsym $lk XF86AudioLowerVolume            exec osd volume down
 bindsym $lk XF86AudioMute                   exec osd volume mute
+bindsym $lk XF86AudioMicMute                exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && $msg_mic "Microphone: $(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | grep -q MUTED && echo 'Muted' || echo 'Unmuted')"
 bindsym $lk XF86AudioPlay                   exec media play-pause
 bindsym $lk XF86AudioNext                   exec playerctl next
 bindsym $lk XF86AudioPrev                   exec playerctl previous
@@ -204,14 +215,15 @@ bindsym $lk XF86AudioPrev                   exec playerctl previous
 bindsym $lk $mod+equal                      exec osd volume up
 bindsym $lk $mod+minus                      exec osd volume down
 bindsym $lk $mod+0                          exec osd volume mute
+bindsym $lk $mod+Shift+0                    exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && $msg_mic "Microphone: $(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | grep -q MUTED && echo 'Muted' || echo 'Unmuted')"
 
-bindsym $lk $mod+Shift+equal                exec playerctl position 5+
-bindsym $lk $mod+Shift+minus                exec playerctl position 5-
-bindsym $lk $mod+Shift+0                    exec playerctl position 0
+bindsym $lk $mod+Shift+period               exec playerctl position 5+
+bindsym $lk $mod+Shift+comma                exec playerctl position 5-
+bindsym $lk $mod+Shift+slash                exec playerctl position 0
 bindsym $tc $lk $mod+period                 exec playerctl next
 bindsym $tc $lk $mod+comma                  exec playerctl previous
-bindsym $tc $lk $mod+Shift+comma            exec playerctld shift
-bindsym $tc $lk $mod+Shift+period           exec playerctld unshift
+bindsym $tc $lk $mod+Control+comma          exec playerctld shift
+bindsym $tc $lk $mod+Control+period         exec playerctld unshift
 bindsym $tc $lk $mod+slash                  exec media play-pause
 
 bindsym $lk XF86MonBrightnessUp             exec osd brightness up
@@ -223,7 +235,6 @@ bindsym $tc $mod+n                          exec makoctl dismiss
 bindsym $tc $mod+Shift+n                    exec makoctl invoke
 bindsym $tc $mod+i                          exec $scripts/idle-mgr.sh toggle
 
-set $clip_term                              $term --app-id=clipfzf
 bindsym $tc $mod+v                          exec $clip_term clipfzf
 
 bindsym $rl Print                           exec screenshot region-copy
@@ -233,6 +244,10 @@ bindsym $rl Control+Print                   exec screenshot window-copy
 bindsym $rl $mod+Print                      exec screenshot region
 bindsym $rl $mod+Shift+Print                exec screenshot fullscreen
 bindsym $rl $mod+Control+Print              exec screenshot window
+
+bindsym $rl $mod+F12                        exec screenrec region
+bindsym $rl $mod+Shift+F12                  exec screenrec fullscreen
+bindsym $rl $mod+Control+F12                exec screenrec window
 
 # ============================================================================ #
 # == 9. AUTOSTART ============================================================ #
@@ -339,8 +354,6 @@ mode "MOVE" {
     bindsym $tc $mod+m             mode "default"
 }
 
-set $msg_asus notify-send -t 1500 -h string:x-canonical-private-synchronous:asus
-
 bindsym XF86Launch1 mode "POWER"
 bindsym $tc $mod+p mode "POWER"
 mode "POWER" {
@@ -357,8 +370,6 @@ mode "POWER" {
     bindsym $tc $mod+p             mode "default"
 }
 
-set $msg_sys notify-send -t 1500 -h string:x-canonical-private-synchronous:sys
-
 bindsym $tc $mod+e mode "EXEC"
 mode "EXEC" {
     bindsym $tc l                  exec $scripts/lock-nosentry.sh; mode "default"
@@ -369,6 +380,7 @@ mode "EXEC" {
 
     bindsym $tc t                  exec tearing; mode "default"
     bindsym $tc n                  exec bluelight toggle; mode "default"
+    bindsym $tc v                  exec swaymsg '[app_id="pulsemixer"] scratchpad show' || $pulse_term pulsemixer; mode "default"
 
     bindsym $tc w                  exec 'nmcli radio wifi on && $msg_sys "Network: ON"'; mode "default"
     bindsym $tc Shift+w            exec 'nmcli radio wifi off && $msg_sys "Network: OFF"'; mode "default"
