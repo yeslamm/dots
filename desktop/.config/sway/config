@@ -103,15 +103,24 @@ for_window [app_id="fterm"] floating enable, resize set width 70 ppt height 75 p
 for_window [app_id="clipfzf"] floating enable, resize set width 85 ppt height 85 ppt, move position center
 for_window [app_id="pulsemixer"] floating enable, resize set width 70 ppt height 70 ppt, move position center, move scratchpad, scratchpad show
 
-for_window [app_id="FileRoller|mpv|gpu_screen_recorder|xdg-desktop-portal-gtk|pavucontrol"] floating enable
-for_window [instance="sun-awt-X11-XDialogPeer"] floating enable
-for_window [window_role="^(pop-up|bubble|task_dialog|dialog|menu)$"] floating enable
-for_window [title="Picture-in-Picture"] floating enable, sticky enable
-for_window [app_id="firefox" title="^Extension:.*"] floating enable
+for_window [app_id="(?i)FileRoller|gpu_screen_recorder|xdg-desktop-portal-gtk|pavucontrol"] floating enable
 
-for_window [app_id="swayimg"] fullscreen enable
+for_window [window_role="^(pop-up|bubble|task_dialog|dialog|menu)$"] floating enable
+
+for_window [window_type="dialog"] floating enable
+for_window [window_type="utility"] floating enable
+for_window [window_type="toolbar"] floating enable
+for_window [window_type="splash"] floating enable
+
+for_window [instance="sun-awt-X11-XDialogPeer"] floating enable
+
+for_window [title="(?i)picture-in-picture|picture in picture"] floating enable, sticky enable
+for_window [app_id="firefox" title="^Extension:"] floating enable
+
+for_window [app_id="mpv|swayimg"] fullscreen enable
 
 for_window [all] inhibit_idle fullscreen
+
 for_window [app_id="(?i)mpv|zathura|qbittorrent|steam|gamescope|\.exe"] inhibit_idle focus
 for_window [class="(?i)mpv|zathura|qbittorrent|steam|gamescope|\.exe"] inhibit_idle focus
 
