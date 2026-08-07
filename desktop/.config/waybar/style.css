@@ -11,6 +11,16 @@
   border-top: 1px solid #363636;
 }
 
+tooltip {
+  background-color: #161616;
+  border: 1px solid #363636;
+  opacity: 1;
+}
+
+tooltip label {
+  color: #dfdfe0;
+}
+
 #mode,
 #scratchpad,
 #memory,
