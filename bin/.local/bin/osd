@@ -5,7 +5,7 @@ set -euo pipefail
 
 TARGET="${1:-}"
 ACTION="${2:-}"
-WOB_SOCK="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/wob.sock"
+WOB_SOCK="${XDG_RUNTIME_DIR:-/run/user/${UID}}/wob.sock"
 STEP="5"
 
 case "$TARGET" in

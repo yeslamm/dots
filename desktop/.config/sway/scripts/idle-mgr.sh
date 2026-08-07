@@ -4,7 +4,7 @@
 set -euo pipefail
 
 ACTION="${1:-}"
-RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/${UID}}"
 
 IDLE_FLAG="$RUNTIME_DIR/IDLE_ENABLED"
 BRIGHT_FLAG="$RUNTIME_DIR/bright_dimmed"

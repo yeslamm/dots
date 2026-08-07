@@ -24,7 +24,6 @@
 
   "sway/workspaces": {
     "disable-scroll": true,
-    "all-outputs": false,
     "format": "{name}"
   },
 
@@ -40,7 +39,6 @@
   "memory": {
     "interval": 3,
     "format": "{used:0.2f}G",
-    "tooltip": true,
     "tooltip-format": "Used: {used:0.2f}G\nSwap: {swapUsed:0.2f}G\nTotal: {total:0.2f}G"
   },
 
@@ -88,9 +86,6 @@
     }
   },
 
-  // ==============================================================================
-  // HARDWARE STATUS & CONNECTIVITY
-  // ==============================================================================
   "network": {
     "format-wifi": "{essid}",
     "format-ethernet": "ETH",
@@ -134,7 +129,7 @@
   },
 
   "custom/idlemgr": {
-    "exec": "[ -f \"${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/IDLE_ENABLED\" ] && echo '' || echo 'INHIBIT'",
+    "exec": "[ -f \"${XDG_RUNTIME_DIR:-/run/user/${UID}}/IDLE_ENABLED\" ] && echo '' || echo 'INHIBIT'",
     "return-type": "text",
     "interval": "once",
     "signal": 12,
@@ -145,6 +140,7 @@
     "icon-size": 16,
     "spacing": 10
   },
+
   "privacy": {
     "icon-spacing": 10,
     "icon-size": 16,

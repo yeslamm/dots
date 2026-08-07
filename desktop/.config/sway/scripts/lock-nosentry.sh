@@ -3,7 +3,7 @@
 
 set -euo pipefail
 
-RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/${UID}}"
 FLAG="$RUNTIME_DIR/IDLE_INHIBIT"
 IDLE_FLAG="$RUNTIME_DIR/IDLE_ENABLED"
 

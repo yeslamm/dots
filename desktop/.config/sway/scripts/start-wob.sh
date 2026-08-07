@@ -3,7 +3,7 @@
 
 set -euo pipefail
 
-WOB_SOCK="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/wob.sock"
+WOB_SOCK="${XDG_RUNTIME_DIR:-/run/user/${UID}}/wob.sock"
 WOB_CONFIG="$HOME/.config/wob/wob.ini"
 
 pkill -x wob 2>/dev/null || true
