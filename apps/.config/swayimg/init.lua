@@ -3,31 +3,31 @@
 -- =============================================================================
 -- 1. GENERAL & VISUAL SETTINGS
 -- =============================================================================
-swayimg.set_mode 'viewer'
-swayimg.enable_decoration(false)
-swayimg.enable_antialiasing(true)
+swayimg.mode = 'viewer'
+swayimg.decoration = false
+swayimg.antialiasing = true
 
 swayimg.viewer.set_window_background(0xff000000)
 swayimg.viewer.set_image_chessboard(10, 0xff222222, 0xff444444)
-swayimg.viewer.set_default_scale 'optimal'
+swayimg.viewer.default_scale = 'optimal'
 
 swayimg.on_initialized(function()
-    swayimg.text.hide()
+    swayimg.text.visible = false
 end)
 
 -- =============================================================================
 -- 2. FILE NAVIGATION
 -- =============================================================================
 swayimg.viewer.on_key('Space', function()
-    swayimg.viewer.switch_image 'next'
+    swayimg.viewer.open 'next'
 end)
 
 swayimg.viewer.on_key('BackSpace', function()
-    swayimg.viewer.switch_image 'prev'
+    swayimg.viewer.open 'prev'
 end)
 
 -- =============================================================================
--- 3. VIM PANNING & VIEWER CONTROLS
+-- 3. VIM PANNING & ROTATION CONTROLS
 -- =============================================================================
 local pan_speed = 50
 
@@ -51,48 +51,46 @@ swayimg.viewer.on_key('k', function()
     swayimg.viewer.set_abs_position(pos.x, pos.y + pan_speed)
 end)
 
--- Reset scale & position (z)
+swayimg.viewer.on_key('r', function()
+    swayimg.viewer.rotate(90)
+end)
+
 swayimg.viewer.on_key('z', function()
     swayimg.viewer.set_fix_scale 'optimal'
     swayimg.viewer.set_fix_position 'center'
 end)
 
--- Toggle text info layer (i)
 swayimg.viewer.on_key('i', function()
-    if swayimg.text.visible() then
-        swayimg.text.hide()
-    else
-        swayimg.text.show()
-    end
+    swayimg.text.visible = not swayimg.text.visible
 end)
 
 -- =============================================================================
 -- 4. GALLERY MODE & NAVIGATION
 -- =============================================================================
 swayimg.viewer.on_key('g', function()
-    swayimg.set_mode 'gallery'
+    swayimg.mode = 'gallery'
 end)
 swayimg.gallery.on_key('g', function()
-    swayimg.set_mode 'viewer'
+    swayimg.mode = 'viewer'
 end)
 swayimg.gallery.on_key('Return', function()
-    swayimg.set_mode 'viewer'
+    swayimg.mode = 'viewer'
 end)
 swayimg.gallery.on_key('Escape', function()
-    swayimg.set_mode 'viewer'
+    swayimg.mode = 'viewer'
 end)
 
 swayimg.gallery.on_key('h', function()
-    swayimg.gallery.switch_image 'left'
+    swayimg.gallery.select 'left'
 end)
 swayimg.gallery.on_key('l', function()
-    swayimg.gallery.switch_image 'right'
+    swayimg.gallery.select 'right'
 end)
 swayimg.gallery.on_key('j', function()
-    swayimg.gallery.switch_image 'down'
+    swayimg.gallery.select 'down'
 end)
 swayimg.gallery.on_key('k', function()
-    swayimg.gallery.switch_image 'up'
+    swayimg.gallery.select 'up'
 end)
 
 -- =============================================================================
