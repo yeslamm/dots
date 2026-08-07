@@ -4,7 +4,7 @@
 set -euo pipefail
 
 ACTION="${1:-}"
-FREEZE_PID=""
+TMP_GEOM=""
 TMP_IMG=""
 IS_COPY=false
 
@@ -15,32 +15,28 @@ else
     TARGET="$ACTION"
 fi
 
-unfreeze() {
-    if [[ -n "$FREEZE_PID" ]]; then
-        kill "$FREEZE_PID" 2>/dev/null || true
-        FREEZE_PID=""
-    fi
-}
-
 cleanup() {
-    unfreeze
-    [[ -n "$TMP_IMG" && -f "$TMP_IMG" ]] && rm -f "$TMP_IMG"
+    [[ -n "${TMP_GEOM:-}" && -f "$TMP_GEOM" ]] && rm -f "$TMP_GEOM"
+    [[ -n "${TMP_IMG:-}" && -f "$TMP_IMG" ]] && rm -f "$TMP_IMG"
 }
-trap cleanup EXIT
+trap cleanup EXIT INT TERM
 
 get_window_geometry() {
     swaymsg -t get_tree |
         jq -r '.. | select(.focused? == true and (.type? == "con" or .type? == "floating_con")) | 
-               "\(.rect.x),\(.rect.y) \(.rect.width)x\(.rect.height)"' |
+               "\((.rect.x + .window_rect.x)),\((.rect.y + .window_rect.y)) \(.window_rect.width)x\(.window_rect.height)"' |
         head -n1
 }
 
 case "$TARGET" in
 region)
-    wayfreeze &
-    FREEZE_PID=$!
-    sleep 0.1
-    GEOM=$(slurp -d -w 1 -c "#78a9ff" -s "#78a9ff1a" -b "#0f0f0f55") || exit 0
+    TMP_GEOM="$(mktemp "${XDG_RUNTIME_DIR:-/tmp}/geom-XXXXXX")"
+
+    wayfreeze --after-freeze-cmd "slurp -d -w 1 -c '#78a9ff' -s '#78a9ff1a' -b '#0f0f0f55' > '$TMP_GEOM'; pkill wayfreeze" || true
+
+    GEOM=$(<"$TMP_GEOM")
+    rm -f "$TMP_GEOM"
+    TMP_GEOM=""
     [[ -z "$GEOM" ]] && exit 0
     ;;
 window)
@@ -60,14 +56,10 @@ declare -a grim_args=()
 [[ -n "$GEOM" ]] && grim_args+=(-g "$GEOM")
 
 if [[ "$IS_COPY" == true ]]; then
-    grim "${grim_args[@]}" - | wl-copy
-    unfreeze
+    grim "${grim_args[@]}" - | wl-copy -t image/png
     notify-send -t 2000 "Screenshot" "Copied to clipboard"
 else
     TMP_IMG="$(mktemp "${XDG_RUNTIME_DIR:-/tmp}/satty-XXXXXX.ppm")"
     grim -t ppm "${grim_args[@]}" "$TMP_IMG"
-
-    unfreeze
-
     satty --filename "$TMP_IMG"
 fi
