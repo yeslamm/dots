@@ -23,10 +23,24 @@ return {
 
         local ts_group = vim.api.nvim_create_augroup('NvimTreesitterConfig', { clear = true })
 
+        local ignored_filetypes = {
+            tmux = true,
+        }
+
         vim.api.nvim_create_autocmd('FileType', {
             group = ts_group,
             callback = function(args)
                 local buf = args.buf
+                local ft = vim.bo[buf].filetype
+
+                if ignored_filetypes[ft] then
+                    return
+                end
+
+                local lang = vim.treesitter.language.get_lang(ft) or ft
+                if not pcall(vim.treesitter.language.add, lang) then
+                    return
+                end
 
                 local success = pcall(vim.treesitter.start, buf)
 
