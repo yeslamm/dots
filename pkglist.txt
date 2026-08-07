@@ -2,11 +2,8 @@
 adw-gtk-theme
 alsa-utils
 amdsmi
-amd-ucode
 aria2
 asusctl
-base
-base-devel
 bat
 bluetuith
 bluez
@@ -20,7 +17,6 @@ clang
 cliphist
 downgrade
 easyeffects
-efibootmgr
 evtest
 eza
 fastfetch
@@ -42,15 +38,11 @@ gvfs
 gvfs-smb
 inotify-tools
 inter-font
-iptables
 jq
 keyd
 lazygit
 libnotify
 libva-utils
-linux
-linux-firmware
-linux-headers
 localsend-bin
 mako
 man-db
@@ -67,7 +59,6 @@ npm
 nwg-look
 otf-font-awesome
 ouch
-pamixer
 pavucontrol
 perl-image-exiftool
 piper
