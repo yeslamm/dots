@@ -8,7 +8,7 @@ export PATH="${PATH}:/opt/rocm/bin"
 export EDITOR="nvim"
 export VISUAL="nvim"
 export PAGER="less"
-export MANPAGER="less -R --use-color -Dd+G -Du+C -DSkY -DPB -DNb -DTb"
+export MANPAGER="less -R --use-color -Dd+G -Du+C -DSkY -DPB -DNb -DTb -DER -DCm -DWY -DHY"
 export MANROFFOPT="-c"
 
 export LESSHISTFILE="-"

@@ -32,7 +32,6 @@ autoload -Uz run-help
 # Zim Module Configuration
 # ----------------------------------------------------------------------
 zstyle ':zim:input' double-dot-expand yes
-zstyle ':zim:termtitle' format '%1~'
 
 ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=242'
@@ -55,6 +54,24 @@ if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZIM_CONFIG_FILE:-${ZDOTDIR:-${HOME}}/.zimrc} 
   source ${ZIM_HOME}/zimfw.zsh init
 fi
 source ${ZIM_HOME}/init.zsh
+
+# ----------------------------------------------------------------------
+# Terminal Title Configuration
+# ----------------------------------------------------------------------
+autoload -Uz add-zsh-hook
+
+set_win_title_precmd() {
+  print -Pn "\e]2;zsh  %1~  %l\a"
+}
+
+set_win_title_preexec() {
+  local cmd="${1%% *}"
+  cmd="${cmd##*/}"
+  print -Pn "\e]2;${cmd}  %1~  %l\a"
+}
+
+add-zsh-hook precmd set_win_title_precmd
+add-zsh-hook preexec set_win_title_preexec
 
 zmodload -F zsh/terminfo +p:terminfo
 for key ('^[[A' '^P' ${terminfo[kcuu1]}) bindkey ${key} history-substring-search-up
