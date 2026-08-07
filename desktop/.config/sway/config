@@ -27,6 +27,7 @@ set $msg_sys     notify-send -t 1500 -h string:x-canonical-private-synchronous:s
 set $tc          --to-code
 set $lk          --locked
 set $rl          --release
+set $ww          --whole-window
 
 # ============================================================================ #
 # == 2. HARDWARE: INPUT & OUTPUT ============================================= #
@@ -138,9 +139,7 @@ bindsym $tc $mod+b                  exec $term btop
 bindsym $tc $mod+Shift+b            exec $float_term btop
 
 bindsym $tc $mod+q                  kill
-bindsym $tc $mod+x                  exec killmenu term
-bindsym $tc $mod+Shift+x            exec killmenu kill
-bindsym --whole-window $mod+button2 kill
+bindsym $ww $mod+button2            kill
 bindsym $tc $mod+Shift+r            reload
 
 # ============================================================================ #
