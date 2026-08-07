@@ -5,5 +5,4 @@
 *.log
 *.lock
 secret.key
-
 apps/.config/yazi/plugins/
