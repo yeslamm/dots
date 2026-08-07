@@ -269,7 +269,7 @@ exec playerctld daemon
 exec $scripts/init-audio.sh
 exec bluelight on
 exec easyeffects --hide-window
-exec wayland-pipewire-idle-inhibit -q
+exec wayland-pipewire-idle-inhibit -d 10 -q
 
 exec wl-paste --type text --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
 exec wl-paste --type image --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
