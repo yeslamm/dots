@@ -9,9 +9,9 @@ bluetuith
 bluez
 bluez-obex
 bluez-utils
-breeze
 brightnessctl
 btop
+capitaine-cursors
 chafa
 clang
 cliphist
@@ -56,9 +56,9 @@ noto-fonts
 noto-fonts-cjk
 noto-fonts-emoji
 npm
-nwg-look
 otf-font-awesome
 ouch
+papirus-icon-theme
 pavucontrol
 perl-image-exiftool
 piper
@@ -100,7 +100,6 @@ tree
 ttf-amiri
 ttf-caladea
 ttf-carlito
-ttf-jetbrains-mono
 ttf-jetbrains-mono-nerd
 ttf-liberation
 ttf-ms-fonts
@@ -127,6 +126,7 @@ yazi
 yt-dlp
 zathura
 zathura-pdf-mupdf
+zip
 zoxide
 zram-generator
 zsh
