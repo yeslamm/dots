@@ -1,7 +1,6 @@
 [mgr]
 
 keymap = [
-  # --- Plugin Bindings ---
   { on = "l", run = "plugin --sync smart-enter", desc = "Enter the child directory, or open the file" },
   { on = "<Enter>", run = "plugin --sync smart-enter", desc = "Enter the child directory, or open the file" },
   { on = "F", run = "plugin smart-filter", desc = "Smart filter" },
@@ -9,7 +8,6 @@ keymap = [
     "g",
     "l",
   ], run = "plugin lazygit", desc = "Open LazyGit" },
-  # NEW: Add these two lines!
   { on = "O", run = "plugin open-with-cmd", desc = "Open with command" },
   { on = "C", run = "plugin ouch", desc = "Open ouch menu" },
   { on = [
@@ -18,9 +16,7 @@ keymap = [
   ], run = "plugin chmod", desc = "Chmod on selected files" },
   { on = "T", run = "plugin toggle-pane min-preview", desc = "Hide/Show preview pane" },
   { on = "M", run = "plugin toggle-pane max-preview", desc = "Maximize/Restore preview pane" },
-  # -----------------------
 
-  { on = "<Esc>", run = "escape", desc = "Exit visual mode..." },
   { on = "<Esc>", run = "escape", desc = "Exit visual mode, clear selection, or cancel search" },
   { on = "<C-[>", run = "escape", desc = "Exit visual mode, clear selection, or cancel search" },
   { on = "q", run = "quit", desc = "Quit the process" },
@@ -53,7 +49,6 @@ keymap = [
 
   # Navigation
   { on = "h", run = "leave", desc = "Back to the parent directory" },
-  { on = "l", run = "enter", desc = "Enter the child directory" },
 
   { on = "<Left>", run = "leave", desc = "Back to the parent directory" },
   { on = "<Right>", run = "enter", desc = "Enter the child directory" },
@@ -82,7 +77,6 @@ keymap = [
 
   # Operation
   { on = "o", run = "open", desc = "Open selected files" },
-  { on = "<Enter>", run = "open", desc = "Open selected files" },
   { on = "<S-Enter>", run = "open --interactive", desc = "Open selected files interactively" },
   { on = "y", run = "yank", desc = "Yank selected files (copy)" },
   { on = "x", run = "yank --cut", desc = "Yank selected files (cut)" },
