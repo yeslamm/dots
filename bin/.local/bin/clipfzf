@@ -4,30 +4,152 @@
 set -euo pipefail
 
 DB_PATH="${XDG_RUNTIME_DIR:-/run/user/${UID}}/cliphist.db"
-CH_CMD="cliphist -db-path $DB_PATH"
+SELF="$(realpath "$0")"
+
+ch_cmd() {
+    cliphist -db-path "$DB_PATH" "$@"
+}
+
+copy_item() {
+    local item="$1"
+    local bin_re="^[0-9]+"$'\t'"\[\[ binary data "
+
+    if [[ "$item" =~ $bin_re ]]; then
+        ch_cmd decode <<<"$item" | wl-copy --type image/png
+    else
+        ch_cmd decode <<<"$item" | wl-copy
+    fi
+}
 
 case "${1:-}" in
+list)
+    ch_cmd -preview-width 1000 list
+    ;;
+
 preview)
     row="${2:-}"
-    if echo "$row" | grep -vqP '^\d+\t\[\[ binary data .* \]\]'; then
-        echo "$row" | $CH_CMD decode
+    [[ -z "$row" ]] && exit 0
+
+    re="^[0-9]+"$'\t'"\[\[ binary data "
+
+    if [[ "$row" =~ $re ]]; then
+        ch_cmd decode <<<"$row" | chafa -s "${FZF_PREVIEW_COLUMNS:-80}x${FZF_PREVIEW_LINES:-25}"
     else
-        echo "$row" | $CH_CMD decode | chafa -f symbols -s "${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}"
+        ch_cmd decode <<<"$row"
     fi
     ;;
 
+delete)
+    if [[ -n "${2:-}" && -f "$2" ]]; then
+        while IFS= read -r line; do
+            [[ -n "$line" ]] && ch_cmd delete <<<"$line"
+        done <"$2"
+    elif [[ -n "${2:-}" ]]; then
+        ch_cmd delete <<<"$2"
+    fi
+    ;;
+
+wipe)
+    tput smcup 2>/dev/null || printf '\e[?1049h'
+    clear
+    echo ""
+    printf "  \e[31;1mWARNING: Wiping Entire Clipboard History\e[0m\n"
+    printf "  ─────────────────────────────────────────────────────────────\n"
+    printf "  Are you sure you want to permanently delete ALL entries? [y/N]: "
+
+    read -rsn 1 confirm </dev/tty
+    while read -rst 0.02 -n 100 </dev/tty; do :; done
+    echo ""
+
+    if [[ "${confirm:-}" =~ ^[Yy]$ ]]; then
+        ch_cmd wipe
+        printf "\n  \e[32m✔ Clipboard database wiped successfully.\e[0m\n"
+        sleep 0.5
+    fi
+
+    tput rmcup 2>/dev/null || printf '\e[?1049l'
+    ;;
+
+help)
+    tput smcup 2>/dev/null || printf '\e[?1049h'
+    clear
+    cat <<'EOF'
+
+  Cliphist-fzf Keybindings & Controls
+  ─────────────────────────────────────────────────────────────
+
+  Navigation & Selection
+    Enter              Copy selection to clipboard and exit
+    Tab / Shift-Tab    Toggle mark on current item
+    Ctrl-n / Ctrl-p    Move cursor down / up
+    Ctrl-u             Clear search query
+
+  List & View Controls
+    Ctrl-/              Toggle line wrap on list entries (shows full text)
+    Alt-/              Toggle preview window on / off
+    Alt-z              Zoom / Restore preview window
+    Alt-w              Toggle preview window line wrap
+
+  Item & History Management
+    Ctrl-x             Delete selected (or marked) item(s)
+    Ctrl-Delete        Wipe entire clipboard database (with confirm)
+    Ctrl-r             Reload clipboard history list
+
+  Preview Controls
+    Alt-j / Alt-k      Scroll preview 1 line down / up
+    Alt-d / Alt-u      Scroll preview half-page down / up
+
+  Help
+    F1                 Open this help screen
+    Esc / Ctrl-c       Close help / Quit picker
+
+  ─────────────────────────────────────────────────────────────
+EOF
+    printf "  \e[90mPress any key to return...\e[0m"
+
+    read -rsn 1 </dev/tty
+    while read -rst 0.02 -n 100 </dev/tty; do :; done
+
+    tput rmcup 2>/dev/null || printf '\e[?1049l'
+    ;;
+
 *)
-    id="$($CH_CMD -preview-width 1000 list | fzf \
-        --layout=reverse \
-        --delimiter '\t' \
-        --with-nth 2.. \
-        --preview-window=right:55%,wrap \
-        --bind "ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up" \
-        --preview "$(realpath "$0") preview {}")"
+    id="$(
+        "$SELF" list | fzf \
+            --multi \
+            --scheme=history \
+            --cycle \
+            --delimiter '\t' \
+            --with-nth 2.. \
+            --layout=reverse \
+            --highlight-line \
+            --info=inline-right \
+            --border=top \
+            --border-label=" Cliphist-fzf [F1: Help] " \
+            --preview "$SELF preview {}" \
+            --preview-window=right:55%,wrap-word \
+            --preview-border=sharp \
+            --bind "ctrl-j:ignore,ctrl-k:ignore" \
+            --bind "ctrl-/:toggle-wrap-word" \
+            --bind "alt-/:toggle-preview" \
+            --bind "alt-z:change-preview-window(85%|)+refresh-preview" \
+            --bind "alt-w:toggle-preview-wrap" \
+            --bind "alt-j:preview-down,alt-k:preview-up" \
+            --bind "alt-d:preview-half-page-down,alt-u:preview-half-page-up" \
+            --bind "ctrl-x:execute-silent($SELF delete {+f})+reload($SELF list)" \
+            --bind "ctrl-delete,alt-delete:execute($SELF wipe)+reload($SELF list)" \
+            --bind "ctrl-r:reload($SELF list)" \
+            --bind "f1:execute($SELF help)"
+    )"
 
     [[ -z "$id" ]] && exit 0
 
-    $CH_CMD decode <<<"$id" | wl-copy
+    if [[ "$(wc -l <<<"$id")" -eq 1 ]]; then
+        copy_item "$id"
+    else
+        while IFS= read -r item; do
+            [[ -n "$item" ]] && ch_cmd decode <<<"$item"
+        done <<<"$id" | wl-copy
+    fi
     ;;
-
 esac

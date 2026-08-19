@@ -243,7 +243,7 @@ bindsym $tc $mod+n                          exec makoctl dismiss
 bindsym $tc $mod+Shift+n                    exec makoctl invoke
 bindsym $tc $mod+i                          exec $scripts/idle-mgr.sh toggle
 
-bindsym $tc $mod+v                          exec $clip_term clipfzf
+bindsym $tc $mod+v                          exec swaymsg '[app_id="clipfzf"] kill' || $clip_term clipfzf
 
 bindsym $rl Print                           exec screenshot region-copy
 bindsym $rl Shift+Print                     exec screenshot fullscreen-copy
