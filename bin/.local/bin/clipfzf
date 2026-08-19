@@ -85,9 +85,9 @@ help)
     Ctrl-u             Clear search query
 
   List & View Controls
-    Ctrl-/              Toggle line wrap on list entries (shows full text)
+    Ctrl-/             Toggle line wrap entries list
     Alt-/              Toggle preview window on / off
-    Alt-z              Zoom / Restore preview window
+    Alt-z              Toggle preview window zoom
     Alt-w              Toggle preview window line wrap
 
   Item & History Management
