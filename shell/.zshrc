@@ -87,9 +87,27 @@ export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --exclude .git --exclude node_modules --exclude .cache --exclude venv --exclude dist'
-export FZF_DEFAULT_OPTS="--layout=reverse --bind 'ctrl-j:ignore,ctrl-k:ignore,ctrl-n:down,ctrl-p:up,ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up'"
-export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:500 {}' --preview-window=right:50%"
-export FZF_ALT_C_OPTS="--preview 'eza -lahG --color=always --icons=never {}' --preview-window=right:50%"
+
+export FZF_DEFAULT_OPTS="
+  --layout=reverse
+  --cycle
+  --highlight-line
+  --info=inline-right
+  --preview-window='right:50%,nowrap'
+  --preview-border=sharp
+  --bind 'ctrl-j:ignore,ctrl-k:ignore,ctrl-n:down,ctrl-p:up'
+  --bind 'alt-j:preview-down,alt-k:preview-up'
+  --bind 'alt-d:preview-half-page-down,alt-u:preview-half-page-up'
+  --bind 'alt-z:change-preview-window(85%|)+refresh-preview'
+  --bind 'alt-/:toggle-preview,alt-w:toggle-preview-wrap'
+  --bind 'ctrl-/:toggle-wrap-word'
+"
+
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:500 {}'"
+
+export FZF_ALT_C_COMMAND='fd --type d --strip-cwd-prefix --hidden --exclude .git --exclude node_modules --exclude .cache'
+export FZF_ALT_C_OPTS="--preview 'eza -lahG --color=always --icons=never {}'"
 
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
@@ -119,16 +137,16 @@ fznvim() {
     nvim "$@"
   else
     local file
-    file=$(fzf --preview='bat --color=always --style=numbers --line-range=:500 {}' \
-               --preview-window=right:50%)
+    file=$(fzf --border=top --preview='bat --color=always --style=numbers --line-range=:500 {}')
     [[ -n "$file" ]] && nvim "$file"
   fi
 }
 
 x() {
   if [ -f "$1" ]; then
-    fname="$(basename "$1")"
-    dname="${fname%%.*}"
+    local file="$(realpath "$1")"
+    local fname="$(basename "$file")"
+    local dname="${fname%%.*}"
 
     case "$fname" in
       *.tar.*) dname="${fname%%.tar.*}" ;;
@@ -145,23 +163,22 @@ x() {
 
     mkdir -p "$dname" && cd "$dname"
 
-    case "$1" in
-      *.tar.bz2)    tar xvjf "../$1"   ;;
-      *.tar.gz)     tar xvzf "../$1"   ;;
-      *.tar.xz)     tar xvJf "../$1"   ;;
-      *.tar.lzma)   tar --lzma -xvf "../$1" ;;
-      *.bz2)        bunzip2 "../$1"    ;;
-      *.rar)        unrar x "../$1"    ;;
-      *.gz)         gunzip -k "../$1"   ;;
-      *.tar)        tar xvf "../$1"    ;;
-      *.tbz2)       tar xvjf "../$1"   ;;
-      *.tgz)        tar xvzf "../$1"   ;;
-      *.zip)        unzip "../$1"      ;;
-      *.Z)          uncompress "../$1" ;;
-      *.7z)         7z x "../$1"       ;;
-      *)            echo "'$1' cannot be extracted via x()" ; cd .. ; rmdir "$dname" ;;
+    case "$file" in
+      *.tar.bz2)   tar xvjf "$file"    ;;
+      *.tar.gz)    tar xvzf "$file"    ;;
+      *.tar.xz)    tar xvJf "$file"    ;;
+      *.tar.lzma)  tar --lzma -xvf "$file" ;;
+      *.bz2)       bunzip2 "$file"     ;;
+      *.rar)       unrar x "$file"     ;;
+      *.gz)        gunzip -k "$file"   ;;
+      *.tar)       tar xvf "$file"     ;;
+      *.tbz2)      tar xvjf "$file"    ;;
+      *.tgz)       tar xvzf "$file"    ;;
+      *.zip)       unzip "$file"       ;;
+      *.Z)         uncompress "$file"  ;;
+      *.7z)        7z x "$file"        ;;
+      *)           echo "'$file' cannot be extracted via x()" ; cd .. ; rmdir "$dname" ;;
     esac
-    cd ..
   else
     echo "'$1' is not a valid file"
   fi
@@ -206,8 +223,16 @@ zstyle ':completion:*' menu no
 zstyle ':fzf-tab:*' group-format ''
 zstyle ':completion:*:descriptions' format ''
 
-zstyle ':fzf-tab:*' fzf-flags '--preview-window=right:50%'
-zstyle ':fzf-tab:*' fzf-bindings 'ctrl-j:ignore' 'ctrl-k:ignore' 'ctrl-n:down' 'ctrl-p:up' 'ctrl-d:preview-half-page-down' 'ctrl-u:preview-half-page-up'
+zstyle ':fzf-tab:*' fzf-flags \
+  '--preview-border=sharp' \
+  '--preview-window=right:50%,nowrap'
+
+zstyle ':fzf-tab:*' fzf-bindings \
+  'ctrl-j:ignore' 'ctrl-k:ignore' 'ctrl-n:down' 'ctrl-p:up' \
+  'alt-d:preview-half-page-down' 'alt-u:preview-half-page-up' \
+  'alt-z:change-preview-window(85%|)+refresh-preview' \
+  'alt-j:preview-down' 'alt-k:preview-up' \
+  'alt-/:toggle-preview' 'alt-w:toggle-preview-wrap-word'
 
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1a --color=always $realpath'
 zstyle ':fzf-tab:complete:z:*' fzf-preview 'eza -1a --color=always $realpath'

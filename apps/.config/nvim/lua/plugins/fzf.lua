@@ -7,6 +7,7 @@ return {
 
         fzf.setup {
             fzf_opts = {
+                ['--cycle'] = true,
                 ['--layout'] = 'default',
             },
 
@@ -18,6 +19,7 @@ return {
                     layout = 'vertical',
                     vertical = 'down:50%',
                     border = 'single',
+                    wrap = false,
                     winopts = {
                         number = true,
                         relativenumber = false,
@@ -28,8 +30,14 @@ return {
 
             keymap = {
                 builtin = {
-                    ['<C-d>'] = 'preview-page-down',
-                    ['<C-u>'] = 'preview-page-up',
+                    true,
+                    ['<M-d>'] = 'preview-page-down',
+                    ['<M-u>'] = 'preview-page-up',
+                    ['<M-j>'] = 'preview-down',
+                    ['<M-k>'] = 'preview-up',
+                    ['<M-/>'] = 'toggle-preview',
+                    ['<M-w>'] = 'toggle-preview-wrap',
+                    ['<M-z>'] = 'toggle-fullscreen',
                 },
                 fzf = {
                     true,
@@ -43,14 +51,12 @@ return {
             buffers = {
                 prompt = 'Buffers> ',
                 actions = {
-                    ['ctrl-d'] = false,
-                    ['ctrl-u'] = false,
                     ['ctrl-x'] = { fn = fzf.actions.buf_del, reload = true },
                 },
             },
 
             grep = {
-                rg_opts = '--column --line-number --no-heading --color=never --smart-case --hidden --max-columns=4096 --glob="!.git/" -e',
+                rg_opts = '--column --line-number --no-heading --color=always --smart-case --hidden --max-columns=4096 --glob="!.git/" -e',
                 rg_glob = true,
             },
 
@@ -66,8 +72,8 @@ return {
             fzf_colors = true,
 
             lsp = {
-                jump_to_single_result = true,
-                jump_to_single_result_action = require('fzf-lua.actions').file_edit,
+                jump1 = true,
+                jump1_action = fzf.actions.file_edit,
             },
         }
 
@@ -87,21 +93,12 @@ return {
         map('n', '<leader>sw', fzf.grep_cword, { desc = 'Current Word' })
         map('n', '<leader>sg', fzf.live_grep, { desc = 'Live Grep' })
         map('n', '<leader>sd', fzf.diagnostics_document, { desc = 'Diagnostics' })
+        map('n', '<leader>sh', fzf.help_tags, { desc = 'Help Tags' })
+        map('n', '<leader>sk', fzf.keymaps, { desc = 'Keymaps' })
         map('n', '<leader>s.', fzf.oldfiles, { desc = 'Recent Files' })
         map('n', '<leader><leader>', fzf.buffers, { desc = 'Buffers' })
         map('n', '<leader>/', fzf.blines, { desc = 'Fuzz Search Buffer' })
         map('n', '<leader>sr', fzf.registers, { desc = 'Registers' })
-
-        map('n', '<leader>vf', function()
-            fzf.files { cwd = '~/vault', prompt = 'Vault Files> ' }
-        end, { desc = 'Files' })
-
-        map('n', '<leader>vg', function()
-            fzf.live_grep {
-                cwd = '~/vault',
-                prompt = 'Vault Grep> ',
-            }
-        end, { desc = 'Grep' })
 
         map('n', '<leader>sn', function()
             fzf.files { cwd = vim.fn.stdpath 'config' }
