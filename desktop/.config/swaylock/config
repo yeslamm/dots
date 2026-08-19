@@ -4,7 +4,7 @@
 
 # --- Background & Text ---
 color=#000000
-font=JetBrains Mono
+font=JetBrainsMono NF
 
 # --- Indicator Geometry ---
 indicator-radius=60

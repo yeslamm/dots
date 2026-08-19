@@ -61,7 +61,7 @@ bindgesture swipe:3:right workspace next
 bindgesture swipe:3:left  workspace prev
 
 bindswitch $lk lid:on exec $scripts/lid-action.sh
-seat * xcursor_theme capitaine-cursors-r3 24
+seat * xcursor_theme capitaine-cursors-light 32
 seat * hide_cursor when-typing disable
 seat * fallback true
 mouse_warping output
@@ -83,8 +83,8 @@ titlebar_border_thickness 1
 title_align center
 
 exec {
-    gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors-r3'
-    gsettings set org.gnome.desktop.interface cursor-size 24
+    gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors-light'
+    gsettings set org.gnome.desktop.interface cursor-size 32
     gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 }
