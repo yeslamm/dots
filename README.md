@@ -32,7 +32,6 @@ git clone https://github.com/r3dr3d007/dots ~/dots
 # Install yay AUR helper
 git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
 cd /tmp/yay-bin && makepkg -si
-
 ```
 
 Install packages from the pkglists:
@@ -40,12 +39,14 @@ Install packages from the pkglists:
 ```bash
 cd ~/dots
 
-# 1. Install core dependencies
-grep -vE '^\s*#|^\s*$' pkglist.txt | yay -S --needed -
+# Profile A: Headless / CLI only
+grep -h -vE '^\s*#|^\s*$' pkglists/{base,apps}.txt | sort -u | yay -S --needed -
 
-# 2. (Optional) Install gaming related packages
-grep -vE '^\s*#|^\s*$' gaming_pkglist.txt | yay -S --needed -
+# Profile B: Full Desktop Workstation (Wayland / Sway)
+grep -h -vE '^\s*#|^\s*$' pkglists/{base,apps,desktop,fonts}.txt | sort -u | yay -S --needed -
 
+# Optional: Gaming
+grep -h -vE '^\s*#|^\s*$' pkglists/gaming.txt | sort -u | yay -S --needed -
 ```
 
 ---
@@ -57,7 +58,6 @@ Deploy system-level configs for key remapping (`keyd`), power handling (`systemd
 ```bash
 cd ~/dots
 make sysconfigs
-
 ```
 
 > **Note:** Reboot or log out after deployment for `keyd` group permissions and Sched-EXT state to finalize.
@@ -66,54 +66,30 @@ make sysconfigs
 
 ### 3. Stowing Configurations
 
-Create common target directories first so Stow symlinks individual configuration files instead of whole directories:
-
-```bash
-mkdir -p ~/.config ~/.local/share ~/.local/state ~/.local/bin ~/.icons
-
-```
-
-Stow the profiles relevant to your machine:
+Stow the configuration profile matching your machine:
 
 #### Profile A: Server / Headless CLI (No GUI)
 
 ```bash
 cd ~/dots
-stow -t ~ -R bin shell apps dev
-
+make server
 ```
 
 #### Profile B: Full Desktop Workstation (Wayland / Sway)
 
 ```bash
 cd ~/dots
-stow -t ~ -R bin shell apps dev desktop
-
+make desktop
 ```
 
 ---
 
 ## Management
 
-Run Stow commands from any directory by passing `-d ~/dots`:
+Run maintenance commands from `~/dots`:
 
-**Preview changes (Dry Run):**
-
-```bash
-stow -d ~/dots -t ~ -nvR bin shell apps dev desktop
-
-```
-
-**Re-stow all packages:**
-
-```bash
-stow -d ~/dots -t ~ -R bin shell apps dev desktop
-
-```
-
-**Remove symlinks (Unstow):**
-
-```bash
-stow -d ~/dots -t ~ -D bin shell apps dev desktop
-
-```
+* **Preview changes (Dry Run):** `make dry-run`
+* **Re-stow desktop profile:** `make desktop`
+* **Remove symlinks (Unstow):** `make unstow`
+* **Update /etc system configs:** `make sysconfigs`
+* **View all commands:** `make` or `make help`
