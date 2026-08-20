@@ -11,12 +11,8 @@ max_height = 1200
 wrap = "yes"
 image_filter = "lanczos3"
 
-[opener]
-edit = [{ run = 'nvim "$@"', block = true, desc = "Edit" }]
-
 [plugin]
 prepend_previewers = [
-  { url = "*.md", run = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"' },
   { mime = "audio/*", run = "mediainfo" },
   { mime = "video/*", run = "mediainfo" },
 ]
