@@ -23,10 +23,5 @@ use = "yazi-rs/plugins:chmod"
 rev = "efa4d79"
 hash = "87472b05a8c420100f6a2b9cde1e7746"
 
-[[plugin.deps]]
-use = "yazi-rs/plugins:toggle-pane"
-rev = "efa4d79"
-hash = "5b2fbef7d1513ce38ff72623a071a5e"
-
 [flavor]
 deps = []

@@ -13,7 +13,7 @@ python-pipx
 python-pynvim
 shellcheck
 tmux
-yazi-git
+yazi
 yt-dlp
 zathura
 zathura-pdf-mupdf
