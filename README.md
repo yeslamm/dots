@@ -28,8 +28,21 @@ sudo pacman -S --needed base-devel git stow
 
 # Clone dotfiles
 git clone https://github.com/r3dr3d007/dots ~/dots
+```
 
-# Install yay AUR helper
+Add CachyOS repositories (for optimized kernels, `scx_lavd`, and `x86-64-v4` packages):
+
+```bash
+cd /tmp
+curl -O https://mirror.cachyos.org/cachyos-repo.tar.xz
+tar -xvf cachyos-repo.tar.xz
+cd cachyos-repo && sudo ./cachyos-repo.sh
+cd ~/dots
+```
+
+Install the `yay` AUR helper:
+
+```bash
 git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
 cd /tmp/yay-bin && makepkg -si
 ```
@@ -45,7 +58,8 @@ grep -h -vE '^\s*#|^\s*$' pkglists/{base,apps}.txt | sort -u | yay -S --needed -
 # Profile B: Full Desktop Workstation (Wayland / Sway)
 grep -h -vE '^\s*#|^\s*$' pkglists/{base,apps,desktop,fonts}.txt | sort -u | yay -S --needed -
 
-# Optional: Gaming
+# Enhancements: CachyOS optimizations & Gaming (Optional)
+grep -h -vE '^\s*#|^\s*$' pkglists/cachyos.txt | sort -u | yay -S --needed -
 grep -h -vE '^\s*#|^\s*$' pkglists/gaming.txt | sort -u | yay -S --needed -
 ```
 
@@ -53,14 +67,22 @@ grep -h -vE '^\s*#|^\s*$' pkglists/gaming.txt | sort -u | yay -S --needed -
 
 ### 2. System Configuration
 
-Deploy system-level configs for key remapping (`keyd`), power handling (`systemd-logind`), and CPU scheduling (`scx_lavd`):
+Deploy system-level configurations to `/etc` (key remapping with `keyd`, power handling via `systemd-logind`, `scx_lavd` CPU scheduling, dynamic 16G `zram` + MGLRU memory sysctls, and `cgroup` user delegation):
 
 ```bash
 cd ~/dots
 make sysconfigs
 ```
 
-> **Note:** Reboot or log out after deployment for `keyd` group permissions and Sched-EXT state to finalize.
+#### Optional: Kernel Parameters (PCIe Power Savings)
+
+To enforce Active State Power Management on NVMe and Wi-Fi PCIe lanes (reducing idle battery draw by 1W–2W), append the following to the `options` line in your bootloader entry (e.g. `/boot/loader/entries/cachyos.conf`):
+
+```text
+pcie_aspm=force pcie_aspm.policy=powersave
+```
+
+> **Note:** Reboot after deployment for `keyd` group permissions, PCIe ASPM policy, and Sched-EXT daemons to finalize.
 
 ---
 

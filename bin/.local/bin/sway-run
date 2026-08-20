@@ -26,12 +26,8 @@ export GDK_BACKEND="wayland,x11,*"
 export QT_QPA_PLATFORM="wayland;xcb"
 export QT_QPA_PLATFORMTHEME=qt5ct
 export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
-export ELECTRON_OZONE_PLATFORM_HINT=auto
-export ELECTRON_ENABLE_FEATURES="VaapiVideoDecoder,UseOzonePlatform"
-export _JAVA_AWT_WM_NONREPARENTING=1
 
 export LIBVA_DRIVER_NAME=radeonsi
-export VDPAU_DRIVER=radeonsi
 export AMD_VULKAN_ICD=radv
 
 export WLR_RENDERER=vulkan

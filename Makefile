@@ -1,32 +1,47 @@
 SHELL := /bin/bash
 DOTS_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
-.PHONY: all help sysconfigs services keyd logind scx vconsole dirs desktop stow-desktop server stow-server dry-run unstow
+.PHONY: all help sysconfigs services zram cgroups keyd logind scx vconsole dirs desktop stow-desktop server stow-server dry-run unstow
 
 all: help
 
 help:
 	@echo "Dotfiles Management Commands:"
 	@echo ""
-	@echo "  make sysconfigs    - Deploy all /etc configs & enable system services"
-	@echo "  make desktop       - Stow full Wayland/Sway desktop workstation profile"
-	@echo "  make server        - Stow headless / CLI server profile (no GUI)"
-	@echo "  make dry-run       - Preview stow symlink operations without touching files"
-	@echo "  make unstow        - Remove all desktop stow symlinks"
-	@echo "  make dirs          - Ensure required target XDG directories exist"
+	@echo "  make sysconfigs     - Deploy all /etc configs & enable system services"
+	@echo "  make desktop        - Stow full Wayland/Sway desktop workstation profile"
+	@echo "  make server         - Stow headless / CLI server profile (no GUI)"
+	@echo "  make dry-run        - Preview stow symlink operations without touching files"
+	@echo "  make unstow         - Remove all desktop stow symlinks"
+	@echo "  make dirs           - Ensure required target XDG directories exist"
 	@echo ""
 
 # ==============================================================================
 # System Configurations (/etc) - Requires sudo
 # ==============================================================================
 
-sysconfigs: keyd logind scx vconsole services
+sysconfigs: keyd logind scx vconsole zram cgroups services
 	@echo "==> All system configurations and services deployed successfully."
 
 services:
-	@echo "==> Enabling system and hardware daemons..."
+	@echo "==> Enabling system daemons..."
 	@sudo systemctl daemon-reload
-	@sudo systemctl enable --now bluetooth.service power-profiles-daemon.service asusd.service ufw.service
+	@for s in bluetooth.service power-profiles-daemon.service ufw.service ananicy-cpp.service asusd.service; do \
+		if systemctl cat "$$s" &>/dev/null; then \
+			sudo systemctl enable --now "$$s"; \
+		fi; \
+	done
+
+zram:
+	@echo "==> Deploying ZRAM & Kernel Memory configurations..."
+	@sudo install -Dm644 sysconfigs/zram/zram-generator.conf /etc/systemd/zram-generator.conf
+	@sudo install -Dm644 sysconfigs/sysctl/99-memory.conf /etc/sysctl.d/99-memory.conf
+	@sudo sysctl --system
+
+cgroups:
+	@echo "==> Deploying systemd user cgroup delegation..."
+	@sudo install -Dm644 sysconfigs/systemd/user-delegate.conf /etc/systemd/system/user@.service.d/delegate.conf
+	@sudo systemctl daemon-reload
 
 keyd:
 	@echo "==> Deploying keyd configuration..."

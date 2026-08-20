@@ -30,7 +30,6 @@ pulsemixer
 reflector
 ripgrep
 rsync
-scx-scheds
 sof-firmware
 stow
 strace
