@@ -83,6 +83,7 @@ reflector
 ripgrep
 rsync
 satty
+scx-scheds
 shellcheck
 slurp
 sof-firmware

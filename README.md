@@ -52,22 +52,15 @@ grep -vE '^\s*#|^\s*$' gaming_pkglist.txt | yay -S --needed -
 
 ### 2. System Configuration
 
-Copy system-level configs for key remapping (`keyd`) and power management (`systemd-logind`):
+Deploy system-level configs for key remapping (`keyd`), power handling (`systemd-logind`), and CPU scheduling (`scx_lavd`):
 
 ```bash
-# Copy configs to /etc
-sudo mkdir -p /etc/systemd/logind.conf.d /etc/keyd
-sudo cp ~/dots/sysconfigs/systemd/login.conf /etc/systemd/logind.conf.d/login.conf
-sudo cp ~/dots/sysconfigs/keyd/default.conf /etc/keyd/default.conf
-
-# Enable keyd service and grant user permissions
-sudo systemctl daemon-reload
-sudo systemctl enable --now keyd
-sudo usermod -aG keyd $USER
+cd ~/dots
+make sysconfigs
 
 ```
 
-> **Note:** Reboot or log out after adding your user to the `keyd` group for permissions to take effect.
+> **Note:** Reboot or log out after deployment for `keyd` group permissions and Sched-EXT state to finalize.
 
 ---
 

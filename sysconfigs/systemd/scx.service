@@ -1,0 +1,13 @@
+[Unit]
+Description=sched_ext CPU Scheduler
+ConditionPathExists=/sys/kernel/sched_ext/state
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/default/scx
+ExecStart=/bin/sh -c 'exec ${SCX_SCHEDULER:-scx_lavd} ${SCX_FLAGS:---autopower}'
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
