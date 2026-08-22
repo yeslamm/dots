@@ -27,10 +27,10 @@ services:
 	@echo "==> Enabling system daemons..."
 	@sudo systemctl daemon-reload
 	@for s in bluetooth.service power-profiles-daemon.service ufw.service ananicy-cpp.service asusd.service; do \
-		if systemctl cat "$$s" &>/dev/null; then \
-			sudo systemctl enable --now "$$s"; \
-		fi; \
-	done
+	if systemctl cat "$$s" &>/dev/null; then \
+		sudo systemctl enable --now "$$s" 2>/dev/null || sudo systemctl start "$$s"; \
+	fi; \
+done
 
 zram:
 	@echo "==> Deploying ZRAM & Kernel Memory configurations..."
