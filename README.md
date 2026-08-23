@@ -74,12 +74,12 @@ cd ~/dots
 make sysconfigs
 ```
 
-#### Optional: Kernel Parameters (PCIe Power Savings)
+#### Optional: Kernel Parameters (PCIe Power Savings & Low Latency)
 
-To enforce Active State Power Management on NVMe and Wi-Fi PCIe lanes (reducing idle battery draw by 1W–2W), append the following to the `options` line in your bootloader entry (e.g. `/boot/loader/entries/cachyos.conf`):
+Append the following to the `options` line in your bootloader entry (e.g. `/boot/loader/entries/cachyos.conf`):
 
 ```text
-pcie_aspm.policy=powersave
+pcie_aspm.policy=powersave nowatchdog
 ```
 
 > **Note:** Reboot after deployment for `keyd` group permissions, PCIe ASPM policy, and Sched-EXT daemons to finalize.
