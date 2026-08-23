@@ -386,7 +386,7 @@ mode "EXEC" {
     bindsym $tc r                  exec powermenu reboot; mode "default"
     bindsym $tc p                  exec powermenu poweroff; mode "default"
 
-    bindsym $tc t                  exec tearing; mode "default"
+    bindsym $tc t                  exec tearing -n; mode "default"
     bindsym $tc n                  exec bluelight toggle; mode "default"
     bindsym $tc v                  exec swaymsg '[app_id="pulsemixer"] scratchpad show' || $pulse_term pulsemixer; mode "default"
 

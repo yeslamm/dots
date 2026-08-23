@@ -3,6 +3,15 @@
 
 set -euo pipefail
 
+NOTIFY=false
+for arg in "$@"; do
+    case "$arg" in
+    -n | --notify | notify)
+        NOTIFY=true
+        ;;
+    esac
+done
+
 STATE_FILE="${XDG_RUNTIME_DIR:-/run/user/${UID}}/tear-flag"
 
 CURRENT_STATE="off"
@@ -11,9 +20,9 @@ CURRENT_STATE="off"
 if [[ "$CURRENT_STATE" == "off" ]]; then
     swaymsg "output * allow_tearing yes; output * max_render_time off"
     echo "on" >"$STATE_FILE"
-    notify-send -t 2000 -h string:x-canonical-private-synchronous:vsync "Allow Tearing: ON"
+    [[ "$NOTIFY" == true ]] && notify-send -t 2000 -h string:x-canonical-private-synchronous:vsync "Allow Tearing: ON"
 else
     swaymsg "output * allow_tearing no; output * max_render_time 3"
     echo "off" >"$STATE_FILE"
-    notify-send -t 2000 -h string:x-canonical-private-synchronous:vsync "Allow Tearing: OFF"
+    [[ "$NOTIFY" == true ]] && notify-send -t 2000 -h string:x-canonical-private-synchronous:vsync "Allow Tearing: OFF"
 fi
