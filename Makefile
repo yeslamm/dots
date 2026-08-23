@@ -27,15 +27,15 @@ services:
 	@echo "==> Enabling system daemons..."
 	@sudo systemctl daemon-reload
 	@for s in bluetooth.service power-profiles-daemon.service ufw.service ananicy-cpp.service asusd.service; do \
-	if systemctl cat "$$s" &>/dev/null; then \
-		sudo systemctl enable --now "$$s" 2>/dev/null || sudo systemctl start "$$s"; \
-	fi; \
-done
+		if systemctl cat "$$s" &>/dev/null; then \
+			sudo systemctl enable --now "$$s" 2>/dev/null || sudo systemctl start "$$s"; \
+		fi; \
+	done
 
 zram:
 	@echo "==> Deploying ZRAM & Kernel Memory configurations..."
-	@sudo install -Dm644 sysconfigs/zram/zram-generator.conf /etc/systemd/zram-generator.conf
-	@sudo install -Dm644 sysconfigs/sysctl/99-memory.conf /etc/sysctl.d/99-memory.conf
+	@sudo install -Dm644 sysconfigs/memory/zram-generator.conf /etc/systemd/zram-generator.conf
+	@sudo install -Dm644 sysconfigs/memory/99-memory.conf /etc/sysctl.d/99-memory.conf
 	@sudo sysctl --system
 
 cgroups:
@@ -52,12 +52,12 @@ keyd:
 
 logind:
 	@echo "==> Deploying systemd-logind configuration..."
-	@sudo install -Dm644 sysconfigs/systemd/login.conf /etc/systemd/logind.conf.d/login.conf
+	@sudo install -Dm644 sysconfigs/systemd/lid.conf /etc/systemd/logind.conf.d/lid.conf
 
 scx:
 	@echo "==> Deploying Sched-EXT (scx_lavd) configuration..."
 	@sudo install -Dm644 sysconfigs/scx/scx /etc/default/scx
-	@sudo install -Dm644 sysconfigs/systemd/scx.service /etc/systemd/system/scx.service
+	@sudo install -Dm644 sysconfigs/scx/scx.service /etc/systemd/system/scx.service
 	@sudo systemctl daemon-reload
 	@sudo systemctl enable --now scx.service
 
