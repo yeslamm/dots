@@ -1,117 +1,116 @@
 # dots
 
-Personal Arch Linux dotfiles tailored for Wayland (`sway`) and terminal-centric workflows, managed with GNU Stow.
+Personal Arch Linux dotfiles managed with GNU Stow, configured for Sway and terminal-driven workflows.
 
 ---
 
-## Repository Structure
+## Structure
 
-Configurations are split into modular Stow packages:
-
-* **`bin/`** — Executable user scripts (`~/.local/bin`)
-* **`shell/`** — Zsh runtime, Powerlevel10k, `.gitconfig`, and XDG defaults
-* **`apps/`** — CLI applications (`nvim`, `tmux`, `yazi`, `lazygit`, `fastfetch`, `swayimg`, `aria2`)
-* **`dev/`** — Formatters and linters (`clang-format`, `prettier`, `stylua`, `taplo`)
-* **`desktop/`** — Wayland desktop stack (`sway`, `waybar`, `foot`, `mako`, `fuzzel`, `easyeffects`)
+* **`apps/`** — CLI tools (`nvim`, `tmux`, `yazi`, `lazygit`, `aria2`, `fastfetch`)
+* **`bin/`** — User scripts (`~/.local/bin`)
+* **`desktop/`** — Wayland stack (`sway`, `waybar`, `foot`, `mako`, `fuzzel`, `easyeffects`)
+* **`dev/`** — Linters and formatters (`clang-format`, `prettier`, `stylua`, `taplo`)
+* **`shell/`** — Zsh, Powerlevel10k, `.gitconfig`, and XDG paths
+* **`sysconfigs/`** — System configs deployed via Makefile (`sysctl`, `zram`, `logind`, `scx`, `keyd`, `cgroups`)
 
 ---
 
-## Installation
+## Quickstart
 
-### 1. Prerequisites & Packages
-
-Install base build tools, GNU Stow, and clone this repository:
+### 1. Prerequisites & CachyOS Repos
 
 ```bash
-# Base tools and Stow
+# Base tools
 sudo pacman -S --needed base-devel git stow
 
-# Clone dotfiles
+# Dotfiles
 git clone https://github.com/r3dr3d007/dots ~/dots
 ```
 
-Add CachyOS repositories (for optimized kernels, `scx_lavd`, and `x86-64-v4` packages):
+Add CachyOS repositories:
 
 ```bash
-cd /tmp
-curl -O https://mirror.cachyos.org/cachyos-repo.tar.xz
-tar -xvf cachyos-repo.tar.xz
-cd cachyos-repo && sudo ./cachyos-repo.sh
-cd ~/dots
+curl -s https://mirror.cachyos.org/cachyos-repo.tar.xz | tar -xJ -C /tmp
+sudo /tmp/cachyos-repo/cachyos-repo.sh
 ```
 
-Install the `yay` AUR helper:
+For Zen 4/5 hardware, place the `znver4` repos at the top of `/etc/pacman.conf`:
 
-```bash
-git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
-cd /tmp/yay-bin && makepkg -si
+```ini
+[cachyos-znver4]
+Include = /etc/pacman.d/cachyos-v4-mirrorlist
+
+[cachyos-core-znver4]
+Include = /etc/pacman.d/cachyos-v4-mirrorlist
+
+[cachyos-extra-znver4]
+Include = /etc/pacman.d/cachyos-v4-mirrorlist
+
+[cachyos]
+Include = /etc/pacman.d/cachyos-mirrorlist
 ```
 
-Install packages from the pkglists:
+Sync and install `yay`:
 
 ```bash
-cd ~/dots
-
-# Profile A: Headless / CLI only
-grep -h -vE '^\s*#|^\s*$' pkglists/{base,apps}.txt | sort -u | yay -S --needed -
-
-# Profile B: Full Desktop Workstation (Wayland / Sway)
-grep -h -vE '^\s*#|^\s*$' pkglists/{base,apps,desktop,fonts}.txt | sort -u | yay -S --needed -
-
-# Enhancements: CachyOS optimizations & Gaming (Optional)
-grep -h -vE '^\s*#|^\s*$' pkglists/cachyos.txt | sort -u | yay -S --needed -
-grep -h -vE '^\s*#|^\s*$' pkglists/gaming.txt | sort -u | yay -S --needed -
+sudo pacman -Syu yay
 ```
 
 ---
 
-### 2. System Configuration
+### 2. Package Installation
 
-Deploy system-level configurations to `/etc` (key remapping with `keyd`, power handling via `systemd-logind`, `scx_lavd` CPU scheduling, dynamic 16G `zram` + MGLRU memory sysctls, and `cgroup` user delegation):
+Install packages for your target setup:
 
 ```bash
 cd ~/dots
-make sysconfigs
+
+# Profile A: Minimal / Headless
+grep -h -vE '^\s*#|^\s*$' pkglists/{base,apps,cachyos}.txt | sort -u | yay -S --needed -
+
+# Profile B: Full Desktop
+grep -h -vE '^\s*#|^\s*$' pkglists/{base,apps,desktop,fonts,cachyos}.txt | sort -u | yay -S --needed -
+
+# Optional: Gaming stack
+grep -h -vE '^\s*#|^\s*$' pkglists/gaming.txt | sort -u | yay -S --needed -
+
+# Verify znver4 packages installed from CachyOS repos
+pacman -Sl cachyos-znver4 cachyos-core-znver4 cachyos-extra-znver4 | grep -Fc '[installed]'
 ```
 
-#### Optional: Kernel Parameters (PCIe Power Savings & Low Latency)
+---
 
-Append the following to the `options` line in your bootloader entry (e.g. `/boot/loader/entries/cachyos.conf`):
+### 3. Deploy & Stow
+
+```bash
+cd ~/dots
+
+# 1. Deploy system configs to /etc (zram, sysctl, scx, keyd, logind)
+make sysconfigs
+
+# 2. Stow user dotfiles
+make desktop   # or `make minimal` for CLI only
+```
+
+#### Optional: Bootloader Parameters
+
+Append to `/boot/loader/entries/*.conf` options line:
 
 ```text
 pcie_aspm.policy=powersave nowatchdog
 ```
 
-> **Note:** Reboot after deployment for `keyd` group permissions, PCIe ASPM policy, and Sched-EXT daemons to finalize.
+*Reboot after initial setup.*
 
 ---
 
-### 3. Stowing Configurations
+## Makefile Targets
 
-Stow the configuration profile matching your machine:
+| Command | Action |
+| --- | --- |
+| `make desktop` | Stow full desktop environment |
+| `make minimal` | Stow headless CLI utilities |
+| `make sysconfigs` | Install system-level `/etc` configurations |
+| `make dry-run` | Preview stow symlinks without writing |
+| `make unstow` | Remove active user symlinks |
 
-#### Profile A: Server / Headless CLI (No GUI)
-
-```bash
-cd ~/dots
-make server
-```
-
-#### Profile B: Full Desktop Workstation (Wayland / Sway)
-
-```bash
-cd ~/dots
-make desktop
-```
-
----
-
-## Management
-
-Run maintenance commands from `~/dots`:
-
-* **Preview changes (Dry Run):** `make dry-run`
-* **Re-stow desktop profile:** `make desktop`
-* **Remove symlinks (Unstow):** `make unstow`
-* **Update /etc system configs:** `make sysconfigs`
-* **View all commands:** `make` or `make help`
