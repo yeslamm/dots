@@ -1,19 +1,19 @@
 SHELL := /bin/bash
 DOTS_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
-.PHONY: all help sysconfigs services zram cgroups keyd logind scx vconsole dirs desktop stow-desktop server stow-server dry-run unstow
+.PHONY: all help sysconfigs services zram cgroups keyd logind scx vconsole dirs desktop stow-desktop minimal stow-core dry-run unstow
 
 all: help
 
 help:
 	@echo "Dotfiles Management Commands:"
 	@echo ""
-	@echo "  make sysconfigs     - Deploy all /etc configs & enable system services"
-	@echo "  make desktop        - Stow full Wayland/Sway desktop workstation profile"
-	@echo "  make server         - Stow headless / CLI server profile (no GUI)"
-	@echo "  make dry-run        - Preview stow symlink operations without touching files"
-	@echo "  make unstow         - Remove all desktop stow symlinks"
-	@echo "  make dirs           - Ensure required target XDG directories exist"
+	@echo "  make sysconfigs      - Deploy all /etc configs & enable system services"
+	@echo "  make desktop         - Stow full Wayland/Sway desktop workstation profile"
+	@echo "  make minimal         - Stow core CLI profile (terminal & dev tools only)"
+	@echo "  make dry-run         - Preview stow symlink operations without touching files"
+	@echo "  make unstow          - Remove all desktop stow symlinks"
+	@echo "  make dirs            - Ensure required target XDG directories exist"
 	@echo ""
 
 # ==============================================================================
@@ -80,9 +80,9 @@ stow-desktop: dirs
 	@echo "==> Stowing Full Desktop Profile..."
 	@stow -d $(DOTS_DIR) -t $$HOME -R bin shell apps dev desktop
 
-server: stow-server
-stow-server: dirs
-	@echo "==> Stowing Headless / CLI Profile..."
+minimal: stow-core
+stow-core: dirs
+	@echo "==> Stowing Minimal / Core Profile..."
 	@stow -d $(DOTS_DIR) -t $$HOME -R bin shell apps dev
 
 dry-run: dirs
