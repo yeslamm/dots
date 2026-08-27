@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 DOTS_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
-.PHONY: all help sysconfigs services zram cgroups keyd logind scx vconsole dirs desktop stow-desktop minimal stow-core dry-run unstow
+.PHONY: all help sysconfigs services zram cgroups keyd logind scx vconsole pipewire dirs desktop stow-desktop minimal stow-core dry-run unstow
 
 all: help
 
@@ -17,63 +17,56 @@ help:
 	@echo ""
 
 # ==============================================================================
-# System Configurations (/etc) - Requires sudo
+# System Configurations (/etc)
 # ==============================================================================
 
-sysconfigs: keyd logind scx vconsole zram cgroups services
-	@echo "==> All system configurations and services deployed successfully."
-
-services:
-	@echo "==> Enabling system daemons..."
-	@sudo systemctl daemon-reload
-	@for s in bluetooth.service power-profiles-daemon.service ufw.service ananicy-cpp.service asusd.service; do \
-		if systemctl cat "$$s" &>/dev/null; then \
-			sudo systemctl enable --now "$$s" 2>/dev/null || sudo systemctl start "$$s"; \
-		fi; \
-	done
+sysconfigs: zram cgroups keyd logind scx vconsole pipewire services
 
 zram:
-	@echo "==> Deploying ZRAM & Kernel Memory configurations..."
-	@sudo install -Dm644 sysconfigs/memory/zram-generator.conf /etc/systemd/zram-generator.conf
-	@sudo install -Dm644 sysconfigs/memory/99-memory.conf /etc/sysctl.d/99-memory.conf
-	@sudo sysctl --system
+	@echo "==> Configuring zram & memory sysctls..."
+	@sudo install -Dm644 $(DOTS_DIR)/sysconfigs/memory/zram-generator.conf /etc/systemd/zram-generator.conf
+	@sudo install -Dm644 $(DOTS_DIR)/sysconfigs/memory/99-memory.conf /etc/sysctl.d/99-memory.conf
+	@sudo sysctl --system > /dev/null
 
 cgroups:
-	@echo "==> Deploying systemd user cgroup delegation..."
-	@sudo install -Dm644 sysconfigs/systemd/user-delegate.conf /etc/systemd/system/user@.service.d/delegate.conf
+	@echo "==> Configuring systemd user cgroup delegation..."
+	@sudo install -Dm644 $(DOTS_DIR)/sysconfigs/systemd/user-delegate.conf /etc/systemd/system/user@.service.d/delegate.conf
 	@sudo systemctl daemon-reload
 
 keyd:
-	@echo "==> Deploying keyd configuration..."
-	@sudo install -Dm644 sysconfigs/keyd/default.conf /etc/keyd/default.conf
-	@sudo systemctl daemon-reload
-	@sudo systemctl enable --now keyd.service
-	@sudo usermod -aG keyd $$USER
+	@echo "==> Deploying keyd hardware mapping..."
+	@sudo install -Dm644 $(DOTS_DIR)/sysconfigs/keyd/default.conf /etc/keyd/default.conf
 
 logind:
-	@echo "==> Deploying systemd-logind configuration..."
-	@sudo install -Dm644 sysconfigs/systemd/lid.conf /etc/systemd/logind.conf.d/lid.conf
+	@echo "==> Configuring systemd-logind power handling..."
+	@sudo install -Dm644 $(DOTS_DIR)/sysconfigs/systemd/lid.conf /etc/systemd/logind.conf.d/lid.conf
 
 scx:
-	@echo "==> Deploying Sched-EXT (scx_lavd) configuration..."
-	@sudo install -Dm644 sysconfigs/scx/scx /etc/default/scx
-	@sudo install -Dm644 sysconfigs/scx/scx.service /etc/systemd/system/scx.service
+	@echo "==> Deploying scx scheduler service..."
+	@sudo install -Dm644 $(DOTS_DIR)/sysconfigs/scx/scx /etc/default/scx
+	@sudo install -Dm644 $(DOTS_DIR)/sysconfigs/scx/scx.service /etc/systemd/system/scx.service
 	@sudo systemctl daemon-reload
-	@sudo systemctl enable --now scx.service
 
 vconsole:
-	@if [ -f sysconfigs/vconsole/vconsole.conf ]; then \
-		echo "==> Deploying vconsole (TTY font) configuration..."; \
-		sudo install -Dm644 sysconfigs/vconsole/vconsole.conf /etc/vconsole.conf; \
-	fi
+	@echo "==> Deploying vconsole font & keymap settings..."
+	@sudo install -Dm644 $(DOTS_DIR)/sysconfigs/vconsole/vconsole.conf /etc/vconsole.conf
+
+pipewire:
+	@echo "==> Installing system-wide PipeWire Dolby Atmos IRS impulse..."
+	@sudo install -Dm644 $(DOTS_DIR)/sysconfigs/pipewire/Dolby_Atmos_Default.irs /etc/pipewire/Dolby_Atmos_Default.irs
+
+services:
+	@echo "==> Enabling system services..."
+	@sudo systemctl enable --now keyd.service 2>/dev/null || true
+	@sudo systemctl enable --now scx.service 2>/dev/null || true
 
 # ==============================================================================
-# User Stow Profiles ($HOME)
+# User Stow Packages ($HOME)
 # ==============================================================================
 
 dirs:
-	@echo "==> Initializing target XDG directories..."
-	@mkdir -p $$HOME/.config $$HOME/.local/share $$HOME/.local/state $$HOME/.local/bin $$HOME/.icons
+	@echo "==> Creating required XDG base directories..."
+	@mkdir -p $$HOME/.config $$HOME/.local/bin $$HOME/.local/share $$HOME/.cache $$HOME/.icons
 
 desktop: stow-desktop
 stow-desktop: dirs
@@ -86,9 +79,9 @@ stow-core: dirs
 	@stow -d $(DOTS_DIR) -t $$HOME -R bin shell apps dev
 
 dry-run: dirs
-	@echo "==> Simulating Desktop Stow (Dry Run)..."
+	@echo "==> Simulating Stow (Dry Run)..."
 	@stow -d $(DOTS_DIR) -t $$HOME -nvR bin shell apps dev desktop
 
 unstow:
-	@echo "==> Unstowing all packages..."
+	@echo "==> Removing Stow symlinks..."
 	@stow -d $(DOTS_DIR) -t $$HOME -D bin shell apps dev desktop

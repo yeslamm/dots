@@ -17,6 +17,7 @@ jq
 keyd
 libva-utils
 man-db
+man-pages
 networkmanager
 nmtui-go
 noise-suppression-for-voice
