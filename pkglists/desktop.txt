@@ -7,7 +7,6 @@ brightnessctl
 capitaine-cursors
 chafa
 cliphist
-easyeffects
 file-roller
 firefox
 foot

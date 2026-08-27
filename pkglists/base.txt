@@ -19,6 +19,7 @@ libva-utils
 man-db
 networkmanager
 nmtui-go
+noise-suppression-for-voice
 ouch
 pipewire
 pipewire-alsa
