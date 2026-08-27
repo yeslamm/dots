@@ -36,6 +36,7 @@ cgroups:
 keyd:
 	@echo "==> Deploying keyd hardware mapping..."
 	@sudo install -Dm644 $(DOTS_DIR)/sysconfigs/keyd/default.conf /etc/keyd/default.conf
+	@sudo usermod -aG keyd $$USER
 
 logind:
 	@echo "==> Configuring systemd-logind power handling..."
@@ -57,6 +58,7 @@ pipewire:
 
 services:
 	@echo "==> Enabling system services..."
+	@sudo systemctl daemon-reload
 	@sudo systemctl enable --now keyd.service 2>/dev/null || true
 	@sudo systemctl enable --now scx.service 2>/dev/null || true
 
