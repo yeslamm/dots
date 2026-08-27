@@ -265,9 +265,7 @@ exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec keyd-application-mapper -d
 exec playerctld daemon
 
-exec $scripts/init-audio.sh
 exec bluelight on
-exec easyeffects --hide-window
 exec wayland-pipewire-idle-inhibit -d 10 -q
 
 exec wl-paste --type text --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
