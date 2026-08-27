@@ -8,7 +8,7 @@ Personal Arch Linux dotfiles managed with GNU Stow, configured for Sway and term
 
 * **`apps/`** — CLI tools (`nvim`, `tmux`, `yazi`, `lazygit`, `aria2`, `fastfetch`)
 * **`bin/`** — User scripts (`~/.local/bin`)
-* **`desktop/`** — Wayland stack (`sway`, `waybar`, `foot`, `mako`, `fuzzel`, `easyeffects`)
+* **`desktop/`** — Wayland and audio stack (`sway`, `waybar`, `foot`, `mako`, `fuzzel`, `pipewire`)
 * **`dev/`** — Linters and formatters (`clang-format`, `prettier`, `stylua`, `taplo`)
 * **`shell/`** — Zsh, Powerlevel10k, `.gitconfig`, and XDG paths
 * **`sysconfigs/`** — System configs deployed via Makefile (`sysctl`, `zram`, `logind`, `scx`, `keyd`, `cgroups`)
@@ -90,6 +90,21 @@ make sysconfigs
 
 # 2. Stow user dotfiles
 make desktop   # or `make minimal` for CLI only
+
+# 3. Reload PipeWire
+systemctl --user restart pipewire pipewire-pulse wireplumber
+```
+
+#### Audio Hardware Setup
+
+```bash
+# Set DAC to 100%, mic to 40%, and disable boost
+pactl set-sink-volume alsa_output.pci-0000_63_00.6.analog-stereo 100%
+pactl set-source-volume alsa_input.pci-0000_63_00.6.analog-stereo 40%
+amixer -c Generic_1 set "Internal Mic Boost" 0
+
+# Persist ALSA state across reboots
+sudo alsactl store
 ```
 
 #### Optional: Bootloader Parameters
