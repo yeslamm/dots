@@ -94,19 +94,20 @@ systemctl --user restart pipewire pipewire-pulse wireplumber
 
 ### 4. Audio Configuration
 
-Set ALSA hardware baselines before WirePlumber locks the mixers:
+Set ALSA hardware levels before WirePlumber locks mixer states:
 
 ```bash
-# 1. Set DAC to 100% and physical mic to 40%
-wpctl set-volume @DEFAULT_AUDIO_SINK@ 1.0
-wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 0.40
+# 1. Set microphone hardware volume to 10% and disable mic boost
+amixer -c Generic_1 sset 'Capture' 10% 2>/dev/null || amixer -c 1 sset 'Capture' 10%
+amixer -c Generic_1 sset 'Internal Mic Boost' 0dB 2>/dev/null || true
+amixer -c Generic_1 sset 'Mic Boost' 0dB 2>/dev/null || true
 
-# 2. Disable mic boost in ALSA mixer
-alsamixer
-# Press F4 -> Set "Internal Mic Boost" to 0 dB
-
-# 3. Save ALSA mixer states across reboots
+# 2. Save ALSA state across reboots
 sudo alsactl store
+
+# 3. Set default output volume to 35% and input volume to 100%
+wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.35
+wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 1.0
 ```
 
 #### Kernel Parameters (systemd-boot)

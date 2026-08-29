@@ -35,6 +35,7 @@ rsync
 sof-firmware
 stow
 strace
+swh-plugins
 tree
 ufw
 unrar
