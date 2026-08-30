@@ -92,7 +92,21 @@ systemctl --user restart pipewire pipewire-pulse wireplumber
 
 ---
 
-### 4. Audio Configuration
+### 4. Configure Local Templates
+
+Copy the template configuration files and fill in your local coordinates and RPC tokens:
+
+```bash
+# Set your location coordinates (Latitude / Longitude) for sunrise/sunset color temperature
+cp ~/.config/bluelight/config.example ~/.config/bluelight/config
+
+# Set your aria2 RPC secret token
+cp ~/.config/aria2/aria2-rpc.conf.example ~/.config/aria2/aria2-rpc.conf
+```
+
+---
+
+### 5. Audio Configuration
 
 Set ALSA hardware levels before WirePlumber locks mixer states:
 
@@ -110,6 +124,15 @@ wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.35
 wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 1.0
 ```
 
+> **Note:** The native DSP chain requires `noise-suppression-for-voice` and `swh-plugins` (included in `pkglists/base.txt`). Verify the filter sinks are active after restarting PipeWire:
+>
+>
+> ```bash
+> wpctl status | grep -E "Dolby Atmos IEM Sink|Noise Canceling Microphone"
+> ```
+>
+>
+
 #### Kernel Parameters (systemd-boot)
 
 Add to your `/boot/loader/entries/*.conf` options:
@@ -122,6 +145,19 @@ options ... loglevel=3 pcie_aspm.policy=powersave nowatchdog
 
 ---
 
+### 6. Idle Management & Process Inhabitation
+
+The custom idle governor checks `~/.config/sway/idle_procs` before dimming or locking the screen. Add process names (one per line) to inhibit sleep during execution (e.g., compile jobs, downloads):
+
+```text
+aria2c
+qbittorrent
+yay
+cargo
+```
+
+---
+
 ## Makefile Targets
 
 | Target | Action |
@@ -131,4 +167,3 @@ options ... loglevel=3 pcie_aspm.policy=powersave nowatchdog
 | `make minimal` | Stows CLI and development configurations only |
 | `make dry-run` | Shows stow symlink operations without applying them |
 | `make unstow` | Unlinks all active dotfiles from `$HOME` |
-
