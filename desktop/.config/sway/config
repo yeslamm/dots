@@ -232,9 +232,9 @@ bindsym $lk $mod+minus                      exec osd volume down
 bindsym $lk $mod+0                          exec osd volume mute
 bindsym $lk $mod+Shift+0                    exec osd mic    toggle
 
-bindsym $lk $mod+Shift+period               exec playerctl position 5+
-bindsym $lk $mod+Shift+comma                exec playerctl position 5-
-bindsym $lk $mod+Shift+slash                exec playerctl position 0
+bindsym $tc $lk $mod+Shift+period           exec playerctl position 5+
+bindsym $tc $lk $mod+Shift+comma            exec playerctl position 5-
+bindsym $tc $lk $mod+Shift+slash            exec playerctl position 0
 bindsym $tc $lk $mod+period                 exec playerctl next
 bindsym $tc $lk $mod+comma                  exec playerctl previous
 bindsym $tc $lk $mod+Control+comma          exec playerctld shift
