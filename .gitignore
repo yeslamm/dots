@@ -5,4 +5,6 @@
 *.log
 *.lock
 secret.key
+apps/.config/aria2/aria2-rpc.conf
+desktop/.config/bluelight/config
 apps/.config/yazi/plugins/

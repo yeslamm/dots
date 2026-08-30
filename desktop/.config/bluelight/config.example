@@ -1,0 +1,6 @@
+# Bluelight (wlsunset) Configuration Example
+
+LAT="0.0"
+LON="0.0"
+NIGHT_TEMP="4500"
+DAY_TEMP="6500"

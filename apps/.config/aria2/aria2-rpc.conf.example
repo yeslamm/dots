@@ -1,21 +1,27 @@
+## Connections & Performance
 max-connection-per-server=4
 split=8
 min-split-size=10M
 max-concurrent-downloads=5
 continue=true
 
+## Storage & Caching
 file-allocation=falloc
 disk-cache=64M
 
-save-session=${HOME}/.aria2.session
-input-file=${HOME}/.aria2.session
+## Session Persistence
+input-file=/home/USERNAME/.local/state/aria2/aria2.session
+save-session=/home/USERNAME/.local/state/aria2/aria2.session
 save-session-interval=30
 
+## Network & Retry Policies
 max-tries=10
 retry-wait=3
 user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
 
+## RPC Configuration
 enable-rpc=true
 rpc-allow-origin-all=true
 rpc-listen-all=false
 rpc-listen-port=6800
+rpc-secret=REPLACE_WITH_YOUR_TOKEN
