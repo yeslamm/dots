@@ -115,7 +115,7 @@ wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 1.0
 Add to your `/boot/loader/entries/*.conf` options:
 
 ```text
-options ... pcie_aspm.policy=powersave nowatchdog
+options ... loglevel=3 pcie_aspm.policy=powersave nowatchdog
 ```
 
 *Log out or reboot to apply group permissions (`keyd`) and system configs.*
