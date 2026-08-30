@@ -6,9 +6,19 @@
 # == 1. VARIABLES & ENVIRONMENT ============================================== #
 # ============================================================================ #
 
-include /etc/sway/config.d/*
+exec systemctl --user set-environment XDG_CURRENT_DESKTOP=sway
+exec systemctl --user import-environment DISPLAY \
+                                         SWAYSOCK \
+                                         WAYLAND_DISPLAY \
+                                         XDG_CURRENT_DESKTOP
 
-exec dbus-update-activation-environment --systemd XCURSOR_THEME XCURSOR_SIZE
+exec hash dbus-update-activation-environment 2>/dev/null && \
+     dbus-update-activation-environment --systemd DISPLAY \
+                                                  SWAYSOCK \
+                                                  WAYLAND_DISPLAY \
+                                                  XDG_CURRENT_DESKTOP=sway \
+                                                  XCURSOR_THEME \
+                                                  XCURSOR_SIZE
 
 set $mod         Mod4
 set $term        foot
@@ -20,7 +30,6 @@ set $float_term  $term --app-id=fterm
 set $clip_term   $term --app-id=clipfzf
 set $pulse_term  $term --app-id=pulsemixer
 
-set $msg_mic     notify-send -t 1500 -h string:x-canonical-private-synchronous:mic
 set $msg_asus    notify-send -t 1500 -h string:x-canonical-private-synchronous:asus
 set $msg_sys     notify-send -t 1500 -h string:x-canonical-private-synchronous:sys
 
@@ -82,12 +91,10 @@ titlebar_padding 2 2
 titlebar_border_thickness 1
 title_align center
 
-exec {
-    gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors-light'
-    gsettings set org.gnome.desktop.interface cursor-size 32
-    gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'
-    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-}
+exec gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors-light'
+exec gsettings set org.gnome.desktop.interface cursor-size 32
+exec gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'
+exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
 # class                   border   backgr.  text     indic.   child_border
 client.focused            #78a9ff  #262626  #dfdfe0  #08bdba  #78a9ff
@@ -140,7 +147,7 @@ bindsym $tc $mod+Shift+b            exec $float_term btop
 
 bindsym $tc $mod+q                  kill
 bindsym $ww $mod+button2            kill
-bindsym $tc $mod+Shift+r            reload
+bindsym $tc $mod+Shift+r            exec killall -SIGUSR2 waybar, reload
 
 # ============================================================================ #
 # == 6. NAVIGATION & LAYOUT ================================================== #
@@ -215,7 +222,7 @@ bindsym $mod+Shift+9 move container to workspace number 9
 bindsym $lk XF86AudioRaiseVolume            exec osd volume up
 bindsym $lk XF86AudioLowerVolume            exec osd volume down
 bindsym $lk XF86AudioMute                   exec osd volume mute
-bindsym $lk XF86AudioMicMute                exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && $msg_mic "Microphone: $(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | grep -q MUTED && echo 'Muted' || echo 'Unmuted')"
+bindsym $lk XF86AudioMicMute                exec osd mic    toggle
 bindsym $lk XF86AudioPlay                   exec media play-pause
 bindsym $lk XF86AudioNext                   exec playerctl next
 bindsym $lk XF86AudioPrev                   exec playerctl previous
@@ -223,7 +230,7 @@ bindsym $lk XF86AudioPrev                   exec playerctl previous
 bindsym $lk $mod+equal                      exec osd volume up
 bindsym $lk $mod+minus                      exec osd volume down
 bindsym $lk $mod+0                          exec osd volume mute
-bindsym $lk $mod+Shift+0                    exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && $msg_mic "Microphone: $(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | grep -q MUTED && echo 'Muted' || echo 'Unmuted')"
+bindsym $lk $mod+Shift+0                    exec osd mic    toggle
 
 bindsym $lk $mod+Shift+period               exec playerctl position 5+
 bindsym $lk $mod+Shift+comma                exec playerctl position 5-
@@ -244,6 +251,9 @@ bindsym $tc $mod+Shift+n                    exec makoctl invoke
 bindsym $tc $mod+i                          exec $scripts/idle-mgr.sh toggle
 
 bindsym $tc $mod+v                          exec swaymsg '[app_id="clipfzf"] kill' || $clip_term clipfzf
+bindsym $tc $mod+p                          exec swaymsg '[app_id="pulsemixer"] scratchpad show' || $pulse_term pulsemixer
+
+bindsym $tc $mod+t                          exec tearing -n
 
 bindsym $rl Print                           exec screenshot region-copy
 bindsym $rl Shift+Print                     exec screenshot fullscreen-copy
@@ -263,22 +273,21 @@ bindsym $rl $mod+Control+F12                exec screenrec window
 
 exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec keyd-application-mapper -d
-exec playerctld daemon
+
+exec mako
+exec waybar
+exec_always $scripts/start-wob.sh
 
 exec bluelight on
-exec wayland-pipewire-idle-inhibit -d 10 -q
-
-exec wl-paste --type text --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
-exec wl-paste --type image --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
-
 exec $scripts/power-watcher.sh
 exec $scripts/idle-mgr.sh on
-exec mako
+exec wayland-pipewire-idle-inhibit -d 10 -q
 
-exec_always $scripts/start-wob.sh
-exec_always pkill -x -USR2 waybar || (sleep 0.2 && waybar)
+exec wl-paste --type text  --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
+exec wl-paste --type image --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
 
-exec sh -c 'exec aria2c --conf-path="$HOME/.config/aria2/aria2-rpc.conf" --rpc-secret="$(cat "$HOME/.config/aria2/secret.key")"'
+exec playerctld daemon
+exec aria2c --conf-path="$HOME/.config/aria2/aria2-rpc.conf"
 
 # ============================================================================ #
 # == 10. MODES =============================================================== #
@@ -360,33 +369,15 @@ mode "MOVE" {
     bindsym $tc $mod+m             mode "default"
 }
 
-bindsym XF86Launch1 mode "POWER"
-bindsym $tc $mod+p mode "POWER"
-mode "POWER" {
-    bindsym $tc s                  exec powerprofilesctl set power-saver && $msg_asus "Profile: Power Saver"; mode "default"
-    bindsym $tc b                  exec powerprofilesctl set balanced && $msg_asus "Profile: Balanced"; mode "default"
-    bindsym $tc p                  exec powerprofilesctl set performance && $msg_asus "Profile: Performance"; mode "default"
-    bindsym $tc l                  exec asusctl battery limit 60 && $msg_asus "Battery: Limit set to 60%"; mode "default"
-    bindsym $tc f                  exec asusctl battery oneshot && $msg_asus "Battery: Charging to 100%"; mode "default"
-
-    bindsym Escape                 mode "default"
-    bindsym Return                 mode "default"
-    bindsym XF86Launch1            mode "default"
-    bindsym $tc q                  mode "default"
-    bindsym $tc $mod+p             mode "default"
-}
-
 bindsym $tc $mod+e mode "EXEC"
 mode "EXEC" {
     bindsym $tc l                  exec $scripts/lock-nosentry.sh; mode "default"
-    bindsym $tc s                  exec "swaylock -f && $scripts/sentry.sh"; mode "default"
-    bindsym $tc e                  exec powermenu logout; mode "default"
+    bindsym $tc s                  exec $scripts/sentry.sh; mode "default"
+    bindsym $tc e                  exec powermenu exit; mode "default"
     bindsym $tc r                  exec powermenu reboot; mode "default"
     bindsym $tc p                  exec powermenu poweroff; mode "default"
 
-    bindsym $tc t                  exec tearing -n; mode "default"
     bindsym $tc n                  exec bluelight toggle; mode "default"
-    bindsym $tc v                  exec swaymsg '[app_id="pulsemixer"] scratchpad show' || $pulse_term pulsemixer; mode "default"
 
     bindsym $tc w                  exec 'nmcli radio wifi on && $msg_sys "Network: ON"'; mode "default"
     bindsym $tc Shift+w            exec 'nmcli radio wifi off && $msg_sys "Network: OFF"'; mode "default"
@@ -395,6 +386,12 @@ mode "EXEC" {
     bindsym $tc b                  exec 'bluetoothctl power on && $msg_sys "Bluetooth: ON"'; mode "default"
     bindsym $tc Shift+b            exec 'bluetoothctl power off && $msg_sys "Bluetooth: OFF"'; mode "default"
     bindsym $tc Control+b          exec $float_term bluetuith; mode "default"
+
+    bindsym $tc 1                  exec powerprofilesctl set power-saver && $msg_asus "Profile: Power Saver"; mode "default"
+    bindsym $tc 2                  exec powerprofilesctl set balanced && $msg_asus "Profile: Balanced"; mode "default"
+    bindsym $tc 3                  exec powerprofilesctl set performance && $msg_asus "Profile: Performance"; mode "default"
+    bindsym $tc 4                  exec asusctl battery limit 60 && $msg_asus "Battery: Limit set to 60%"; mode "default"
+    bindsym $tc 5                  exec asusctl battery oneshot && $msg_asus "Battery: Charging to 100%"; mode "default"
 
     bindsym Escape                 mode "default"
     bindsym Return                 mode "default"
