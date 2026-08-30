@@ -9,6 +9,7 @@ IDLE_FLAG="$RUNTIME_DIR/IDLE_ENABLED"
 WAS_IDLE_ACTIVE=false
 [[ -f "$IDLE_FLAG" ]] && WAS_IDLE_ACTIVE=true
 
+pgrep -x "swaylock" >/dev/null || swaylock -f
 sleep 0.2
 
 check_lock_status() {
