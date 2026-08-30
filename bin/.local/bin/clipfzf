@@ -41,9 +41,7 @@ preview)
 
 delete)
     if [[ -n "${2:-}" && -f "$2" ]]; then
-        while IFS= read -r line; do
-            [[ -n "$line" ]] && ch_cmd delete <<<"$line"
-        done <"$2"
+        ch_cmd delete <"$2"
     elif [[ -n "${2:-}" ]]; then
         ch_cmd delete <<<"$2"
     fi

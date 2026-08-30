@@ -8,6 +8,13 @@ ACTION="${2:-}"
 WOB_SOCK="${XDG_RUNTIME_DIR:-/run/user/${UID}}/wob.sock"
 STEP="5"
 
+send_wob() {
+    local val="$1"
+    if [[ -n "$val" && -p "$WOB_SOCK" ]] && pgrep -x wob >/dev/null; then
+        echo "$val" >"$WOB_SOCK"
+    fi
+}
+
 case "$TARGET" in
 volume)
     case "$ACTION" in
@@ -19,39 +26,51 @@ volume)
         exit 1
         ;;
     esac
+
+    read -r _ raw_vol status <<<"$(wpctl get-volume @DEFAULT_AUDIO_SINK@)"
+    if [[ "${status:-}" == *"[MUTED]"* ]]; then
+        send_wob 0
+    else
+        IFS='.' read -r int frac <<<"$raw_vol"
+        frac="${frac:0:2}"
+        printf -v frac "%-2s" "$frac"
+        frac="${frac// /0}"
+        send_wob "$((10#$int * 100 + 10#$frac))"
+    fi
     ;;
+
+mic | microphone)
+    case "$ACTION" in
+    mute | toggle) wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle ;;
+    *)
+        echo "Usage: $(basename "$0") mic [toggle|mute]" >&2
+        exit 1
+        ;;
+    esac
+
+    raw_mic=$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@)
+    status="Unmuted"
+    [[ "$raw_mic" == *"[MUTED]"* ]] && status="Muted"
+
+    notify-send -t 1500 -h string:x-canonical-private-synchronous:mic "Microphone: $status"
+    ;;
+
 brightness)
     case "$ACTION" in
-    up) brightnessctl set "${STEP}%+" -q ;;
-    down) brightnessctl set "${STEP}%-" -q ;;
+    up) arg="${STEP}%+" ;;
+    down) arg="${STEP}%-" ;;
     *)
         echo "Usage: $(basename "$0") brightness [up|down]" >&2
         exit 1
         ;;
     esac
+
+    IFS=',' read -r _ _ _ perc _ <<<"$(brightnessctl -m set "$arg")"
+    send_wob "${perc%?}"
     ;;
+
 *)
-    echo "Usage: $(basename "$0") [volume|brightness] [action]" >&2
+    echo "Usage: $(basename "$0") [volume|mic|brightness] [action]" >&2
     exit 1
     ;;
 esac
-
-if pgrep -x wob >/dev/null && [[ -p "$WOB_SOCK" ]]; then
-    VALUE=""
-    case "$TARGET" in
-    volume)
-        VAL_RAW=$(wpctl get-volume @DEFAULT_AUDIO_SINK@)
-        if [[ "$VAL_RAW" == *"[MUTED]"* ]]; then
-            VALUE=0
-        else
-            VALUE=$(awk '{printf "%.0f", $2 * 100}' <<<"$VAL_RAW")
-        fi
-        ;;
-    brightness)
-        IFS=',' read -r _ _ _ PERC _ <<<"$(brightnessctl -m)"
-        VALUE="${PERC%?}"
-        ;;
-    esac
-
-    [[ -n "$VALUE" ]] && echo "$VALUE" >"$WOB_SOCK"
-fi
