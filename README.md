@@ -111,8 +111,8 @@ cp ~/.config/aria2/aria2-rpc.conf.example ~/.config/aria2/aria2-rpc.conf
 Set ALSA hardware levels before WirePlumber locks mixer states:
 
 ```bash
-# 1. Set microphone hardware volume to 10% and disable mic boost
-amixer -c Generic_1 sset 'Capture' 10% 2>/dev/null || amixer -c 1 sset 'Capture' 10%
+# 1. Set microphone hardware volume to 20% and disable mic boost
+amixer -c Generic_1 sset 'Capture' 20% 2>/dev/null || amixer -c 1 sset 'Capture' 20%
 amixer -c Generic_1 sset 'Internal Mic Boost' 0dB 2>/dev/null || true
 amixer -c Generic_1 sset 'Mic Boost' 0dB 2>/dev/null || true
 
