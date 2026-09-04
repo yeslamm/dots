@@ -125,7 +125,7 @@ for_window [instance="sun-awt-X11-XDialogPeer"] floating enable
 for_window [title="(?i)picture-in-picture|picture in picture"] floating enable, sticky enable
 for_window [app_id="firefox" title="^Extension:"] floating enable
 
-for_window [app_id="mpv|swayimg"] fullscreen enable
+for_window [app_id="swayimg"] fullscreen enable
 
 for_window [all] inhibit_idle fullscreen
 
@@ -147,7 +147,7 @@ bindsym $tc $mod+Shift+b            exec $float_term btop
 
 bindsym $tc $mod+q                  kill
 bindsym $ww $mod+button2            kill
-bindsym $tc $mod+Shift+r            exec killall -SIGUSR2 waybar, reload
+bindsym $tc $mod+Shift+r            reload
 
 # ============================================================================ #
 # == 6. NAVIGATION & LAYOUT ================================================== #
@@ -275,7 +275,7 @@ exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec keyd-application-mapper -d
 
 exec mako
-exec waybar
+exec_always pkill -SIGUSR2 -x waybar || (sleep 0.5 && waybar)
 exec_always $scripts/start-wob.sh
 
 exec bluelight on
