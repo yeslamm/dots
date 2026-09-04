@@ -1,17 +1,17 @@
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "efa4d79"
+rev = "4dc7f1b"
 hash = "5bb0bfab901d3601c370eafdd66edd31"
 
 [[plugin.deps]]
 use = "ndtoan96/ouch"
-rev = "8e70ec7"
-hash = "543eb6688a3c8eebe9d8f7d1ae0603a3"
+rev = "cfe4f50"
+hash = "eff5702573b6cfba61e4ac8b1969629a"
 
 [[plugin.deps]]
 use = "boydaihungst/mediainfo"
-rev = "e079a00"
-hash = "f204dbde3ffcc30edfcab26a12e35d83"
+rev = "d2dd310"
+hash = "d2abc52ef8ba24544cce615e223cf5dc"
 
 [[plugin.deps]]
 use = "Ape/open-with-cmd"
@@ -20,7 +20,7 @@ hash = "722a60eca1b338c9c24bb508d2d48578"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
-rev = "efa4d79"
+rev = "4dc7f1b"
 hash = "87472b05a8c420100f6a2b9cde1e7746"
 
 [flavor]
