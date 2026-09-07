@@ -23,6 +23,7 @@ mpv
 mpv-mpris
 papirus-icon-theme
 pavucontrol
+pcmanfm-qt
 piper
 playerctl
 polkit-gnome
@@ -38,7 +39,6 @@ swaybg
 swayidle
 swayimg
 swaylock
-thunar
 tumbler
 waybar
 wayfreeze-git
