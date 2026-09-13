@@ -1,11 +1,22 @@
-return {
-    'jiaoshijie/undotree',
-    dependencies = 'nvim-lua/plenary.nvim',
-    config = function()
-        require('undotree').setup {
+local is_configured = false
+
+vim.keymap.set('n', '<leader>u', function()
+    local undotree = require 'undotree'
+
+    if not is_configured then
+        undotree.setup {
             float_diff = true,
             position = 'right',
-            ignore_filetype = { 'undotree', 'undotreeDiff', 'qf', 'FzfLua', 'spectre_panel', 'tsplayground', 'dashboard', 'NvimTree' },
+            ignore_filetype = {
+                'undotree',
+                'undotreeDiff',
+                'qf',
+                'FzfLua',
+                'spectre_panel',
+                'tsplayground',
+                'dashboard',
+                'NvimTree',
+            },
             window = {
                 border = 'single',
             },
@@ -20,8 +31,8 @@ return {
                 ['quit'] = 'q',
             },
         }
-    end,
-    keys = {
-        { '<leader>u', "<cmd>lua require('undotree').toggle()<cr>", desc = 'Undotree', mode = 'n' },
-    },
-}
+        is_configured = true
+    end
+
+    undotree.toggle()
+end, { desc = 'Undotree' })

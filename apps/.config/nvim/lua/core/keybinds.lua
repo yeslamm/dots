@@ -42,7 +42,13 @@ map('n', ']d', function()
     vim.diagnostic.jump { count = 1, float = true }
 end, { desc = 'Next Diagnostic' })
 
-map('n', 'gl', vim.diagnostic.open_float, { desc = 'Line Diagnostic' })
+map('n', 'gl', function()
+    vim.diagnostic.open_float { scope = 'line' }
+end, { desc = 'Line Diagnostic' })
+
+map('n', '<leader>x', function()
+    vim.diagnostic.setqflist()
+end, { desc = 'Quickfix list' })
 
 map('n', '[b', '<cmd>bprevious<CR>', { desc = 'Prev Buffer' })
 map('n', ']b', '<cmd>bnext<CR>', { desc = 'Next Buffer' })

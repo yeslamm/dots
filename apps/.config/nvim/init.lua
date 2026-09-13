@@ -1,31 +1,49 @@
-require 'core.options'
-require 'core.keybinds'
-require 'core.autocmds'
+-- init.lua
+vim.loader.enable()
 
-local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-    local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
-    local out = vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
-    if vim.v.shell_error ~= 0 then
-        vim.api.nvim_echo({
-            { 'Failed to clone lazy.nvim:\n', 'ErrorMsg' },
-            { out, 'WarningMsg' },
-            { '\nPress any key to exit...' },
-        }, true, {})
-        vim.fn.getchar()
-        os.exit(1)
-    end
-end
-vim.opt.rtp:prepend(lazypath)
+require('core.options')
+require('core.keybinds')
+require('core.autocmds')
+require('core.packs')
 
-require('lazy').setup {
-    spec = { { import = 'plugins' } },
-    ui = {
-        border = 'single',
-        backdrop = 100,
-    },
+local core_plugins = {
+    'colorscheme',
+    'mini',
+    'lsp',
+    'blink',
+    'treesitter',
+    'oil',
+    'fzf',
+    'gitsigns',
+    'smart_splits',
+    'lualine',
+
+    'mason',
+    'autopairs',
+    'render_markdown',
+    'undotree',
+    'diffview',
+    'dap',
 }
 
-vim.api.nvim_set_hl(0, 'LazyFloat', { bg = 'NONE' })
-vim.api.nvim_set_hl(0, 'LazyNormal', { bg = 'none' })
+for _, plugin in ipairs(core_plugins) do
+    require('plugins.' .. plugin)
+end
+
+vim.schedule(function()
+    local deferred_plugins = {
+        'conform',
+        'lint',
+        'which_key',
+        'todo_comments',
+        'indent_blankline',
+        'highlight_colors',
+    }
+
+    for _, plugin in ipairs(deferred_plugins) do
+        require('plugins.' .. plugin)
+    end
+end)
+
 vim.api.nvim_set_hl(0, 'MasonNormal', { bg = 'none' })
+vim.api.nvim_set_hl(0, 'QuickFixLine', { link = 'Normal' })

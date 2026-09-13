@@ -60,3 +60,5 @@ opt.shortmess:append 'c'
 
 opt.diffopt:append { 'vertical', 'foldcolumn:0', 'context:3' }
 opt.fillchars:append { diff = '╱' }
+
+vim.env.PATH = vim.fn.stdpath('data') .. '/mason/bin:' .. vim.env.PATH

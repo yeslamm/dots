@@ -101,13 +101,37 @@ vim.api.nvim_create_autocmd('FileType', {
         'man',
         'lspinfo',
         'checkhealth',
-        'lazy',
         'mason',
         'notify',
-        'trouble',
         'gitsigns-blame',
     },
     callback = function()
         vim.keymap.set('n', 'q', '<cmd>close<CR>', { buffer = true, silent = true })
+    end,
+})
+
+vim.api.nvim_create_autocmd('PackChanged', {
+    desc = 'Run post-install and update build hooks',
+    callback = function(ev)
+        if ev.data.spec.name == 'nvim-treesitter' and (ev.data.kind == 'install' or ev.data.kind == 'update') then
+            vim.schedule(function()
+                vim.cmd('packadd nvim-treesitter')
+
+                if vim.fn.exists(':TSUpdate') == 2 then
+                    vim.cmd('TSUpdate')
+                end
+            end)
+        end
+    end,
+})
+
+local hl_group = vim.api.nvim_create_augroup('CustomHighlights', { clear = true })
+
+vim.api.nvim_create_autocmd('ColorScheme', {
+    group = hl_group,
+    desc = 'Apply global highlight overrides',
+    callback = function()
+        vim.api.nvim_set_hl(0, 'MasonNormal', { bg = 'none' })
+        vim.api.nvim_set_hl(0, 'QuickFixLine', { link = 'Normal' })
     end,
 })
