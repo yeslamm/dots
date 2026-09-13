@@ -11,7 +11,7 @@ Arch Linux dotfiles managed with GNU Stow for Sway, Zsh, Neovim, and PipeWire.
 * **`desktop/`** — Wayland and audio configs (`sway`, `waybar`, `foot`, `mako`, `fuzzel`, `pipewire`, `wireplumber`)
 * **`dev/`** — Code formatters and linters (`clang-format`, `prettier`, `stylua`, `taplo`)
 * **`shell/`** — Shell configuration (`zsh`, `zimfw`, `p10k`, `.gitconfig`)
-* **`sysconfigs/`** — System configs deployed to `/etc` via `make sysconfigs` (`sysctl`, `zram`, `logind`, `scx`, `keyd`)
+* **`system/`** — System configs deployed to `/etc` via `make system` (`sysctl`, `zram`, `logind`, `scx`, `keyd`)
 
 ---
 
@@ -77,16 +77,13 @@ grep -h -vE '^\s*#|^\s*$' pkglists/gaming.txt | sort -u | yay -S --needed -
 ```bash
 cd ~/dots
 
-# 1. Copy /etc configs and enable system services
-make sysconfigs
+# 1. Deploy /etc configurations and start system services
+make system
 
-# 2. Symlink user configs to $HOME
-make desktop    # or `make minimal` for CLI only
+# 2. Deploy the complete workstation profile (stows apps/desktop, installs Zsh plugins, tunes audio)
+make desktop-profile    # Use `make minimal-profile` for CLI-only environments
 
-# 3. Install Zsh plugins
-zsh -i -c "zimfw install"
-
-# 4. Restart audio services
+# 3. Restart audio services
 systemctl --user restart pipewire pipewire-pulse wireplumber
 ```
 
@@ -106,32 +103,13 @@ cp ~/.config/aria2/aria2-rpc.conf.example ~/.config/aria2/aria2-rpc.conf
 
 ---
 
-### 5. Audio Configuration
+### 5. Audio Verification & System Parameters
 
-Set ALSA hardware levels before WirePlumber locks mixer states:
+Verify that the native DSP filter sinks are active after your first session start:
 
 ```bash
-# 1. Set microphone hardware volume to 20% and disable mic boost
-amixer -c Generic_1 sset 'Capture' 20% 2>/dev/null || amixer -c 1 sset 'Capture' 20%
-amixer -c Generic_1 sset 'Internal Mic Boost' 0dB 2>/dev/null || true
-amixer -c Generic_1 sset 'Mic Boost' 0dB 2>/dev/null || true
-
-# 2. Save ALSA state across reboots
-sudo alsactl store
-
-# 3. Set default output volume to 35% and input volume to 100%
-wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.35
-wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 1.0
+wpctl status | grep -E "Dolby Atmos IEM Sink|Noise Canceling Microphone"
 ```
-
-> **Note:** The native DSP chain requires `noise-suppression-for-voice` and `swh-plugins` (included in `pkglists/base.txt`). Verify the filter sinks are active after restarting PipeWire:
->
->
-> ```bash
-> wpctl status | grep -E "Dolby Atmos IEM Sink|Noise Canceling Microphone"
-> ```
->
->
 
 #### Kernel Parameters (systemd-boot)
 
@@ -158,12 +136,32 @@ cargo
 
 ---
 
+### 7. Manual Configuration Links (`nostow`)
+
+For applications like Firefox whose internal profile directory hashes change per installation, link files manually from the `nostow` directory:
+
+```bash
+# Ensure the chrome directory exists inside your active Firefox profile path
+mkdir -p ~/.mozilla/firefox/*.default-release/chrome
+
+# Symlink userChrome.css (replace *.default-release with your actual profile folder name)
+ln -sf ~/dots/nostow/firefox/userChrome.css ~/.mozilla/firefox/*.default-release/chrome/userChrome.css
+```
+
+---
+
 ## Makefile Targets
 
 | Target | Action |
 | --- | --- |
-| `make sysconfigs` | Copies `/etc` templates and enables systemd services |
-| `make desktop` | Stows all user configurations into `$HOME` |
-| `make minimal` | Stows CLI and development configurations only |
-| `make dry-run` | Shows stow symlink operations without applying them |
-| `make unstow` | Unlinks all active dotfiles from `$HOME` |
+| `make system` | Deploy `/etc` configs and enable system services |
+| `make desktop-profile` | Deploy full Wayland/Sway profile + audio & shell dependencies |
+| `make minimal-profile` | Deploy core CLI profile (terminal & dev tools + shell) |
+| `make stow-desktop` | Fast restow/refresh of desktop symlinks only |
+| `make stow-minimal` | Fast restow/refresh of minimal symlinks only |
+| `make unstow-desktop` | Remove all active desktop stow symlinks |
+| `make unstow-minimal` | Remove all active minimal stow symlinks |
+| `make simulate-desktop` | Preview desktop stow symlink actions safely |
+| `make simulate-minimal` | Preview minimal stow symlink actions safely |
+| `make audio` | Re-apply ALSA hardware levels and WirePlumber volumes |
+| `make zsh` | Install or update Zsh plugins via Zimfw |
