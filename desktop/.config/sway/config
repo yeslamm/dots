@@ -190,6 +190,7 @@ bindsym $mod+tab                    focus mode_toggle
 
 bindsym $tc $mod+s                  scratchpad show
 bindsym $tc $mod+Shift+s            move scratchpad
+bindsym $tc $mod+Control+s          exec $scripts/scratchpad-menu.sh
 
 # ============================================================================ #
 # == 7. WORKSPACES =========================================================== #
