@@ -11,13 +11,7 @@ require('mini.splitjoin').setup {
     },
 }
 
-require('mini.surround').setup {
-    -- Default mappings:
-    -- sa = add surround (e.g., saiw" to surround word with quotes)
-    -- sd = delete surround (e.g., sd" to delete surrounding quotes)
-    -- sr = replace surround (e.g., sr"' to replace quotes with single quotes)
-    -- sf / sF = find next/previous surrounding
-}
+require('mini.surround').setup {}
 
 require('mini.move').setup {
     mappings = {
