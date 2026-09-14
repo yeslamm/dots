@@ -1,145 +1,143 @@
 {
-    "position": "bottom",
-    "output": "eDP-1",
-    "modules-left": [
-        "sway/workspaces",
-        "sway/mode",
-        "sway/scratchpad",
-        "memory",
-        "cpu",
-        "temperature",
-        "custom/fan"
-    ],
-    "modules-center": [
-        "clock"
-    ],
-    "modules-right": [
-        "privacy",
-        "tray",
-        "custom/idlemgr",
-        "network",
-        "wireplumber",
-        "battery",
-        "power-profiles-daemon"
-    ],
-    "sway/workspaces": {
-        "disable-scroll": true,
-        "format": "{name}"
+  "position": "bottom",
+  "output": "eDP-1",
+  "modules-left": [
+    "sway/workspaces",
+    "sway/mode",
+    "sway/scratchpad",
+    "memory",
+    "cpu",
+    "temperature",
+    "custom/fan"
+  ],
+  "modules-center": ["clock"],
+  "modules-right": [
+    "privacy",
+    "tray",
+    "custom/idlemgr",
+    "network",
+    "wireplumber",
+    "battery",
+    "power-profiles-daemon"
+  ],
+  "sway/workspaces": {
+    "disable-scroll": true,
+    "format": "{name}"
+  },
+  "sway/mode": {
+    "format": "{}"
+  },
+  "sway/scratchpad": {
+    "format": "[] {count}",
+    "show-empty": false
+  },
+  "memory": {
+    "interval": 3,
+    "format": "{used:0.2f}G",
+    "tooltip-format": "Used: {used:0.2f}G\nSwap: {swapUsed:0.2f}G\nTotal: {total:0.2f}G"
+  },
+  "cpu": {
+    "interval": 3,
+    "format": "{usage}%"
+  },
+  "temperature": {
+    "hwmon-path-abs": "/sys/devices/pci0000:00/0000:00:18.3/hwmon",
+    "input-filename": "temp1_input",
+    "interval": 3,
+    "format": "{temperatureC}°C",
+    "tooltip": false
+  },
+  "custom/fan": {
+    "exec": "~/.config/waybar/fan.sh",
+    "interval": 3,
+    "tooltip": false,
+    "format": "{}"
+  },
+  "clock": {
+    "format": "{:%d/%m - %H:%M}",
+    "interval": 60,
+    "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "calendar": {
+      "mode": "month",
+      "mode-mon-col": 4,
+      "weeks-pos": "right",
+      "on-scroll": 1,
+      "format": {
+        "months": "<span color='#be95ff'><b>{}</b></span>",
+        "days": "<span color='#dfdfe0'><b>{}</b></span>",
+        "weeks": "<span color='#6f6f6f'><b>W{}</b></span>",
+        "weekdays": "<span color='#25be6a'><b>{}</b></span>",
+        "today": "<span color='#78a9ff'><b><u>{}</u></b></span>"
+      }
     },
-    "sway/mode": {
-        "format": "{}"
-    },
-    "sway/scratchpad": {
-        "format": "[] {count}",
-        "show-empty": false
-    },
-    "memory": {
-        "interval": 3,
-        "format": "{used:0.2f}G",
-        "tooltip-format": "Used: {used:0.2f}G\nSwap: {swapUsed:0.2f}G\nTotal: {total:0.2f}G"
-    },
-    "cpu": {
-        "interval": 3,
-        "format": "{usage}%"
-    },
-    "temperature": {
-        "hwmon-path-abs": "/sys/devices/pci0000:00/0000:00:18.3/hwmon",
-        "input-filename": "temp1_input",
-        "interval": 3,
-        "format": "{temperatureC}°C",
-        "tooltip": false
-    },
-    "custom/fan": {
-        "exec": "~/.config/waybar/fan.sh",
-        "interval": 3,
-        "tooltip": false,
-        "format": "{}"
-    },
-    "clock": {
-        "format": "{:%d/%m - %H:%M}",
-        "interval": 60,
-        "tooltip-format": "<tt><small>{calendar}</small></tt>",
-        "calendar": {
-            "mode": "month",
-            "mode-mon-col": 4,
-            "weeks-pos": "right",
-            "on-scroll": 1,
-            "format": {
-                "months": "<span color='#be95ff'><b>{}</b></span>",
-                "days": "<span color='#dfdfe0'><b>{}</b></span>",
-                "weeks": "<span color='#6f6f6f'><b>W{}</b></span>",
-                "weekdays": "<span color='#25be6a'><b>{}</b></span>",
-                "today": "<span color='#78a9ff'><b><u>{}</u></b></span>"
-            }
-        },
-        "actions": {
-            "on-click-middle": "mode",
-            "on-click": "shift_up",
-            "on-click-right": "shift_down"
-        }
-    },
-    "network": {
-        "format-wifi": "{essid}",
-        "format-ethernet": "ETH",
-        "format-disconnected": "OFF",
-        "format-disabled": "OFFLINE",
-        "max-length": 15,
-        "tooltip-format": "{ifname} via {gwaddr}",
-        "tooltip-format-wifi": "SSID: {essid}\nIP: {ipaddr}\nSignal: {signalStrength}%",
-        "tooltip-format-ethernet": "Interface: {ifname}\nIP: {ipaddr}",
-        "tooltip-format-disconnected": "Network Disconnected",
-        "tooltip-format-disabled": "Networking Powered Off"
-    },
-    "wireplumber": {
-        "format": "{volume}%",
-        "format-muted": "Muted"
-    },
-    "battery": {
-        "bat": "BAT1",
-        "interval": 30,
-        "states": {
-            "clamped": 60,
-            "warning": 30,
-            "critical": 15
-        },
-        "format": "{capacity}%",
-        "format-charging": "+ {capacity}%",
-        "format-discharging": "- {capacity}%",
-        "format-full": "{capacity}%",
-        "format-clamped": "{capacity}%"
-    },
-    "power-profiles-daemon": {
-        "format": "{icon}",
-        "format-icons": {
-            "performance": "P",
-            "balanced": "B",
-            "power-saver": "S"
-        }
-    },
-    "custom/idlemgr": {
-        "exec": "[ -f \"${XDG_RUNTIME_DIR:-/run/user/${UID}}/sway-power/idle_enabled\" ] && echo '' || echo 'INHIBIT'",
-        "return-type": "text",
-        "interval": "once",
-        "signal": 12,
-        "tooltip": false
-    },
-    "tray": {
-        "icon-size": 16,
-        "spacing": 10
-    },
-    "privacy": {
-        "icon-spacing": 10,
-        "icon-size": 16,
-        "transition-duration": 0,
-        "modules": [
-            {
-                "type": "screenshare",
-                "icon-name": "screen-shared-symbolic"
-            },
-            {
-                "type": "audio-in",
-                "icon-name": "audio-input-microphone-symbolic"
-            }
-        ]
+    "actions": {
+      "on-click-middle": "mode",
+      "on-click": "shift_up",
+      "on-click-right": "shift_down"
     }
+  },
+  "network": {
+    "format-wifi": "{essid}",
+    "format-ethernet": "ETH",
+    "format-disconnected": "OFF",
+    "format-disabled": "OFFLINE",
+    "max-length": 15,
+    "tooltip-format": "{ifname} via {gwaddr}",
+    "tooltip-format-wifi": "SSID: {essid}\nIP: {ipaddr}\nSignal: {signalStrength}%",
+    "tooltip-format-ethernet": "Interface: {ifname}\nIP: {ipaddr}",
+    "tooltip-format-disconnected": "Network Disconnected",
+    "tooltip-format-disabled": "Networking Powered Off"
+  },
+  "wireplumber": {
+    "format": "{volume}%",
+    "format-muted": "Muted"
+  },
+  "battery": {
+    "bat": "BAT1",
+    "interval": 30,
+    "states": {
+      "clamped": 60,
+      "warning": 30,
+      "critical": 15
+    },
+    "format": "{capacity}%",
+    "format-charging": "+ {capacity}%",
+    "format-discharging": "- {capacity}%",
+    "format-full": "{capacity}%",
+    "format-clamped": "{capacity}%"
+  },
+  "power-profiles-daemon": {
+    "format": "{icon}",
+    "format-icons": {
+      "performance": "P",
+      "balanced": "B",
+      "power-saver": "S"
+    }
+  },
+  "custom/idlemgr": {
+    "exec": "[ -f \"${XDG_RUNTIME_DIR:-/run/user/${UID}}/sway-power/idle_enabled\" ] && echo '' || echo 'INHIBIT'",
+    "return-type": "text",
+    "interval": "once",
+    "signal": 12,
+    "tooltip": false
+  },
+  "tray": {
+    "icon-size": 16,
+    "spacing": 10
+  },
+  "privacy": {
+    "icon-spacing": 10,
+    "icon-size": 16,
+    "transition-duration": 0,
+    "modules": [
+      {
+        "type": "screenshare",
+        "icon-name": "screen-shared-symbolic"
+      },
+      {
+        "type": "audio-in",
+        "icon-name": "audio-input-microphone-symbolic"
+      }
+    ]
+  }
 }
