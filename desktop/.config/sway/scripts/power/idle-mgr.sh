@@ -1,19 +1,20 @@
 #!/usr/bin/env bash
-# ~/dots/desktop/.config/sway/scripts/idle-mgr.sh
+# ~/dots/desktop/.config/sway/scripts/power/idle-mgr.sh
 
 set -euo pipefail
 
 SELF="$(realpath "$0")"
 ACTION="${1:-}"
-RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/${UID}}"
+STATE_DIR="${XDG_RUNTIME_DIR:-/run/user/${UID}}/sway-power"
+[[ -d "$STATE_DIR" ]] || mkdir -p "$STATE_DIR"
 
-IDLE_FLAG="$RUNTIME_DIR/IDLE_ENABLED"
-BRIGHT_FLAG="$RUNTIME_DIR/bright_dimmed"
-POWER_FLAG="$RUNTIME_DIR/display_off"
+IDLE_FLAG="$STATE_DIR/idle_enabled"
+BRIGHT_FLAG="$STATE_DIR/backlight_dimmed"
+POWER_FLAG="$STATE_DIR/display_off"
 PROCS_FILE="$HOME/.config/sway/idle_procs"
 
 LOCK_CMD="pgrep -x swaylock >/dev/null || swaylock -f"
-SENTRY_CMD="$HOME/.config/sway/scripts/sentry.sh"
+SUSPEND_CMD="$HOME/.config/sway/scripts/power/lock-suspend.sh"
 
 is_on_ac() {
     local f status
@@ -48,9 +49,9 @@ start_idle_daemon() {
     pkill -x swayidle 2>/dev/null || true
 
     if is_on_ac; then
-        local t_dim=300 t_lock=600 t_off=900 t_sentry=1200
+        local t_dim=300 t_lock=600 t_off=900 t_suspend=1200
     else
-        local t_dim=120 t_lock=180 t_off=240 t_sentry=300
+        local t_dim=120 t_lock=180 t_off=240 t_suspend=300
     fi
 
     swayidle -w \
@@ -59,7 +60,7 @@ start_idle_daemon() {
         timeout "$t_lock" "$SELF check || $LOCK_CMD" \
         timeout "$t_off" "$SELF check || { swaymsg 'output * power off' && touch \"$POWER_FLAG\"; }" \
         resume "[ -f \"$POWER_FLAG\" ] && { swaymsg 'output * power on'; rm -f \"$POWER_FLAG\"; }" \
-        timeout "$t_sentry" "$SELF check || $SENTRY_CMD" \
+        timeout "$t_suspend" "$SELF check || $SUSPEND_CMD" \
         before-sleep "$LOCK_CMD" &
 
     pkill -RTMIN+12 waybar 2>/dev/null || true

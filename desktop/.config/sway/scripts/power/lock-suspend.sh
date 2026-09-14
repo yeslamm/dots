@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# ~/dots/desktop/.config/sway/scripts/sentry.sh
+# ~/dots/desktop/.config/sway/scripts/power/lock-suspend.sh
 
 set -euo pipefail
 
-RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/${UID}}"
-IDLE_FLAG="$RUNTIME_DIR/IDLE_ENABLED"
+STATE_DIR="${XDG_RUNTIME_DIR:-/run/user/${UID}}/sway-power"
+IDLE_FLAG="$STATE_DIR/idle_enabled"
 
 WAS_IDLE_ACTIVE=false
 [[ -f "$IDLE_FLAG" ]] && WAS_IDLE_ACTIVE=true
@@ -15,7 +15,7 @@ sleep 0.2
 check_lock_status() {
     if ! pgrep -x "swaylock" >/dev/null; then
         if [[ "$WAS_IDLE_ACTIVE" == "true" ]]; then
-            exec "$HOME/.config/sway/scripts/idle-mgr.sh" on
+            exec "$HOME/.config/sway/scripts/power/idle-mgr.sh" on
         else
             pkill -RTMIN+12 waybar 2>/dev/null || true
             exit 0

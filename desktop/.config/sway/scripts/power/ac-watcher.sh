@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# ~/.config/sway/scripts/power-watcher.sh
+# ~/.config/sway/scripts/power/ac-watcher.sh
 
 set -euo pipefail
 
 LAST_STATE=""
-IDLE_FLAG="${XDG_RUNTIME_DIR:-/run/user/${UID}}/IDLE_ENABLED"
+STATE_DIR="${XDG_RUNTIME_DIR:-/run/user/${UID}}/sway-power"
+IDLE_FLAG="$STATE_DIR/idle_enabled"
 
 is_on_ac() {
     local f status
@@ -26,7 +27,7 @@ upower --monitor | grep --line-buffered -E "device changed|power_supply" | while
 
         if [[ "$CURR_STATE" != "$LAST_STATE" ]]; then
             LAST_STATE="$CURR_STATE"
-            "$HOME/.config/sway/scripts/idle-mgr.sh" on
+            "$HOME/.config/sway/scripts/power/idle-mgr.sh" on
         fi
     fi
 done

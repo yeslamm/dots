@@ -69,7 +69,7 @@ input type:pointer {
 bindgesture swipe:3:right workspace next
 bindgesture swipe:3:left  workspace prev
 
-bindswitch $lk lid:on exec $scripts/lid-action.sh
+bindswitch $lk lid:on exec $scripts/power/lid-action.sh
 seat * xcursor_theme capitaine-cursors-light 32
 seat * hide_cursor when-typing disable
 seat * fallback true
@@ -249,7 +249,7 @@ bindsym $tc $lk $mod+bracketleft            exec osd brightness down
 
 bindsym $tc $mod+n                          exec makoctl dismiss
 bindsym $tc $mod+Shift+n                    exec makoctl invoke
-bindsym $tc $mod+i                          exec $scripts/idle-mgr.sh toggle
+bindsym $tc $mod+i                          exec $scripts/power/idle-mgr.sh toggle
 
 bindsym $tc $mod+v                          exec swaymsg '[app_id="clipfzf"] kill' || $clip_term clipfzf
 bindsym $tc $mod+p                          exec swaymsg '[app_id="pulsemixer"] scratchpad show' || $pulse_term pulsemixer
@@ -280,8 +280,8 @@ exec_always pkill -SIGUSR2 -x waybar || (sleep 0.5 && waybar)
 exec_always $scripts/start-wob.sh
 
 exec bluelight on
-exec $scripts/power-watcher.sh
-exec $scripts/idle-mgr.sh on
+exec $scripts/power/ac-watcher.sh
+exec $scripts/power/idle-mgr.sh on
 exec wayland-pipewire-idle-inhibit -d 10 -q
 
 exec wl-paste --type text  --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
@@ -372,8 +372,8 @@ mode "MOVE" {
 
 bindsym $tc $mod+e mode "EXEC"
 mode "EXEC" {
-    bindsym $tc l                  exec $scripts/lock-nosentry.sh; mode "default"
-    bindsym $tc s                  exec $scripts/sentry.sh; mode "default"
+    bindsym $tc l                  exec $scripts/power/lock.sh; mode "default"
+    bindsym $tc s                  exec $scripts/power/lock-suspend.sh; mode "default"
     bindsym $tc e                  exec powermenu exit; mode "default"
     bindsym $tc r                  exec powermenu reboot; mode "default"
     bindsym $tc p                  exec powermenu poweroff; mode "default"
