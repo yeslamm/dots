@@ -14,10 +14,7 @@ map({ 'n', 'v' }, '<leader>c', '"_c', { desc = 'Change motion to void' })
 map('n', 'x', '"_x', { desc = 'Delete char under cursor (void)' })
 map('n', 'X', '"_X', { desc = 'Delete char backward (void)' })
 
-map('n', '<Esc>', function()
-    vim.cmd.nohlsearch()
-    return '<Esc>'
-end, { expr = true, desc = 'Clear search highlights' })
+map('n', '<Esc>', '<cmd>nohlsearch<CR>', { desc = 'Clear search highlights' })
 map('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 map({ 'n', 'i', 's' }, '<C-s>', '<cmd>w<CR><esc>', { desc = 'Save' })
 map('n', '<S-q>', '<cmd>wa | qa<CR>', { desc = 'Save all and Quit' })
@@ -28,11 +25,13 @@ map('n', 'n', 'nzzzv', { desc = 'Next search centered' })
 map('n', 'N', 'Nzzzv', { desc = 'Prev search centered' })
 map('n', '*', '*N', { desc = 'Highlight without jump' })
 
-map('n', 'J', 'mzJ`z', { desc = 'Join lines and keep cursor position' })
 map('v', '<', '<gv', { desc = 'Decrease indent' })
 map('v', '>', '>gv', { desc = 'Increase indent' })
-map('n', '<leader>;', 'mmA;<Esc>`m', { desc = 'Add trailing semicolon' })
-map('n', '<leader>,', 'mmA,<Esc>`m', { desc = 'Add trailing comma' })
+map('n', 'J', function()
+    local view = vim.fn.winsaveview()
+    vim.cmd 'normal! J'
+    vim.fn.winrestview(view)
+end, { desc = 'Join lines and keep cursor position' })
 
 map('n', '[d', function()
     vim.diagnostic.jump { count = -1, float = true }

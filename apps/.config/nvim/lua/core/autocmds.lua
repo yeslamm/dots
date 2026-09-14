@@ -2,12 +2,15 @@ local augroup = vim.api.nvim_create_augroup('UserConfig', { clear = true })
 
 vim.api.nvim_create_autocmd('TextYankPost', {
     group = augroup,
+    desc = 'Highlight yanked text',
     callback = function()
         vim.hl.on_yank { higroup = 'IncSearch', timeout = 250 }
     end,
 })
 
 vim.api.nvim_create_autocmd('BufReadPost', {
+    group = augroup,
+    desc = 'Return to last edit position',
     callback = function(args)
         local mark = vim.api.nvim_buf_get_mark(args.buf, '"')
         local line_count = vim.api.nvim_buf_line_count(args.buf)
@@ -18,29 +21,23 @@ vim.api.nvim_create_autocmd('BufReadPost', {
 })
 
 vim.api.nvim_create_autocmd('FileType', {
-    pattern = { 'text', 'markdown', 'markdown_inline', 'help' },
-    callback = function()
-        vim.opt_local.conceallevel = 2
-        vim.opt_local.wrap = true
-        vim.opt_local.expandtab = true
-        vim.opt_local.tabstop = 2
-        vim.opt_local.shiftwidth = 2
-        vim.opt_local.softtabstop = 2
-    end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
     group = augroup,
-    pattern = { 'json', 'jsonc' },
-    callback = function()
+    pattern = { 'text', 'markdown', 'markdown_inline', 'help', 'json', 'jsonc' },
+    callback = function(args)
         vim.opt_local.expandtab = true
         vim.opt_local.tabstop = 2
         vim.opt_local.shiftwidth = 2
         vim.opt_local.softtabstop = 2
+
+        if vim.tbl_contains({ 'text', 'markdown', 'markdown_inline', 'help' }, args.match) then
+            vim.opt_local.conceallevel = 2
+            vim.opt_local.wrap = true
+        end
     end,
 })
 
 vim.api.nvim_create_autocmd({ 'BufEnter', 'FileType' }, {
+    group = augroup,
     desc = "Don't automatically continue comments on newline",
     pattern = '*',
     callback = function()
@@ -49,63 +46,28 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'FileType' }, {
 })
 
 vim.api.nvim_create_autocmd('VimResized', {
+    group = augroup,
     command = 'wincmd =',
 })
 
-local cursorline_group = vim.api.nvim_create_augroup('active_cursorline', { clear = true })
-
 vim.api.nvim_create_autocmd({ 'WinEnter', 'BufEnter' }, {
-    group = cursorline_group,
+    group = augroup,
     callback = function()
-        vim.opt_local.cursorline = true
+        if vim.api.nvim_win_get_config(0).relative == '' then
+            vim.opt_local.cursorline = true
+        end
     end,
 })
 
-vim.api.nvim_create_autocmd({ 'WinLeave' }, {
-    group = cursorline_group,
+vim.api.nvim_create_autocmd('WinLeave', {
+    group = augroup,
     callback = function()
         vim.opt_local.cursorline = false
     end,
 })
 
 vim.api.nvim_create_autocmd('FileType', {
-    pattern = 'msg',
-    callback = function(args)
-        vim.schedule(function()
-            local win = vim.fn.bufwinid(args.buf)
-            if win and win > -1 then
-                vim.api.nvim_win_set_config(win, {
-                    relative = 'editor',
-                    anchor = 'NE',
-                    row = 1,
-                    col = vim.o.columns - 1,
-                    focusable = false,
-                    border = 'single',
-                    style = 'minimal',
-                })
-
-                vim.wo[win].winhighlight = 'Normal:NormalFloat,FloatBorder:FloatBorder'
-            end
-        end)
-    end,
-})
-
-local diag_group = vim.api.nvim_create_augroup('HideDiagnostics', { clear = true })
-
-vim.api.nvim_create_autocmd('ModeChanged', {
-    group = diag_group,
-    callback = function(args)
-        local mode = vim.api.nvim_get_mode().mode
-
-        if mode:sub(1, 1) == 'i' or mode:sub(1, 1) == 's' or mode:sub(1, 1) == '\x13' then
-            vim.diagnostic.enable(false, { bufnr = args.buf })
-        else
-            vim.diagnostic.enable(true, { bufnr = args.buf })
-        end
-    end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
+    group = augroup,
     pattern = {
         'help',
         'qf',
@@ -122,27 +84,16 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 vim.api.nvim_create_autocmd('PackChanged', {
+    group = augroup,
     desc = 'Run post-install and update build hooks',
     callback = function(ev)
         if ev.data.spec.name == 'nvim-treesitter' and (ev.data.kind == 'install' or ev.data.kind == 'update') then
             vim.schedule(function()
-                vim.cmd('packadd nvim-treesitter')
-
-                if vim.fn.exists(':TSUpdate') == 2 then
-                    vim.cmd('TSUpdate')
+                vim.cmd 'packadd nvim-treesitter'
+                if vim.fn.exists ':TSUpdate' == 2 then
+                    vim.cmd 'TSUpdate'
                 end
             end)
         end
-    end,
-})
-
-local hl_group = vim.api.nvim_create_augroup('CustomHighlights', { clear = true })
-
-vim.api.nvim_create_autocmd('ColorScheme', {
-    group = hl_group,
-    desc = 'Apply global highlight overrides',
-    callback = function()
-        vim.api.nvim_set_hl(0, 'MasonNormal', { bg = 'none' })
-        vim.api.nvim_set_hl(0, 'QuickFixLine', { link = 'Normal' })
     end,
 })

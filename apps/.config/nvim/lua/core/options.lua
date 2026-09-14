@@ -8,7 +8,7 @@ opt.timeoutlen = 300
 opt.confirm = true
 opt.completeopt = 'menu,menuone,noselect'
 
-vim.o.laststatus = 3
+opt.laststatus = 3
 opt.termguicolors = true
 opt.number = true
 opt.relativenumber = true
@@ -24,10 +24,10 @@ opt.pumheight = 10
 opt.splitright = true
 opt.splitbelow = true
 opt.showtabline = 1
+
 opt.list = true
 opt.foldlevel = 99
 opt.foldlevelstart = 99
-
 opt.listchars = {
     tab = '>-',
     trail = '~',
@@ -40,7 +40,6 @@ opt.tabstop = 4
 opt.shiftwidth = 4
 opt.expandtab = true
 opt.softtabstop = 4
-opt.smartindent = true
 opt.breakindent = true
 
 opt.wrap = false
@@ -61,4 +60,4 @@ opt.shortmess:append 'c'
 opt.diffopt:append { 'vertical', 'foldcolumn:0', 'context:3' }
 opt.fillchars:append { diff = '╱' }
 
-vim.env.PATH = vim.fn.stdpath('data') .. '/mason/bin:' .. vim.env.PATH
+vim.env.PATH = vim.fn.stdpath 'data' .. '/mason/bin:' .. vim.env.PATH
