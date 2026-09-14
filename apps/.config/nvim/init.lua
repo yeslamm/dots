@@ -1,10 +1,9 @@
--- init.lua
 vim.loader.enable()
 
-require('core.options')
-require('core.keybinds')
-require('core.autocmds')
-require('core.packs')
+require 'core.options'
+require 'core.keybinds'
+require 'core.autocmds'
+require 'core.packs'
 
 local core_plugins = {
     'colorscheme',
@@ -18,7 +17,6 @@ local core_plugins = {
     'smart_splits',
     'lualine',
 
-    'mason',
     'autopairs',
     'render_markdown',
     'undotree',
@@ -44,6 +42,3 @@ vim.schedule(function()
         require('plugins.' .. plugin)
     end
 end)
-
-vim.api.nvim_set_hl(0, 'MasonNormal', { bg = 'none' })
-vim.api.nvim_set_hl(0, 'QuickFixLine', { link = 'Normal' })
