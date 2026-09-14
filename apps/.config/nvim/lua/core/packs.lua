@@ -4,7 +4,7 @@ vim.pack.add {
     'https://github.com/echasnovski/mini.nvim',
     'https://github.com/williamboman/mason.nvim',
     'https://github.com/folke/lazydev.nvim',
-    { src = 'https://github.com/saghen/blink.cmp', version = vim.version.range '1.x' },
+    { src = 'https://github.com/saghen/blink.cmp',                version = vim.version.range '1.x' },
     'https://github.com/rafamadriz/friendly-snippets',
     { src = 'https://github.com/nvim-treesitter/nvim-treesitter', version = 'main' },
     'https://github.com/neovim/nvim-lspconfig',
@@ -31,3 +31,21 @@ vim.pack.add {
     'https://github.com/MeanderingProgrammer/render-markdown.nvim',
     'https://github.com/folke/todo-comments.nvim',
 }
+
+vim.api.nvim_create_user_command('PackUpdate', function(opts)
+    vim.pack.update(opts.fargs[1] and { opts.fargs[1] } or nil, { force = opts.bang })
+end, { bang = true, nargs = '?', desc = 'Update vim.pack plugins' })
+
+vim.api.nvim_create_user_command('PackClean', function()
+    local inactive = vim.iter(vim.pack.get())
+        :filter(function(x) return not x.active end)
+        :map(function(x) return x.spec.name end)
+        :totable()
+
+    if #inactive > 0 then
+        vim.pack.del(inactive)
+        vim.notify('Removed unmanaged plugins: ' .. table.concat(inactive, ', '), vim.log.levels.INFO)
+    else
+        vim.notify('No unmanaged plugins to remove', vim.log.levels.INFO)
+    end
+end, { desc = 'Purge unmanaged plugins from disk' })
