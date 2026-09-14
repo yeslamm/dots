@@ -4,7 +4,8 @@ if vim.uv.fs_stat(pack_root) then
 end
 
 require('nvim-treesitter').setup()
-require('nvim-treesitter').install {
+
+local parsers = {
     'bash',
     'c',
     'diff',
@@ -20,11 +21,13 @@ require('nvim-treesitter').install {
     'toml',
 }
 
-local ts_group = vim.api.nvim_create_augroup('NvimTreesitterConfig', { clear = true })
+vim.api.nvim_create_user_command('TSInstallCore', function()
+    require('nvim-treesitter').install(parsers)
+end, { desc = 'Install all core Tree-sitter parsers' })
 
-local ignored_filetypes = {
-    tmux = true,
-}
+local ts_group = vim.api.nvim_create_augroup('NvimTreesitterConfig', { clear = true })
+local ignored_filetypes = { tmux = true }
+local max_filesize = 100 * 1024
 
 vim.api.nvim_create_autocmd('FileType', {
     group = ts_group,
@@ -36,18 +39,18 @@ vim.api.nvim_create_autocmd('FileType', {
             return
         end
 
-        local lang = vim.treesitter.language.get_lang(ft) or ft
-
-        local has_parser = pcall(vim.treesitter.get_parser, buf, lang)
-        if not has_parser then
+        local ok_stat, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
+        if ok_stat and stats and stats.size > max_filesize then
             return
         end
+
+        local lang = vim.treesitter.language.get_lang(ft) or ft
 
         local ok = pcall(vim.treesitter.start, buf, lang)
         if ok then
             vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-            vim.opt_local.foldmethod = 'expr'
-            vim.opt_local.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+            vim.wo[0][0].foldmethod = 'expr'
+            vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
         end
     end,
 })
