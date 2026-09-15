@@ -32,6 +32,7 @@ set $pulse_term  $term --app-id=pulsemixer
 
 set $msg_asus    notify-send -t 1500 -h string:x-canonical-private-synchronous:asus
 set $msg_sys     notify-send -t 1500 -h string:x-canonical-private-synchronous:sys
+set $msg_pass     notify-send -t 1500 -h string:x-canonical-private-synchronous:pass
 
 set $tc          --to-code
 set $lk          --locked
@@ -293,6 +294,11 @@ exec aria2c --conf-path="$HOME/.config/aria2/aria2-rpc.conf"
 # ============================================================================ #
 # == 10. MODES =============================================================== #
 # ============================================================================ #
+
+bindsym $tc $mod+Escape exec $msg_pass "Mode: PASSTHROUGH", mode "PASSTHROUGH"
+mode "PASSTHROUGH" {
+    bindsym $tc $mod+Escape exec $msg_pass "Mode: DEFAULT", mode "default"
+}
 
 bindsym $tc $mod+r mode "RESIZE"
 mode "RESIZE" {
