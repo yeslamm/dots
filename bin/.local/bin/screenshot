@@ -47,7 +47,7 @@ fullscreen)
     GEOM=""
     ;;
 *)
-    echo "Usage: $(basename "$0") [region|window|fullscreen|region-copy|window-copy|fullscreen-copy]" >&2
+    echo "Usage: $(basename "$0") {region|window|fullscreen|region-copy|window-copy|fullscreen-copy}" >&2
     exit 1
     ;;
 esac

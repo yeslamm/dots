@@ -90,7 +90,7 @@ toggle)
     fi
     ;;
 *)
-    echo "Usage: $(basename "$0") [on|off|toggle|check]" >&2
+    echo "Usage: $(basename "$0") {on|off|toggle|check}" >&2
     exit 1
     ;;
 esac
