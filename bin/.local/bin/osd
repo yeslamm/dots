@@ -22,7 +22,7 @@ volume)
     down) wpctl set-volume @DEFAULT_AUDIO_SINK@ "${STEP}%-" ;;
     mute) wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle ;;
     *)
-        echo "Usage: $(basename "$0") volume [up|down|mute]" >&2
+        echo "Usage: $(basename "$0") volume {up|down|mute}" >&2
         exit 1
         ;;
     esac
@@ -41,9 +41,11 @@ volume)
 
 mic | microphone)
     case "$ACTION" in
-    mute | toggle) wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle ;;
+    toggle) wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle ;;
+    mute) wpctl set-mute @DEFAULT_AUDIO_SOURCE@ 1 ;;
+    unmute) wpctl set-mute @DEFAULT_AUDIO_SOURCE@ 0 ;;
     *)
-        echo "Usage: $(basename "$0") mic [toggle|mute]" >&2
+        echo "Usage: $(basename "$0") mic {toggle|mute|unmute}" >&2
         exit 1
         ;;
     esac
@@ -60,7 +62,7 @@ brightness)
     up) arg="${STEP}%+" ;;
     down) arg="${STEP}%-" ;;
     *)
-        echo "Usage: $(basename "$0") brightness [up|down]" >&2
+        echo "Usage: $(basename "$0") brightness {up|down}" >&2
         exit 1
         ;;
     esac
@@ -70,7 +72,7 @@ brightness)
     ;;
 
 *)
-    echo "Usage: $(basename "$0") [volume|mic|brightness] [action]" >&2
+    echo "Usage: $(basename "$0") {volume|mic|brightness} <action>" >&2
     exit 1
     ;;
 esac
