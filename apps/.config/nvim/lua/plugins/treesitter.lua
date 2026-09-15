@@ -10,6 +10,7 @@ local parsers = {
     'c',
     'diff',
     'html',
+    'ini',
     'lua',
     'luadoc',
     'markdown',
