@@ -3,7 +3,6 @@
 Personal Arch Linux dotfiles and workstation configurations.
 
 > [!WARNING]
-> **Hardware-Tailored Configuration & Disclaimer**  
 > These configurations are dialed in for an Arch Linux laptop with specific AMD hardware, architecture-tuned package repositories, audio codec levels, power management, and custom kernel parameters.
 > 
 > **Use at your own risk.** Do not run the `Makefile` or deployment commands blindly. Review and understand the configurations first, and adapt them to match your own hardware before applying changes to your system.
