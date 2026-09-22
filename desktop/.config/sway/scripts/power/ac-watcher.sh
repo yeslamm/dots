@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# ~/.config/sway/scripts/power/ac-watcher.sh
 
 set -euo pipefail
 

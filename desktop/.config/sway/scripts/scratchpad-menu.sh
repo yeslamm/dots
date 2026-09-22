@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# ~/.config/sway/scripts/scratchpad-menu.sh
 
 set -euo pipefail
 

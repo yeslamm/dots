@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# ~/dots/desktop/.config/sway/scripts/start-wob.sh
 
 set -euo pipefail
 

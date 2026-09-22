@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# ~/dots/desktop/.config/waybar/fan.sh
 
 set -euo pipefail
 

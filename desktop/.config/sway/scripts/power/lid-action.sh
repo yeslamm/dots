@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# ~/dots/desktop/.config/sway/scripts/power/lid-action.sh
 
 set -euo pipefail
 

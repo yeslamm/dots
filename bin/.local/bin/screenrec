@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# ~/.local/bin/screenrec
 
 set -euo pipefail
 

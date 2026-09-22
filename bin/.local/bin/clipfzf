@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# ~/dots/bin/.local/bin/clipfzf
 
 set -euo pipefail
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# ~/dots/desktop/.config/sway/scripts/power/lock-suspend.sh
 
 set -euo pipefail
 
