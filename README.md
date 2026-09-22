@@ -95,20 +95,5 @@ Add kernel parameters to `/boot/loader/entries/*.conf`:
 options ... loglevel=3 pcie_aspm.policy=powersave nowatchdog
 ```
 
-*Add background jobs to `~/.config/sway/idle_procs` (e.g. `aria2c`, `cargo`) to inhibit idle sleep.*
-
----
-
-## Makefile Targets
-
-| Target | Description |
-| --- | --- |
-| `make system` | Deploy `/etc` configs and enable system services |
-| `make desktop-profile` | Full deployment: Stow desktop, Zsh plugins, and audio calibration |
-| `make minimal-profile` | CLI deployment: Stow core tools and install Zsh plugins |
-| `make stow-desktop` | Restow desktop packages (`bin`, `shell`, `apps`, `dev`, `desktop`) |
-| `make stow-minimal` | Restow minimal packages (`bin`, `shell`, `apps`, `dev`) |
-| `make unstow-desktop` | Unstow all desktop symlinks |
-| `make audio` | Re-apply ALSA hardware levels and WirePlumber volumes |
-| `make zsh` | Update Zsh plugins via Zimfw |
-
+> [!TIP]
+> Add background process names (e.g., `aria2c`, `cargo`) to `~/.config/sway/idle_procs` to prevent the display from sleeping during long-running tasks.
