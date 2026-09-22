@@ -16,7 +16,7 @@ Personal Arch Linux dotfiles and workstation configurations.
 
 ```bash
 sudo pacman -S --needed base-devel git stow
-git clone https://github.com/r3dr3d007/dots ~/dots
+git clone https://github.com/yeslamm/dots ~/dots
 
 # Add CachyOS repositories
 curl -s https://mirror.cachyos.org/cachyos-repo.tar.xz | tar -xJ -C /tmp
