@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 DOTS_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
-.PHONY: all help system services zram cgroups keyd logind scx vconsole pipewire dirs desktop-profile minimal-profile simulate-desktop simulate-minimal unstow-desktop unstow-minimal zsh audio stow-desktop stow-minimal
+.PHONY: all help system services zram cgroups keyd logind scx vconsole dirs desktop-profile minimal-profile simulate-desktop simulate-minimal unstow-desktop unstow-minimal zsh audio stow-desktop stow-minimal
 
 all: help
 
@@ -30,7 +30,7 @@ help:
 # System Configurations (/etc)
 # ==============================================================================
 
-system: zram cgroups keyd logind scx vconsole pipewire services
+system: zram cgroups keyd logind scx vconsole services
 
 zram:
 	@echo "==> Configuring zram & memory sysctls..."
@@ -62,10 +62,6 @@ vconsole:
 	@echo "==> Deploying vconsole font & keymap settings..."
 	@sudo install -Dm644 $(DOTS_DIR)/system/vconsole/vconsole.conf /etc/vconsole.conf
 
-pipewire:
-	@echo "==> Installing system-wide PipeWire Dolby Atmos IRS impulse..."
-	@sudo install -Dm644 $(DOTS_DIR)/system/pipewire/Dolby_Atmos_Default.irs /etc/pipewire/Dolby_Atmos_Default.irs
-
 services:
 	@echo "==> Enabling system services..."
 	@sudo systemctl daemon-reload
@@ -90,7 +86,7 @@ audio:
 	@amixer -c Generic_1 sset 'Internal Mic Boost' 0dB 2>/dev/null || true
 	@amixer -c Generic_1 sset 'Mic Boost' 0dB 2>/dev/null || true
 	@sudo alsactl store
-	@wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.35
+	@wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.25
 	@wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 1.0
 
 stow-desktop: dirs

@@ -105,10 +105,10 @@ cp ~/.config/aria2/aria2-rpc.conf.example ~/.config/aria2/aria2-rpc.conf
 
 ### 5. Audio Verification & System Parameters
 
-Verify that the native DSP filter sinks are active after your first session start:
+Verify that the native DSP filter source is active after your first session start:
 
 ```bash
-wpctl status | grep -E "Dolby Atmos IEM Sink|Noise Canceling Microphone"
+wpctl status | grep -E "Noise Canceling Microphone"
 ```
 
 #### Kernel Parameters (systemd-boot)
