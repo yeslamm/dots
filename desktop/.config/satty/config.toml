@@ -1,27 +1,18 @@
 [general]
-fullscreen = true
+fullscreen = false
 floating-hack = true
 resize = { mode = "smart" }
-auto-copy = false
 corner-roundness = 10
+annotation-size-factor = 1
+brush-smooth-history-size = 4
+default-round-caps = true
 initial-tool = "arrow"
 copy-command = "wl-copy"
-annotation-size-factor = 1
 output-filename = "~/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H:%M:%S.png"
-save-after-copy = false
-default-hide-toolbars = false
-focus-toggles-toolbars = false
-default-fill-shapes = false
-primary-highlighter = "block"
 disable-notifications = true
-actions-on-right-click = []
 actions-on-enter = ["save-to-clipboard", "save-to-file", "exit"]
 actions-on-escape = ["exit"]
-no-window-decoration = true
-brush-smooth-history-size = 0
-pan-step-size = 50.0
-zoom-factor = 1.1
-text-move-length = 50.0
+no-window-decoration = false
 
 [keybinds]
 pointer = "p"
@@ -53,5 +44,4 @@ fallback = [
 
 [color-palette]
 palette = ["#00ffff", "#a52a2a", "#dc143c", "#ff1493", "#ffd700", "#008000"]
-
 custom = ["#00ffff", "#a52a2a", "#dc143c", "#ff1493", "#ffd700", "#008000"]
