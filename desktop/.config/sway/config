@@ -32,7 +32,7 @@ set $pulse_term  $term --app-id=pulsemixer
 
 set $msg_asus    notify-send -t 1500 -h string:x-canonical-private-synchronous:asus
 set $msg_sys     notify-send -t 1500 -h string:x-canonical-private-synchronous:sys
-set $msg_pass     notify-send -t 1500 -h string:x-canonical-private-synchronous:pass
+set $msg_pass    notify-send -t 1500 -h string:x-canonical-private-synchronous:pass
 
 set $tc          --to-code
 set $lk          --locked
@@ -125,6 +125,10 @@ for_window [instance="sun-awt-X11-XDialogPeer"] floating enable
 
 for_window [title="(?i)picture-in-picture|picture in picture"] floating enable, sticky enable
 for_window [app_id="firefox" title="^Extension:"] floating enable
+
+for_window [app_id="(?i)satty"] floating enable
+for_window [app_id="(?i)satty" title="^Satty"] move scratchpad
+no_focus   [app_id="(?i)satty" title="^Satty"]
 
 for_window [app_id="swayimg"] fullscreen enable
 
