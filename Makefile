@@ -3,99 +3,129 @@ DOTS_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
 TARGET_USER ?= $(shell logname 2>/dev/null || echo "$$USER")
 
-.PHONY: all help system services zram cgroups keyd logind scx vconsole \
-        dirs desktop-profile minimal-profile simulate-desktop simulate-minimal \
-        unstow-desktop unstow-minimal zsh audio stow-desktop stow-minimal
+.PHONY: all help bootstrap pkgs pkgs-gaming pkgs-virt \
+        system zram cgroups keyd logind scx vconsole services \
+        dirs zsh audio stow profile simulate unstow
 
 all: help
 
 help:
 	@echo ""
-	@echo "Dotfiles Management Commands:"
+	@echo "Usage: make [target]"
 	@echo ""
-	@echo "  System & Tools:"
-	@echo "    make system                 - Deploy /etc configs and enable systemd services"
-	@echo "    make audio                  - Configure ALSA levels and WirePlumber volumes"
-	@echo "    make zsh                    - Install or update Zsh plugins"
+	@echo "  Setup:"
+	@echo "    bootstrap    - Run pkgs, system, and profile"
 	@echo ""
-	@echo "  Workstation Profiles:"
-	@echo "    make desktop-profile        - Deploy full Wayland/Sway profile + dependencies"
-	@echo "    make minimal-profile        - Deploy core CLI profile (terminal & dev tools)"
+	@echo "  Packages:"
+	@echo "    pkgs         - Install system and desktop packages"
+	@echo "    pkgs-gaming  - Install gaming packages"
+	@echo "    pkgs-virt    - Install virtualization packages"
 	@echo ""
-	@echo "  Maintenance:"
-	@echo "    make stow-desktop           - Fast restow of desktop symlinks"
-	@echo "    make stow-minimal           - Fast restow of minimal symlinks"
-	@echo "    make unstow-desktop         - Remove all desktop stow symlinks"
-	@echo "    make unstow-minimal         - Remove all minimal stow symlinks"
-	@echo "    make simulate-desktop       - Preview desktop stow operations safely"
-	@echo "    make simulate-minimal       - Preview minimal stow operations safely"
+	@echo "  System:"
+	@echo "    system       - Copy /etc configs and enable services"
+	@echo "    audio        - Set mic boost and default volume"
+	@echo "    zsh          - Install or update zimfw plugins"
+	@echo ""
+	@echo "  Dotfiles:"
+	@echo "    profile      - Deploy dotfiles, set audio, update zsh"
+	@echo "    stow         - Link dotfiles to home directory"
+	@echo "    unstow       - Remove dotfile links from home directory"
+	@echo "    simulate     - Preview stow changes (dry-run)"
 	@echo ""
 
 # ==============================================================================
-# System Configurations (/etc)
+# Bootstrap
+# ==============================================================================
+
+bootstrap: pkgs system profile
+	@echo ""
+	@echo "==> Bootstrap complete. Reboot recommended."
+	@echo ""
+
+# ==============================================================================
+# Packages
+# ==============================================================================
+
+pkgs:
+	@echo ""
+	@echo "==> Installing packages..."
+	@awk '!/^ *#/ && NF' $(DOTS_DIR)/pkglists/packages.txt | sort -u | yay -S --needed -
+
+pkgs-gaming:
+	@echo ""
+	@echo "==> Installing gaming packages..."
+	@awk '!/^ *#/ && NF' $(DOTS_DIR)/pkglists/gaming.txt | sort -u | yay -S --needed -
+
+pkgs-virt:
+	@echo ""
+	@echo "==> Installing virtualization packages..."
+	@awk '!/^ *#/ && NF' $(DOTS_DIR)/pkglists/virt.txt | sort -u | yay -S --needed -
+
+# ==============================================================================
+# System (/etc)
 # ==============================================================================
 
 system: zram cgroups keyd logind scx vconsole services
 
 zram:
 	@echo ""
-	@echo "==> Configuring zram & memory sysctls..."
+	@echo "==> Configuring zram..."
 	sudo install -Dm644 $(DOTS_DIR)/system/memory/zram-generator.conf /etc/systemd/zram-generator.conf
 	sudo install -Dm644 $(DOTS_DIR)/system/memory/99-memory.conf /etc/sysctl.d/99-memory.conf
 	sudo sysctl --system > /dev/null
 
 cgroups:
 	@echo ""
-	@echo "==> Configuring systemd user cgroup delegation..."
+	@echo "==> Configuring systemd user delegate..."
 	sudo install -Dm644 $(DOTS_DIR)/system/systemd/user-delegate.conf /etc/systemd/system/user@.service.d/delegate.conf
 
 keyd:
 	@echo ""
-	@echo "==> Deploying keyd hardware mapping..."
+	@echo "==> Configuring keyd..."
 	sudo install -Dm644 $(DOTS_DIR)/system/keyd/default.conf /etc/keyd/default.conf
 	sudo usermod -aG keyd $(TARGET_USER)
 
 logind:
 	@echo ""
-	@echo "==> Configuring systemd-logind power handling..."
+	@echo "==> Configuring logind..."
 	sudo install -Dm644 $(DOTS_DIR)/system/systemd/lid.conf /etc/systemd/logind.conf.d/lid.conf
 
 scx:
 	@echo ""
-	@echo "==> Deploying scx scheduler service..."
+	@echo "==> Configuring scx..."
 	sudo install -Dm644 $(DOTS_DIR)/system/scx/scx /etc/default/scx
 	sudo install -Dm644 $(DOTS_DIR)/system/scx/scx.service /etc/systemd/system/scx.service
 
 vconsole:
 	@echo ""
-	@echo "==> Deploying vconsole font & keymap settings..."
+	@echo "==> Configuring vconsole..."
 	sudo install -Dm644 $(DOTS_DIR)/system/vconsole/vconsole.conf /etc/vconsole.conf
 
 services:
 	@echo ""
-	@echo "==> Reloading daemon and enabling system services..."
+	@echo "==> Enabling services..."
 	sudo systemctl daemon-reload
 	sudo systemctl enable --now keyd.service
 	sudo systemctl enable --now scx.service
 	@echo ""
 
 # ==============================================================================
-# User Stow Packages ($HOME)
+# Dotfiles ($HOME)
 # ==============================================================================
 
 dirs:
 	@echo ""
-	@echo "==> Creating required XDG base directories..."
+	@echo "==> Creating XDG directories..."
 	mkdir -p $(HOME)/.config $(HOME)/.local/bin $(HOME)/.local/share $(HOME)/.cache $(HOME)/.icons
 
 zsh:
 	@echo ""
-	@echo "==> Installing/Updating Zsh plugins..."
+	@echo "==> Installing zsh plugins..."
 	zsh -i -c "zimfw install"
 
 audio:
 	@echo ""
-	@echo "==> Configuring ALSA and WirePlumber audio levels..."
+	@echo "==> Setting audio levels..."
 	amixer -c Generic_1 sset 'Capture' 20% 2>/dev/null || amixer -c 1 sset 'Capture' 20% 2>/dev/null || true
 	amixer -c Generic_1 sset 'Internal Mic Boost' 0dB 2>/dev/null || true
 	amixer -c Generic_1 sset 'Mic Boost' 0dB 2>/dev/null || true
@@ -103,46 +133,24 @@ audio:
 	wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.25 2>/dev/null || true
 	wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 1.0 2>/dev/null || true
 
-stow-desktop: dirs
+stow: dirs
 	@echo ""
-	@echo "==> Restowing Full Desktop Profile..."
+	@echo "==> Stowing dotfiles..."
 	stow -d $(DOTS_DIR) -t $(HOME) -R bin shell apps dev desktop
 
-stow-minimal: dirs
+profile: stow zsh audio
 	@echo ""
-	@echo "==> Restowing Minimal Profile..."
-	stow -d $(DOTS_DIR) -t $(HOME) -R bin shell apps dev
-
-desktop-profile: stow-desktop zsh audio
-	@echo ""
-	@echo "==> Full desktop profile successfully deployed!"
+	@echo "==> Done."
 	@echo ""
 
-minimal-profile: stow-minimal zsh
+simulate: dirs
 	@echo ""
-	@echo "==> Minimal CLI profile successfully deployed!"
-	@echo ""
-
-simulate-desktop: dirs
-	@echo ""
-	@echo "==> Simulating Desktop Stow..."
+	@echo "==> Dry-run stow..."
 	stow -d $(DOTS_DIR) -t $(HOME) -nvR bin shell apps dev desktop
 	@echo ""
 
-simulate-minimal: dirs
+unstow:
 	@echo ""
-	@echo "==> Simulating Minimal Stow..."
-	stow -d $(DOTS_DIR) -t $(HOME) -nvR bin shell apps dev
-	@echo ""
-
-unstow-desktop:
-	@echo ""
-	@echo "==> Removing Desktop Stow symlinks..."
+	@echo "==> Unstowing dotfiles..."
 	stow -d $(DOTS_DIR) -t $(HOME) -D bin shell apps dev desktop
-	@echo ""
-
-unstow-minimal:
-	@echo ""
-	@echo "==> Removing Minimal Stow symlinks..."
-	stow -d $(DOTS_DIR) -t $(HOME) -D bin shell apps dev
 	@echo ""

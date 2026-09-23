@@ -1,9 +1,0 @@
-ananicy-cpp
-cachyos-ananicy-rules
-cachyos-keyring
-cachyos-mirrorlist
-cachyos-settings
-cachyos-v4-mirrorlist
-linux-cachyos
-linux-cachyos-headers
-scx-scheds

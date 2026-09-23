@@ -1,11 +1,11 @@
 game-devices-udev
 gamemode
 gamescope
-heroic-games-launcher-bin
+heroic-games-launcher
 lib32-gamemode
 lib32-mangohud
 lib32-mesa
-lib32-vkbasalt
+lib32-vulkan-radeon
 mangohud
 prismlauncher
 proton-cachyos-slr
@@ -13,8 +13,5 @@ protontricks
 protonup-qt
 steam
 umu-launcher
-vkbasalt
 wine
-wine-gecko
-wine-mono
 winetricks

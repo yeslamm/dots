@@ -1,0 +1,7 @@
+dnsmasq
+docker
+edk2-ovmf
+iptables
+libvirt
+qemu-desktop
+virt-manager
