@@ -133,9 +133,8 @@ no_focus   [app_id="(?i)satty" title="^Satty"]
 for_window [app_id="swayimg"] fullscreen enable
 
 for_window [all] inhibit_idle fullscreen
-
-for_window [app_id="(?i)mpv|zathura|qbittorrent|steam|gamescope|\.exe"] inhibit_idle focus
-for_window [class="(?i)mpv|zathura|qbittorrent|steam|gamescope|\.exe"] inhibit_idle focus
+for_window [app_id="(?i)mpv|celluloid|zathura|qbittorrent|steam|gamescope|\.exe"] inhibit_idle focus
+for_window [class="(?i)mpv|celluloid|zathura|qbittorrent|steam|gamescope|\.exe"] inhibit_idle focus
 
 # ============================================================================ #
 # == 5. KEYBINDINGS: CORE ==================================================== #

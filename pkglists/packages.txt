@@ -21,6 +21,7 @@ cachyos-v4-mirrorlist
 capitaine-cursors
 cava
 cbonsai
+celluloid
 chafa
 clang
 cliphist
