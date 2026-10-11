@@ -12,6 +12,9 @@ vim.api.nvim_create_autocmd('BufReadPost', {
     group = augroup,
     desc = 'Return to last edit position',
     callback = function(args)
+        if vim.bo[args.buf].filetype:match 'commit' or vim.bo[args.buf].filetype:match 'rebase' then
+            return
+        end
         local mark = vim.api.nvim_buf_get_mark(args.buf, '"')
         local line_count = vim.api.nvim_buf_line_count(args.buf)
         if mark[1] > 0 and mark[1] <= line_count then
@@ -22,24 +25,35 @@ vim.api.nvim_create_autocmd('BufReadPost', {
 
 vim.api.nvim_create_autocmd('FileType', {
     group = augroup,
-    pattern = { 'text', 'markdown', 'markdown_inline', 'help', 'json', 'jsonc' },
+    pattern = { 'json', 'jsonc' },
+    callback = function()
+        vim.opt_local.expandtab = true
+        vim.opt_local.shiftwidth = 2
+        vim.opt_local.tabstop = 2
+        vim.opt_local.softtabstop = 2
+    end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+    group = augroup,
+    pattern = { 'markdown', 'tex', 'text' },
     callback = function(args)
         vim.opt_local.expandtab = true
-        vim.opt_local.tabstop = 2
         vim.opt_local.shiftwidth = 2
+        vim.opt_local.tabstop = 2
         vim.opt_local.softtabstop = 2
+        vim.opt_local.wrap = true
 
-        if vim.tbl_contains({ 'text', 'markdown', 'markdown_inline', 'help' }, args.match) then
+        if args.match == 'markdown' then
             vim.opt_local.conceallevel = 2
-            vim.opt_local.wrap = true
+            vim.opt_local.spell = true
         end
     end,
 })
 
-vim.api.nvim_create_autocmd({ 'BufEnter', 'FileType' }, {
+vim.api.nvim_create_autocmd('FileType', {
     group = augroup,
-    desc = "Don't automatically continue comments on newline",
-    pattern = '*',
+    desc = "Don't continue comments on newline",
     callback = function()
         vim.opt_local.formatoptions:remove { 'c', 'r', 'o' }
     end,

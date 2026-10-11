@@ -1,33 +1,39 @@
 local opt = vim.opt
 
-vim.g.have_nerd_font = true
-opt.mouse = 'a'
 opt.undofile = true
 opt.updatetime = 250
 opt.timeoutlen = 300
 opt.confirm = true
-opt.completeopt = 'menu,menuone,noselect'
+opt.mouse = 'a'
 
-opt.laststatus = 3
-opt.termguicolors = true
 opt.number = true
 opt.relativenumber = true
-opt.signcolumn = 'yes'
 opt.cursorline = true
+opt.signcolumn = 'yes'
+opt.laststatus = 3
+opt.showmode = false
 opt.scrolloff = 10
 opt.sidescrolloff = 8
-opt.showmode = false
-opt.showcmd = true
-opt.winblend = 0
-opt.pumblend = 0
-opt.pumheight = 10
 opt.splitright = true
 opt.splitbelow = true
-opt.showtabline = 1
+opt.pumheight = 10
 
-opt.list = true
+opt.expandtab = true
+opt.shiftwidth = 4
+opt.tabstop = 4
+opt.softtabstop = 4
+opt.breakindent = true
+opt.wrap = false
+opt.linebreak = true
+opt.virtualedit = 'block'
+
+opt.ignorecase = true
+opt.smartcase = true
+opt.inccommand = 'split'
+
 opt.foldlevel = 99
 opt.foldlevelstart = 99
+opt.list = true
 opt.listchars = {
     tab = '>-',
     trail = '~',
@@ -36,28 +42,13 @@ opt.listchars = {
     precedes = '<',
 }
 
-opt.tabstop = 4
-opt.shiftwidth = 4
-opt.expandtab = true
-opt.softtabstop = 4
-opt.breakindent = true
-
-opt.wrap = false
-opt.linebreak = true
-opt.conceallevel = 0
-opt.virtualedit = 'block'
-
-opt.ignorecase = true
-opt.smartcase = true
-opt.incsearch = true
-opt.hlsearch = true
-opt.inccommand = 'split'
+opt.diffopt:append { 'foldcolumn:0' }
+opt.fillchars:append { diff = '╱' }
+opt.shortmess:append 'c'
 
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
-opt.shortmess:append 'c'
 
-opt.diffopt:append { 'vertical', 'foldcolumn:0', 'context:3' }
-opt.fillchars:append { diff = '╱' }
-
-vim.env.PATH = vim.fn.stdpath 'data' .. '/mason/bin:' .. vim.env.PATH
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
