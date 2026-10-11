@@ -1,19 +1,7 @@
 require('ibl').setup {
-    indent = {
-        char = '▏',
-    },
-    scope = { enabled = true },
+    indent = { char = '▏' },
+    scope = { enabled = false },
     exclude = {
-        filetypes = {
-            'help',
-            'lazy',
-            'mason',
-            'notify',
-            'toggleterm',
-            'oil',
-            'markdown',
-            'quarto',
-            'rmd',
-        },
+        filetypes = { 'help', 'mason', 'notify', 'oil', 'markdown', 'quarto', 'rmd' },
     },
 }

@@ -13,7 +13,7 @@ require('which-key').setup {
             D = 'D-',
             S = 'S-',
             CR = 'CR',
-            Esc = 'Esc',
+            Esc = 'ESC',
             ScrollWheelDown = 'ScrollDown',
             ScrollWheelUp = 'ScrollUp',
             NL = 'NL',
@@ -52,5 +52,6 @@ require('which-key').setup {
         { '<leader>s', group = 'Search' },
         { '<leader>t', group = 'Tabs' },
         { '<leader>D', group = 'Debug' },
+        { '<leader>l', group = 'LateX' },
     },
 }

@@ -1,4 +1,3 @@
----@diagnostic disable: missing-fields
 local fzf = require 'fzf-lua'
 
 fzf.setup {
@@ -6,27 +5,16 @@ fzf.setup {
         ['--cycle'] = true,
         ['--layout'] = 'default',
     },
-
     winopts = {
-        height = 0.85,
-        width = 0.80,
         border = 'single',
         preview = {
             layout = 'vertical',
             vertical = 'down:50%',
             border = 'single',
-            wrap = false,
-            winopts = {
-                number = true,
-                relativenumber = false,
-                cursorline = true,
-            },
         },
     },
-
     keymap = {
         builtin = {
-            true,
             ['<M-d>'] = 'preview-page-down',
             ['<M-u>'] = 'preview-page-up',
             ['<M-j>'] = 'preview-down',
@@ -36,40 +24,16 @@ fzf.setup {
             ['<M-z>'] = 'toggle-fullscreen',
         },
         fzf = {
-            true,
             ['ctrl-j'] = 'ignore',
             ['ctrl-k'] = 'ignore',
-            ['ctrl-n'] = 'down',
-            ['ctrl-p'] = 'up',
         },
     },
-
-    buffers = {
-        prompt = 'Buffers> ',
-        actions = {
-            ['ctrl-x'] = { fn = fzf.actions.buf_del, reload = true },
-        },
-    },
-
     grep = {
         rg_opts = '--column --line-number --no-heading --color=always --smart-case --hidden --max-columns=4096 --glob="!.git/" -e',
         rg_glob = true,
     },
-
     files = {
         fd_opts = '--color=never --type f --hidden --strip-cwd-prefix --exclude .git --exclude node_modules',
-    },
-
-    defaults = {
-        file_icons = true,
-        color_icons = true,
-        git_icons = true,
-    },
-    fzf_colors = true,
-
-    lsp = {
-        jump1 = true,
-        jump1_action = fzf.actions.file_edit,
     },
 }
 
@@ -95,7 +59,6 @@ map('n', '<leader>s.', fzf.oldfiles, { desc = 'Recent Files' })
 map('n', '<leader><leader>', fzf.buffers, { desc = 'Buffers' })
 map('n', '<leader>/', fzf.blines, { desc = 'Fuzz Search Buffer' })
 map('n', '<leader>sr', fzf.registers, { desc = 'Registers' })
-
 map('n', '<leader>sn', function()
     fzf.files { cwd = vim.fn.stdpath 'config' }
 end, { desc = 'Neovim Files' })

@@ -1,5 +1,5 @@
-local hide_in_width = function()
-    return vim.fn.winwidth(0) > 100
+local is_wide = function()
+    return vim.o.columns > 100
 end
 
 local function lsp_clients()
@@ -7,64 +7,43 @@ local function lsp_clients()
     if #clients == 0 then
         return ''
     end
-    local names = {}
-    for _, client in pairs(clients) do
-        table.insert(names, client.name)
-    end
+    local names = vim.iter(clients)
+        :map(function(c)
+            return c.name
+        end)
+        :totable()
     local client_str = table.concat(names, '|')
-    if #client_str > 20 and not hide_in_width() then
+    if #client_str > 20 and not is_wide() then
         return ' ' .. clients[1].name
     end
     return ' ' .. client_str
 end
 
-local diagnostics = {
-    'diagnostics',
-    sources = { 'nvim_diagnostic' },
-    sections = { 'error', 'warn', 'info', 'hint' },
-    symbols = { error = '● ', warn = '● ', info = '● ', hint = '● ' },
-    colored = true,
-    update_in_insert = false,
-    always_visible = false,
-    cond = hide_in_width,
-}
-
-local diff = {
-    'diff',
-    colored = true,
-    symbols = { added = ' ', modified = ' ', removed = ' ' },
-    cond = hide_in_width,
-}
-
 require('lualine').setup {
     options = {
-        icons_enabled = true,
-        theme = 'auto',
+        globalstatus = true,
         section_separators = { left = '', right = '' },
         component_separators = { left = '', right = '' },
-        always_divide_middle = true,
-        globalstatus = true,
     },
     sections = {
         lualine_a = { 'mode' },
         lualine_b = { 'branch' },
         lualine_c = { { 'filename', path = 3 } },
         lualine_x = {
-            diagnostics,
-            diff,
+            {
+                'diagnostics',
+                symbols = { error = '● ', warn = '● ', info = '● ', hint = '● ' },
+                cond = is_wide,
+            },
+            {
+                'diff',
+                symbols = { added = ' ', modified = ' ', removed = ' ' },
+                cond = is_wide,
+            },
             lsp_clients,
             { 'filetype' },
         },
         lualine_y = { 'location' },
         lualine_z = { 'progress' },
     },
-    inactive_sections = {
-        lualine_a = {},
-        lualine_b = {},
-        lualine_c = { { 'filename', path = 1 } },
-        lualine_x = { { 'location', padding = 0 } },
-        lualine_y = {},
-        lualine_z = {},
-    },
-    tabline = {},
 }
