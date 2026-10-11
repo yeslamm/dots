@@ -9,9 +9,9 @@ vim.pack.add {
 
     -- LSP & Tool Management
     'https://github.com/williamboman/mason.nvim',
-    'https://github.com/williamboman/mason-lspconfig.nvim',
     'https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim',
     'https://github.com/neovim/nvim-lspconfig',
+    'https://github.com/seblj/roslyn.nvim',
     'https://github.com/b0o/schemastore.nvim',
     'https://github.com/j-hui/fidget.nvim',
     'https://github.com/folke/lazydev.nvim',
@@ -33,6 +33,7 @@ vim.pack.add {
     'https://github.com/windwp/nvim-autopairs',
     'https://github.com/folke/todo-comments.nvim',
     'https://github.com/folke/which-key.nvim',
+    'https://github.com/lervag/vimtex',
 
     -- Git & History
     'https://github.com/lewis6991/gitsigns.nvim',

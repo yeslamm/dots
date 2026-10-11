@@ -41,10 +41,6 @@
       "rev": "221ce6b2d999187044529f49da6554a92f740a96",
       "src": "https://github.com/nvim-lualine/lualine.nvim"
     },
-    "mason-lspconfig.nvim": {
-      "rev": "77e06f7d2fc127e6ef0a720b59acbc50757cff19",
-      "src": "https://github.com/williamboman/mason-lspconfig.nvim"
-    },
     "mason-nvim-dap.nvim": {
       "rev": "9a10e096703966335bd5c46c8c875d5b0690dade",
       "src": "https://github.com/jay-babu/mason-nvim-dap.nvim"
@@ -106,6 +102,10 @@
       "rev": "f94914e0486466aac53570de084a475e288ec46d",
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
+    "roslyn.nvim": {
+      "rev": "bf1bd4e70bc7068d1b4aebf4ce03cc19a86615be",
+      "src": "https://github.com/seblj/roslyn.nvim"
+    },
     "schemastore.nvim": {
       "rev": "05e938c0aa5dfbdbb11972fa4c8a85f27f402ba0",
       "src": "https://github.com/b0o/schemastore.nvim"
@@ -121,6 +121,10 @@
     "undotree": {
       "rev": "02b69aed427b848c4dca483fc5e9524b6019c296",
       "src": "https://github.com/jiaoshijie/undotree"
+    },
+    "vimtex": {
+      "rev": "bbfa1501287b65e8803d5cc1007db2c2351c4453",
+      "src": "https://github.com/lervag/vimtex"
     },
     "which-key.nvim": {
       "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",
