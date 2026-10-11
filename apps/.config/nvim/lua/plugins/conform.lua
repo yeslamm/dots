@@ -1,14 +1,13 @@
 local conform = require 'conform'
 
 conform.setup {
-    notify_on_error = true,
     format_on_save = {
         timeout_ms = 500,
         lsp_format = 'fallback',
     },
     formatters = {
         shfmt = {
-            args = { '-i', '4' },
+            prepend_args = { '-i', '4' },
         },
     },
     formatters_by_ft = {
@@ -20,8 +19,8 @@ conform.setup {
         python = { 'ruff_organize_imports', 'ruff_format' },
         sh = { 'shfmt' },
         bash = { 'shfmt' },
-        cs = { 'csharpier' },
         toml = { 'taplo' },
+        tex = { 'tex-fmt' },
         css = { 'prettier' },
         scss = { 'prettier' },
         less = { 'prettier' },
@@ -29,5 +28,5 @@ conform.setup {
 }
 
 vim.keymap.set({ 'n', 'v' }, '<leader>F', function()
-    conform.format { async = true }
+    conform.format { async = true, lsp_format = 'fallback' }
 end, { desc = 'Format buffer' })

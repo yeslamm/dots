@@ -5,15 +5,11 @@ require('blink.cmp').setup {
 
     appearance = {
         use_nvim_cmp_as_default = true,
-        nerd_font_variant = 'mono',
     },
 
     signature = {
         enabled = true,
-        window = {
-            border = 'single',
-            show_documentation = true,
-        },
+        window = { border = 'single' },
     },
 
     completion = {
@@ -53,7 +49,6 @@ require('blink.cmp').setup {
         },
         documentation = {
             auto_show = true,
-            auto_show_delay_ms = 500,
             window = { border = 'single' },
         },
         ghost_text = {
@@ -71,7 +66,6 @@ require('blink.cmp').setup {
                 name = 'LazyDev',
                 module = 'lazydev.integrations.blink',
                 score_offset = 100,
-                fallbacks = { 'lsp' },
             },
             buffer = {
                 min_keyword_length = 3,
