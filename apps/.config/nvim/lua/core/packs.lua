@@ -12,6 +12,7 @@ vim.pack.add {
     'https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim',
     'https://github.com/neovim/nvim-lspconfig',
     'https://github.com/seblj/roslyn.nvim',
+    { src = 'https://github.com/mrcjkb/rustaceanvim', version = vim.version.range '^9' },
     'https://github.com/b0o/schemastore.nvim',
     'https://github.com/j-hui/fidget.nvim',
     'https://github.com/folke/lazydev.nvim',

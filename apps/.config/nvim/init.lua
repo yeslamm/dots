@@ -10,6 +10,7 @@ local plugins = {
     'mini',
     'lsp',
     'roslyn',
+    'rustaceanvim',
     'blink',
     'treesitter',
     'oil',
