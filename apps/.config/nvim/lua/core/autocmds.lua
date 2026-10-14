@@ -2,7 +2,6 @@ local augroup = vim.api.nvim_create_augroup('UserConfig', { clear = true })
 
 vim.api.nvim_create_autocmd('TextYankPost', {
     group = augroup,
-    desc = 'Highlight yanked text',
     callback = function()
         vim.hl.on_yank { higroup = 'IncSearch', timeout = 250 }
     end,
@@ -10,14 +9,14 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 vim.api.nvim_create_autocmd('BufReadPost', {
     group = augroup,
-    desc = 'Return to last edit position',
     callback = function(args)
-        if vim.bo[args.buf].filetype:match 'commit' or vim.bo[args.buf].filetype:match 'rebase' then
+        local ft = vim.bo[args.buf].filetype
+        if ft:find 'commit' or ft:find 'rebase' then
             return
         end
+
         local mark = vim.api.nvim_buf_get_mark(args.buf, '"')
-        local line_count = vim.api.nvim_buf_line_count(args.buf)
-        if mark[1] > 0 and mark[1] <= line_count then
+        if mark[1] > 0 and mark[1] <= vim.api.nvim_buf_line_count(args.buf) then
             vim.cmd 'normal! g`"zz'
         end
     end,
@@ -25,35 +24,24 @@ vim.api.nvim_create_autocmd('BufReadPost', {
 
 vim.api.nvim_create_autocmd('FileType', {
     group = augroup,
-    pattern = { 'json', 'jsonc' },
-    callback = function()
-        vim.opt_local.expandtab = true
-        vim.opt_local.shiftwidth = 2
-        vim.opt_local.tabstop = 2
-        vim.opt_local.softtabstop = 2
-    end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-    group = augroup,
-    pattern = { 'markdown', 'tex', 'text' },
+    pattern = { 'json', 'jsonc', 'markdown', 'tex', 'text' },
     callback = function(args)
         vim.opt_local.expandtab = true
         vim.opt_local.shiftwidth = 2
         vim.opt_local.tabstop = 2
         vim.opt_local.softtabstop = 2
-        vim.opt_local.wrap = true
 
+        if args.match == 'markdown' or args.match == 'tex' or args.match == 'text' then
+            vim.opt_local.wrap = true
+        end
         if args.match == 'markdown' then
             vim.opt_local.conceallevel = 2
-            vim.opt_local.spell = true
         end
     end,
 })
 
 vim.api.nvim_create_autocmd('FileType', {
     group = augroup,
-    desc = "Don't continue comments on newline",
     callback = function()
         vim.opt_local.formatoptions:remove { 'c', 'r', 'o' }
     end,
@@ -82,32 +70,8 @@ vim.api.nvim_create_autocmd('WinLeave', {
 
 vim.api.nvim_create_autocmd('FileType', {
     group = augroup,
-    pattern = {
-        'help',
-        'qf',
-        'man',
-        'lspinfo',
-        'checkhealth',
-        'mason',
-        'notify',
-        'gitsigns-blame',
-    },
-    callback = function()
-        vim.keymap.set('n', 'q', '<cmd>close<CR>', { buffer = true, silent = true })
-    end,
-})
-
-vim.api.nvim_create_autocmd('PackChanged', {
-    group = augroup,
-    desc = 'Run post-install and update build hooks',
-    callback = function(ev)
-        if ev.data.spec.name == 'nvim-treesitter' and (ev.data.kind == 'install' or ev.data.kind == 'update') then
-            vim.schedule(function()
-                vim.cmd 'packadd nvim-treesitter'
-                if vim.fn.exists ':TSUpdate' == 2 then
-                    vim.cmd 'TSUpdate'
-                end
-            end)
-        end
+    pattern = { 'help', 'qf', 'man', 'lspinfo', 'checkhealth', 'mason', 'notify', 'gitsigns-blame' },
+    callback = function(args)
+        vim.keymap.set('n', 'q', '<cmd>close<CR>', { buffer = args.buf, silent = true })
     end,
 })

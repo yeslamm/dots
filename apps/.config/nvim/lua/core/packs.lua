@@ -48,23 +48,19 @@ vim.pack.add {
 }
 
 vim.api.nvim_create_user_command('PackUpdate', function(opts)
-    vim.pack.update(opts.fargs[1] and { opts.fargs[1] } or nil, { force = opts.bang })
-end, { bang = true, nargs = '?', desc = 'Update vim.pack plugins' })
+    vim.pack.update(opts.fargs[1] and opts.fargs, { force = opts.bang })
+end, { bang = true, nargs = '?' })
 
 vim.api.nvim_create_user_command('PackClean', function()
-    local inactive = vim.iter(vim.pack.get())
-        :filter(function(x)
-            return not x.active
+    local dead = vim.iter(vim.pack.get())
+        :filter(function(p)
+            return not p.active
         end)
-        :map(function(x)
-            return x.spec.name
+        :map(function(p)
+            return p.spec.name
         end)
         :totable()
-
-    if #inactive > 0 then
-        vim.pack.del(inactive)
-        vim.notify('Removed unmanaged plugins: ' .. table.concat(inactive, ', '), vim.log.levels.INFO)
-    else
-        vim.notify('No unmanaged plugins to remove', vim.log.levels.INFO)
+    if #dead > 0 then
+        vim.pack.del(dead)
     end
-end, { desc = 'Purge unmanaged plugins from disk' })
+end, {})
