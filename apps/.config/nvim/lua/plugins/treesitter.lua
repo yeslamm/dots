@@ -1,12 +1,8 @@
-local ts_pkg = vim.iter(vim.pack.get()):find(function(p)
+local ts = vim.iter(vim.pack.get()):find(function(p)
     return p.spec.name == 'nvim-treesitter'
 end)
-
-if ts_pkg and ts_pkg.path then
-    local runtime = vim.fs.joinpath(ts_pkg.path, 'runtime')
-    if vim.uv.fs_stat(runtime) then
-        vim.opt.rtp:prepend(runtime)
-    end
+if ts and ts.path then
+    vim.opt.rtp:prepend(vim.fs.joinpath(ts.path, 'runtime'))
 end
 
 require('nvim-treesitter').setup()
@@ -14,6 +10,7 @@ require('nvim-treesitter').setup()
 local parsers = {
     'bash',
     'c',
+    'cpp',
     'diff',
     'html',
     'ini',
@@ -32,28 +29,21 @@ local parsers = {
 
 vim.api.nvim_create_user_command('TSInstallCore', function()
     require('nvim-treesitter').install(parsers)
-end, { desc = 'Install all core Tree-sitter parsers' })
-
-local ts_group = vim.api.nvim_create_augroup('NvimTreesitterConfig', { clear = true })
-local ignored_filetypes = { tmux = true }
-local max_filesize = 100 * 1024
+end, { desc = 'Install core Tree-sitter parsers' })
 
 vim.api.nvim_create_autocmd('FileType', {
-    group = ts_group,
+    group = vim.api.nvim_create_augroup('TreesitterConfig', { clear = true }),
     callback = function(args)
-        local ft = vim.bo[args.buf].filetype
-        if ignored_filetypes[ft] or not ft or ft == '' then
+        if args.match == 'tmux' or args.match == '' then
             return
         end
 
-        local filepath = vim.api.nvim_buf_get_name(args.buf)
-        local ok_stat, stats = pcall(vim.uv.fs_stat, filepath)
-        if ok_stat and stats and stats.size > max_filesize then
+        local stat = vim.uv.fs_stat(vim.api.nvim_buf_get_name(args.buf))
+        if stat and stat.size > 100 * 1024 then
             return
         end
 
-        local lang = vim.treesitter.language.get_lang(ft) or ft
-        if pcall(vim.treesitter.start, args.buf, lang) then
+        if pcall(vim.treesitter.start, args.buf) then
             vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
         end
     end,
