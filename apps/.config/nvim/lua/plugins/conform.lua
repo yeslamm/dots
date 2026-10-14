@@ -9,6 +9,9 @@ conform.setup {
         shfmt = {
             prepend_args = { '-i', '4' },
         },
+        ['tex-fmt'] = {
+            prepend_args = { '--nowrap' },
+        },
     },
     formatters_by_ft = {
         lua = { 'stylua' },

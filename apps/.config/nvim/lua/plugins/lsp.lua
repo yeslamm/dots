@@ -1,6 +1,5 @@
 -- 1. Mason & Tool Management
 require('mason').setup { ui = { border = 'single' } }
-
 require('mason-tool-installer').setup {
     ensure_installed = {
         'stylua',
@@ -15,6 +14,7 @@ require('mason-tool-installer').setup {
         'css-lsp',
         'clangd',
         'texlab',
+        'tex-fmt',
         'lua-language-server',
         'json-lsp',
         'basedpyright',
@@ -22,28 +22,26 @@ require('mason-tool-installer').setup {
     },
 }
 
--- 2. Companion Plugins
+-- 2. Companion Plugins & Diagnostics
 require('lazydev').setup()
 require('fidget').setup {}
 
--- 3. Diagnostics Display
 vim.diagnostic.config {
     update_in_insert = false,
     severity_sort = true,
     underline = true,
     float = { border = 'single', source = true, header = '' },
     virtual_text = { spacing = 2, prefix = '●' },
-    signs = {
-        text = {
-            [vim.diagnostic.severity.ERROR] = '● ',
-            [vim.diagnostic.severity.WARN] = '● ',
-            [vim.diagnostic.severity.INFO] = '● ',
-            [vim.diagnostic.severity.HINT] = '● ',
-        },
-    },
+    signs = { text = { '● ', '● ', '● ', '● ' } },
 }
 
--- 4. LSP Buffer Attach
+vim.lsp.config('*', {
+    capabilities = require('blink.cmp').get_lsp_capabilities(),
+})
+
+-- 3. LSP Buffer Attach (Keymaps & Highlights)
+local hl_group = vim.api.nvim_create_augroup('lsp-highlight', { clear = false })
+
 vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('custom-lsp-attach', { clear = true }),
     callback = function(event)
@@ -52,78 +50,55 @@ vim.api.nvim_create_autocmd('LspAttach', {
             return
         end
 
-        local map = function(keys, func, desc)
-            vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
-        end
-
-        map('K', function()
+        vim.keymap.set('n', 'K', function()
             vim.lsp.buf.hover { border = 'single' }
-        end, 'Hover')
+        end, { buffer = event.buf, desc = 'LSP: Hover' })
 
-        map('grt', vim.lsp.buf.type_definition, 'Type Definition')
-        map('grw', vim.lsp.buf.workspace_symbol, 'Workspace Symbols')
+        vim.keymap.set('n', 'grt', vim.lsp.buf.type_definition, { buffer = event.buf, desc = 'LSP: Type Definition' })
+        vim.keymap.set('n', 'grw', vim.lsp.buf.workspace_symbol, { buffer = event.buf, desc = 'LSP: Workspace Symbols' })
 
-        -- Highlight word references on cursor hold
         if client:supports_method('textDocument/documentHighlight', event.buf) then
-            local hl_group = vim.api.nvim_create_augroup('custom-lsp-highlight', { clear = false })
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
                 buffer = event.buf,
                 group = hl_group,
                 callback = vim.lsp.buf.document_highlight,
             })
-            vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+            vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI', 'LspDetach' }, {
                 buffer = event.buf,
                 group = hl_group,
                 callback = vim.lsp.buf.clear_references,
             })
-            vim.api.nvim_create_autocmd('LspDetach', {
-                buffer = event.buf,
-                callback = function()
-                    vim.lsp.buf.clear_references()
-                end,
-            })
         end
 
-        -- Inlay hints toggle
         if client:supports_method('textDocument/inlayHint', event.buf) then
-            map('<leader>h', function()
+            vim.keymap.set('n', '<leader>h', function()
                 vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf }, { bufnr = event.buf })
-            end, 'Toggle Inlay Hints')
+            end, { buffer = event.buf, desc = 'LSP: Toggle Inlay Hints' })
         end
     end,
 })
 
--- 5. Capabilities & Global Defaults
-vim.lsp.config('*', {
-    capabilities = require('blink.cmp').get_lsp_capabilities(),
+-- 4. Server Configurations
+vim.lsp.config('clangd', { cmd = { 'clangd', '--offset-encoding=utf-16' } })
+vim.lsp.config('basedpyright', { settings = { basedpyright = { analysis = { diagnosticMode = 'openFilesOnly' } } } })
+vim.lsp.config('ruff', {
+    on_attach = function(client)
+        client.server_capabilities.hoverProvider = false
+    end,
+})
+vim.lsp.config('jsonls', {
+    settings = { json = { schemas = require('schemastore').json.schemas(), validate = { enable = true } } },
 })
 
--- 6. Server Configurations
-local servers = {
-    marksman = {},
-    bashls = {},
-    taplo = {},
-    cssls = {},
-    texlab = {},
-    lua_ls = {},
-    clangd = { cmd = { 'clangd', '--offset-encoding=utf-16' } },
-    jsonls = {
-        on_new_config = function(new_config)
-            new_config.settings.json.schemas = new_config.settings.json.schemas or {}
-            vim.list_extend(new_config.settings.json.schemas, require('schemastore').json.schemas())
-        end,
-    },
-    basedpyright = {
-        settings = { basedpyright = { analysis = { diagnosticMode = 'openFilesOnly' } } },
-    },
-    ruff = {
-        on_attach = function(client)
-            client.server_capabilities.hoverProvider = false
-        end,
-    },
+vim.lsp.enable {
+    'marksman',
+    'bashls',
+    'taplo',
+    'cssls',
+    'texlab',
+    'lua_ls',
+    'clangd',
+    'jsonls',
+    'basedpyright',
+    'ruff',
 }
-
-for name, config in pairs(servers) do
-    vim.lsp.config(name, config)
-    vim.lsp.enable(name)
-end

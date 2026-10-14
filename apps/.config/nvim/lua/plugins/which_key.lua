@@ -48,6 +48,7 @@ require('which-key').setup {
         scroll_down = '<c-n>',
     },
     spec = {
+        { 'gr', group = 'References' },
         { '<leader>g', group = 'Git', mode = { 'n', 'v' } },
         { '<leader>s', group = 'Search' },
         { '<leader>t', group = 'Tabs' },
