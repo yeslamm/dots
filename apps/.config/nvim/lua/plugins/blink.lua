@@ -1,7 +1,9 @@
-local colors = require 'nvim-highlight-colors'
+local function color_item(ctx)
+    local colors = package.loaded['nvim-highlight-colors']
+    return colors and colors.format(ctx.item.documentation, { kind = ctx.kind })
+end
 
 require('blink.cmp').setup {
-    keymap = { preset = 'default' },
     appearance = { use_nvim_cmp_as_default = true },
     signature = { enabled = true, window = { border = 'single' } },
 
@@ -13,11 +15,11 @@ require('blink.cmp').setup {
                 components = {
                     kind_icon = {
                         text = function(ctx)
-                            local c = ctx.item.source_name == 'LSP' and colors.format(ctx.item.documentation, { kind = ctx.kind })
+                            local c = color_item(ctx)
                             return (c and c.abbr ~= '' and c.abbr or ctx.kind_icon) .. ctx.icon_gap
                         end,
                         highlight = function(ctx)
-                            local c = ctx.item.source_name == 'LSP' and colors.format(ctx.item.documentation, { kind = ctx.kind })
+                            local c = color_item(ctx)
                             return (c and c.abbr_hl_group) or ('BlinkCmpKind' .. ctx.kind)
                         end,
                     },
