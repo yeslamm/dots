@@ -1,3 +1,15 @@
+vim.api.nvim_create_autocmd('PackChanged', {
+    callback = function(ev)
+        local name, kind = ev.data.spec.name, ev.data.kind
+        if name == 'nvim-treesitter' and (kind == 'install' or kind == 'update') then
+            if not ev.data.active then
+                vim.cmd.packadd 'nvim-treesitter'
+            end
+            vim.cmd 'TSUpdate'
+        end
+    end,
+})
+
 vim.pack.add {
     -- Foundations & UI
     'https://github.com/EdenEast/nightfox.nvim',
@@ -47,20 +59,14 @@ vim.pack.add {
     'https://github.com/jay-babu/mason-nvim-dap.nvim',
 }
 
-vim.api.nvim_create_user_command('PackUpdate', function(opts)
-    vim.pack.update(opts.fargs[1] and opts.fargs, { force = opts.bang })
-end, { bang = true, nargs = '?' })
+vim.api.nvim_create_user_command('PackUpdate', function(o)
+    vim.pack.update(nil, { force = o.bang })
+end, { bang = true })
 
 vim.api.nvim_create_user_command('PackClean', function()
-    local dead = vim.iter(vim.pack.get())
-        :filter(function(p)
-            return not p.active
-        end)
-        :map(function(p)
-            return p.spec.name
-        end)
-        :totable()
-    if #dead > 0 then
-        vim.pack.del(dead)
+    for _, p in ipairs(vim.pack.get()) do
+        if not p.active then
+            vim.pack.del { p.spec.name }
+        end
     end
 end, {})
