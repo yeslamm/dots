@@ -5,25 +5,32 @@ require 'core.keybinds'
 require 'core.autocmds'
 require 'core.packs'
 
-local plugins = {
+local immediate_plugins = {
     'colorscheme',
     'mini',
+    'treesitter',
     'lsp',
     'roslyn',
     'rustaceanvim',
     'blink',
-    'treesitter',
     'oil',
+    'lualine',
+    'vimtex',
+}
+
+for _, plugin in ipairs(immediate_plugins) do
+    require('plugins.' .. plugin)
+end
+
+local deferred_plugins = {
     'fzf',
     'gitsigns',
     'smart_splits',
-    'lualine',
     'autopairs',
     'render_markdown',
     'undotree',
     'diffview',
     'dap',
-    'vimtex',
     'conform',
     'lint',
     'which_key',
@@ -32,6 +39,8 @@ local plugins = {
     'highlight_colors',
 }
 
-for _, plugin in ipairs(plugins) do
-    require('plugins.' .. plugin)
-end
+vim.schedule(function()
+    for _, plugin in ipairs(deferred_plugins) do
+        require('plugins.' .. plugin)
+    end
+end)
