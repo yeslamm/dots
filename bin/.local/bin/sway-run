@@ -29,6 +29,4 @@ export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
 export LIBVA_DRIVER_NAME=radeonsi
 export AMD_VULKAN_ICD=radv
 
-export WLR_RENDERER=vulkan
-
 exec sway

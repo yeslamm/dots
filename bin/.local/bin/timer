@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+
+SOUND_FILE="/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"
+STATE_FILE="${XDG_RUNTIME_DIR:-/run/user/${UID}}/timer.state"
+TAG="string:x-canonical-private-synchronous:timer"
+SCRIPT="$(readlink -f "$0")"
+
+notify() {
+    notify-send -h "$TAG" -u "$1" -t "$2" "$3" "$4"
+}
+
+update_waybar() {
+    pkill -RTMIN+13 waybar 2>/dev/null || true
+}
+
+kill_timer() {
+    local active=1
+    if [ -f "$STATE_FILE" ]; then
+        read -r pid _ <"$STATE_FILE"
+        if kill -0 "$pid" 2>/dev/null; then
+            pkill -P "$pid" 2>/dev/null
+            kill "$pid" 2>/dev/null
+            active=0
+        fi
+        rm -f "$STATE_FILE"
+    fi
+    if pkill -f "$SOUND_FILE" 2>/dev/null; then
+        active=0
+    fi
+    update_waybar
+    return $active
+}
+
+start_timer() {
+    local mins="${1//[^0-9]/}"
+    mins="${mins:-45}"
+
+    kill_timer
+    notify "normal" 3000 "Timer" "${mins}m remaining"
+
+    (
+        sleep "$((mins * 60))"
+        exec "$SCRIPT" alert
+    ) >/dev/null 2>&1 &
+    echo "$! $(($(date +%s) + mins * 60))" >"$STATE_FILE"
+    update_waybar
+}
+
+get_time() {
+    if [ -f "$STATE_FILE" ] && read -r pid target <"$STATE_FILE" && kill -0 "$pid" 2>/dev/null; then
+        local rem=$((target - $(date +%s)))
+        if [ "$rem" -gt 0 ]; then
+            printf "%dm %02ds remaining\n" $((rem / 60)) $((rem % 60))
+        else
+            echo "Time's up"
+        fi
+    else
+        echo "Inactive"
+    fi
+}
+
+case "$1" in
+[0-9]*)
+    start_timer "$1"
+    ;;
+stop)
+    if kill_timer; then
+        notify "low" 1500 "Timer" "Stopped"
+    fi
+    ;;
+alert)
+    read -r _ target <"$STATE_FILE" 2>/dev/null
+    echo "$$ ${target:-0}" >"$STATE_FILE"
+    notify "critical" 0 "Timer" "Time's up!"
+    update_waybar
+    while true; do
+        pw-play "$SOUND_FILE" 2>/dev/null || paplay "$SOUND_FILE" 2>/dev/null
+        sleep 1
+    done
+    ;;
+show)
+    notify "low" 2000 "Timer" "$(get_time)"
+    ;;
+time)
+    get_time
+    ;;
+start | "")
+    start_timer "${2:-45}"
+    ;;
+esac

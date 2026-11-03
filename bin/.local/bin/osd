@@ -15,7 +15,7 @@ send_wob() {
 }
 
 case "$TARGET" in
-volume)
+vol | volume)
     case "$ACTION" in
     up) wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ "${STEP}%+" ;;
     down) wpctl set-volume @DEFAULT_AUDIO_SINK@ "${STEP}%-" ;;
