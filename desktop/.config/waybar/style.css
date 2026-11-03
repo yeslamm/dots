@@ -21,24 +21,6 @@ tooltip label {
   color: #dfdfe0;
 }
 
-#mode,
-#scratchpad,
-#memory,
-#cpu,
-#temperature,
-#custom-fan,
-#custom-idlemgr,
-#clock,
-#privacy,
-#tray,
-#network,
-#wireplumber,
-#battery,
-#power-profiles-daemon {
-  padding: 0 10px;
-  margin: 2px;
-}
-
 #workspaces {
   margin-right: 10px;
 }
@@ -60,9 +42,29 @@ tooltip label {
   border: 1px solid #ee5396;
 }
 
-#privacy,
+#mode,
 #scratchpad,
-#custom-idlemgr {
+#memory,
+#cpu,
+#temperature,
+#custom-fan,
+#clock,
+#privacy,
+#tray,
+#custom-idlemgr,
+#network,
+#wireplumber,
+#battery,
+#power-profiles-daemon {
+  padding: 0 10px;
+  margin: 2px;
+}
+
+#mode {
+  color: #be95ff;
+}
+
+#scratchpad {
   color: #78a9ff;
 }
 
@@ -71,8 +73,14 @@ tooltip label {
   font-weight: bold;
 }
 
-#mode {
-  color: #be95ff;
+#custom-timer {
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+#privacy,
+#custom-idlemgr {
+  color: #78a9ff;
 }
 
 #battery.charging {
@@ -84,5 +92,21 @@ tooltip label {
 }
 
 #battery.critical {
+  color: #ee5396;
+}
+
+#power-profiles-daemon {
+  font-weight: bold;
+}
+
+#power-profiles-daemon.power-saver {
+  color: #25be6a;
+}
+
+#power-profiles-daemon.balanced {
+  color: #be95ff;
+}
+
+#power-profiles-daemon.performance {
   color: #ee5396;
 }
