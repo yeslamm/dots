@@ -30,10 +30,9 @@ set $float_term  $term --app-id=fterm
 set $clip_term   $term --app-id=clipfzf
 set $pulse_term  $term --app-id=pulsemixer
 
-set $msg_asus    notify-send -t 1500 -h string:x-canonical-private-synchronous:asus
-set $msg_sys     notify-send -t 1500 -h string:x-canonical-private-synchronous:sys
-set $msg_pass    notify-send -t 1500 -h string:x-canonical-private-synchronous:pass
-set $msg_media   notify-send -t 1500 -h string:x-canonical-private-synchronous:media
+set $msg_asus    notify-send -t 1000 -h string:x-canonical-private-synchronous:asus
+set $msg_sys     notify-send -t 1000 -h string:x-canonical-private-synchronous:sys
+set $msg_pass    notify-send -t 1000 -h string:x-canonical-private-synchronous:pass
 
 set $tc          --to-code
 set $lk          --locked
@@ -269,7 +268,7 @@ bindsym $rl $mod+F12                exec screenrec region
 bindsym $rl $mod+Shift+F12          exec screenrec fullscreen
 bindsym $rl $mod+Control+F12        exec screenrec window
 
-bindsym $tc $mod+t                  exec timer show
+bindsym $tc $mod+Shift+t            exec timer show
 
 # ============================================================================ #
 # == 9. AUTOSTART ============================================================ #
@@ -297,25 +296,25 @@ exec aria2c --conf-path="$HOME/.config/aria2/aria2-rpc.conf"
 # == 10. MODES =============================================================== #
 # ============================================================================ #
 
-bindsym $tc $mod+Shift+t mode "TIMER"
+bindsym $tc $mod+t mode "TIMER"
 mode "TIMER" {
-    bindsym $tc 1                   exec timer 5; mode "default"
-    bindsym $tc 2                   exec timer 10; mode "default"
-    bindsym $tc 3                   exec timer 15; mode "default"
-    bindsym $tc 4                   exec timer 20; mode "default"
-    bindsym $tc 5                   exec timer 25; mode "default"
-    bindsym $tc 6                   exec timer 30; mode "default"
-    bindsym $tc 7                   exec timer 35; mode "default"
-    bindsym $tc 8                   exec timer 40; mode "default"
-    bindsym $tc 9                   exec timer 45; mode "default"
-    bindsym $tc 0                   exec timer 60; mode "default"
+    bindsym $tc 1                   exec timer 5m; mode "default"
+    bindsym $tc 2                   exec timer 10m; mode "default"
+    bindsym $tc 3                   exec timer 15m; mode "default"
+    bindsym $tc 4                   exec timer 20m; mode "default"
+    bindsym $tc 5                   exec timer 25m; mode "default"
+    bindsym $tc 6                   exec timer 30m; mode "default"
+    bindsym $tc 7                   exec timer 35m; mode "default"
+    bindsym $tc 8                   exec timer 40m; mode "default"
+    bindsym $tc 9                   exec timer 45m; mode "default"
+    bindsym $tc 0                   exec timer 60m; mode "default"
 
     bindsym $tc s                   exec timer stop; mode "default"
 
     bindsym Escape                  mode "default"
     bindsym Return                  mode "default"
     bindsym $tc q                   mode "default"
-    bindsym $tc $mod+Shift+t        mode "default"
+    bindsym $tc $mod+t              mode "default"
 }
 
 bindsym $tc $mod+Escape exec $msg_pass "Mode: PASSTHROUGH", mode "PASSTHROUGH"
@@ -408,7 +407,7 @@ mode "EXEC" {
     bindsym $tc p                   exec powermenu poweroff; mode "default"
 
     bindsym $tc n                   exec bluelight toggle; mode "default"
-    bindsym $tc t                   exec tearing -n
+    bindsym $tc t                   exec tearing -n; mode "default"
 
     bindsym $tc w                   exec 'nmcli radio wifi on && $msg_sys "Network: ON"'; mode "default"
     bindsym $tc Shift+w             exec 'nmcli radio wifi off && $msg_sys "Network: OFF"'; mode "default"

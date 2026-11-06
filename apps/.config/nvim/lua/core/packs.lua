@@ -17,7 +17,6 @@ vim.pack.add {
     'https://github.com/echasnovski/mini.nvim',
     'https://github.com/nvim-lualine/lualine.nvim',
     'https://github.com/lukas-reineke/indent-blankline.nvim',
-    'https://github.com/brenoprata10/nvim-highlight-colors',
 
     -- LSP & Tool Management
     'https://github.com/williamboman/mason.nvim',

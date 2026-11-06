@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 
 CONFIG_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/bluelight/config"
@@ -17,7 +16,7 @@ fi
 ACTION="${1:-toggle}"
 
 run_sunset() {
-    wlsunset -l "$LAT" -L "$LON" -t "$NIGHT_TEMP" -T "$DAY_TEMP" &
+    wlsunset -l "$LAT" -L "$LON" -t "$NIGHT_TEMP" -T "$DAY_TEMP" >/dev/null 2>&1 &
 }
 
 case "$ACTION" in
@@ -26,17 +25,15 @@ on)
     ;;
 
 off)
-    pkill -x wlsunset || true
+    pkill -x wlsunset 2>/dev/null || true
     ;;
 
 toggle)
-    if pkill -x wlsunset; then
-        notify-send "Bluelight Filter: OFF" \
-            -t 1500 -h string:x-canonical-private-synchronous:gamma
+    if pkill -x wlsunset 2>/dev/null; then
+        notify-send -t 1200 -h string:x-canonical-private-synchronous:bluelight "Bluelight Filter: OFF"
     else
         run_sunset
-        notify-send "Bluelight Filter: ON" \
-            -t 1500 -h string:x-canonical-private-synchronous:gamma
+        notify-send -t 1200 -h string:x-canonical-private-synchronous:bluelight "Bluelight Filter: ON"
     fi
     ;;
 

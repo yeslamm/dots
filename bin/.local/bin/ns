@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+notes_dir="$HOME/notes"
+
+cd "$notes_dir" || exit 1
+
+if ! ping -c 1 -W 1 1.1.1.1 >/dev/null 2>&1; then
+    echo "==> Offline: skipping remote sync"
+    exit 0
+fi
+
+echo "==> Syncing notes..."
+git pull --rebase --autostash
+git add -A
+
+if ! git diff-index --quiet HEAD --; then
+    git commit -m "sync: $(date +'%Y-%m-%d %H:%M')"
+fi
+
+git push

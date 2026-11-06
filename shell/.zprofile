@@ -9,10 +9,11 @@ if [ -z "$WAYLAND_DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
     echo ""
 
     case "$REPLY" in
-        [Yy]|$'\n')
+        [Yy]|""|$'\n'|$'\r')
             exec sway-run
             ;;
         *)
+            print -s "sway-run"
             echo "Staying in TTY. Type 'sway-run' to launch later.\n"
             ;;
     esac

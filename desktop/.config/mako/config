@@ -13,7 +13,6 @@ border-size=1
 progress-color=over #78a9ff
 
 default-timeout=3000
-ignore-timeout=1
 
 on-button-middle=dismiss-all
 

@@ -1,12 +1,24 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 SOUND_FILE="/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"
 STATE_FILE="${XDG_RUNTIME_DIR:-/run/user/${UID}}/timer.state"
-TAG="string:x-canonical-private-synchronous:timer"
+
+TAG_INFO="string:x-canonical-private-synchronous:timer-info"
+TAG_ALERT="string:x-canonical-private-synchronous:timer-alert"
 SCRIPT="$(readlink -f "$0")"
 
-notify() {
-    notify-send -h "$TAG" -u "$1" -t "$2" "$3" "$4"
+notify_info() {
+    local body="$1" timeout="${2:-2000}" urgency="${3:-normal}"
+    notify-send -h "$TAG_INFO" -u "$urgency" -t "$timeout" "Timer" "$body"
+}
+
+notify_alert() {
+    notify-send -h "$TAG_ALERT" -u critical -t 0 "Timer" "Time's up!"
+}
+
+clear_alert() {
+    makoctl dismiss -g "$TAG_ALERT" 2>/dev/null || true
 }
 
 update_waybar() {
@@ -14,77 +26,115 @@ update_waybar() {
 }
 
 kill_timer() {
-    local active=1
+    local was_active=1
     if [ -f "$STATE_FILE" ]; then
-        read -r pid _ <"$STATE_FILE"
-        if kill -0 "$pid" 2>/dev/null; then
-            pkill -P "$pid" 2>/dev/null
-            kill "$pid" 2>/dev/null
-            active=0
+        read -r pid _ <"$STATE_FILE" || true
+        if [ -n "${pid:-}" ] && kill -0 "$pid" 2>/dev/null; then
+            pkill -P "$pid" 2>/dev/null || true
+            kill "$pid" 2>/dev/null || true
+            was_active=0
         fi
         rm -f "$STATE_FILE"
     fi
     if pkill -f "$SOUND_FILE" 2>/dev/null; then
-        active=0
+        was_active=0
     fi
+
+    clear_alert
     update_waybar
-    return $active
+    return $was_active
 }
 
 start_timer() {
-    local mins="${1//[^0-9]/}"
-    mins="${mins:-45}"
+    local raw="${1:-45m}"
+    local total_seconds=2700
 
-    kill_timer
-    notify "normal" 3000 "Timer" "${mins}m remaining"
+    if [[ "$raw" =~ ^([0-9]+)[mM]$ ]]; then
+        total_seconds=$((BASH_REMATCH[1] * 60))
+    elif [[ "$raw" =~ ^([0-9]+)[sS]?$ ]]; then
+        total_seconds="${BASH_REMATCH[1]}"
+    else
+        notify_info "Invalid format. Use Xm or Xs" 3000 "critical"
+        exit 1
+    fi
+
+    if [ "$total_seconds" -le 0 ]; then
+        total_seconds=60
+    fi
+
+    kill_timer || true
+
+    if [ "$total_seconds" -ge 60 ] && [ $((total_seconds % 60)) -eq 0 ]; then
+        notify_info "$((total_seconds / 60))m remaining" 3000 "normal"
+    else
+        notify_info "${total_seconds}s remaining" 3000 "normal"
+    fi
 
     (
-        sleep "$((mins * 60))"
+        sleep "$total_seconds"
         exec "$SCRIPT" alert
     ) >/dev/null 2>&1 &
-    echo "$! $(($(date +%s) + mins * 60))" >"$STATE_FILE"
+
+    echo "$! $(($(date +%s) + total_seconds))" >"$STATE_FILE"
     update_waybar
 }
 
 get_time() {
-    if [ -f "$STATE_FILE" ] && read -r pid target <"$STATE_FILE" && kill -0 "$pid" 2>/dev/null; then
-        local rem=$((target - $(date +%s)))
-        if [ "$rem" -gt 0 ]; then
-            printf "%dm %02ds remaining\n" $((rem / 60)) $((rem % 60))
-        else
-            echo "Time's up"
+    if [ -f "$STATE_FILE" ]; then
+        local pid="" target=""
+        read -r pid target <"$STATE_FILE" || true
+        if [ -n "${pid:-}" ] && kill -0 "$pid" 2>/dev/null; then
+            local rem=$((target - $(date +%s)))
+            if [ "$rem" -gt 0 ]; then
+                printf "%dm %02ds remaining\n" $((rem / 60)) $((rem % 60))
+                return 0
+            else
+                echo "Time's up"
+                return 0
+            fi
         fi
-    else
-        echo "Inactive"
     fi
+    echo "Inactive"
 }
 
-case "$1" in
-[0-9]*)
-    start_timer "$1"
+ACTION="${1:-}"
+
+case "$ACTION" in
+*[0-9]m | *[0-9]s | *[0-9])
+    start_timer "$ACTION"
     ;;
 stop)
     if kill_timer; then
-        notify "low" 1500 "Timer" "Stopped"
+        notify_info "Stopped" 1500 "low"
     fi
     ;;
 alert)
-    read -r _ target <"$STATE_FILE" 2>/dev/null
+    trap 'pkill -P $$ 2>/dev/null || true; exit 0' TERM INT EXIT
+
+    target=0
+    if [ -f "$STATE_FILE" ]; then
+        read -r _ target <"$STATE_FILE" || true
+    fi
     echo "$$ ${target:-0}" >"$STATE_FILE"
-    notify "critical" 0 "Timer" "Time's up!"
+
+    notify_alert
     update_waybar
+
     while true; do
-        pw-play "$SOUND_FILE" 2>/dev/null || paplay "$SOUND_FILE" 2>/dev/null
+        pw-play "$SOUND_FILE" 2>/dev/null || paplay "$SOUND_FILE" 2>/dev/null || true
         sleep 1
     done
     ;;
 show)
-    notify "low" 2000 "Timer" "$(get_time)"
+    notify_info "$(get_time)" 2000 "low"
     ;;
 time)
     get_time
     ;;
 start | "")
-    start_timer "${2:-45}"
+    start_timer "${2:-45m}"
+    ;;
+*)
+    start_timer "$ACTION"
     ;;
 esac

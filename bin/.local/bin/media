@@ -8,11 +8,13 @@ PARAM="${2:-}"
 SLEEP_TIME=0.08
 TITLE=""
 
+OLD_META=$(playerctl metadata --format "{{markup_escape(artist)}} - {{markup_escape(title)}}" 2>/dev/null || echo "")
+
 case "$ACTION" in
 shift | unshift)
     playerctld "$ACTION"
     PLAYER_NAME=$(playerctl metadata --format '{{playerName}}' 2>/dev/null || echo "Unknown")
-    notify-send "Active Player" "Target: $PLAYER_NAME" -t 1500 -h string:x-canonical-private-synchronous:media
+    notify-send "Active Player" "$PLAYER_NAME" -t 1500 -h string:x-canonical-private-synchronous:media
     exit 0
     ;;
 seek)
@@ -22,15 +24,14 @@ seek)
     ;;
 play-pause)
     playerctl play-pause 2>/dev/null || true
+    sleep "$SLEEP_TIME"
     ;;
 next)
     playerctl next 2>/dev/null || true
-    SLEEP_TIME=0.4
     TITLE="Next Track"
     ;;
 prev | previous)
     playerctl previous 2>/dev/null || true
-    SLEEP_TIME=0.4
     TITLE="Previous Track"
     ;;
 *)
@@ -39,10 +40,22 @@ prev | previous)
     ;;
 esac
 
-sleep "$SLEEP_TIME"
+if [[ "$ACTION" == "next" || "$ACTION" == "prev" || "$ACTION" == "previous" ]]; then
+    METADATA=""
+    for _ in {1..16}; do
+        sleep 0.05
+        METADATA=$(playerctl metadata --format "{{markup_escape(artist)}} - {{markup_escape(title)}}" 2>/dev/null || echo "")
+        if [[ -n "$METADATA" && "$METADATA" != "$OLD_META" ]]; then
+            break
+        fi
+    done
+else
+    METADATA=$(playerctl metadata --format "{{markup_escape(artist)}} - {{markup_escape(title)}}" 2>/dev/null || echo "")
+fi
 
 STATUS=$(playerctl status 2>/dev/null) || exit 0
-METADATA=$(playerctl metadata --format "{{markup_escape(artist)}} - {{markup_escape(title)}}" 2>/dev/null)
+
+METADATA="${METADATA# - }"
 
 if [[ -z "$METADATA" ]]; then
     METADATA="Unknown Track"

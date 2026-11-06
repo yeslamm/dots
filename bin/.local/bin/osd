@@ -53,7 +53,7 @@ mic | microphone)
     status="Unmuted"
     [[ "$raw_mic" == *"[MUTED]"* ]] && status="Muted"
 
-    notify-send -t 1500 -h string:x-canonical-private-synchronous:mic "Microphone: $status"
+    notify-send -t 1000 -h string:x-canonical-private-synchronous:mic "Microphone: $status"
     ;;
 
 brightness)

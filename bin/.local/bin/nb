@@ -1,0 +1,13 @@
+#!/usr/bin/env zsh
+
+notes_dir="$HOME/notes"
+backlog_file="${notes_dir}/backlog.md"
+
+mkdir -p "$notes_dir"
+
+if [ ! -s "$backlog_file" ]; then
+    echo "# Backlog" > "$backlog_file"
+    echo "" >> "$backlog_file"
+fi
+
+exec nvim "$backlog_file"

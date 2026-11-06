@@ -54,5 +54,6 @@ require('which-key').setup {
         { '<leader>t', group = 'Tabs' },
         { '<leader>D', group = 'Debug' },
         { '<leader>l', group = 'LateX' },
+        { '<leader>n', group = 'Notes' },
     },
 }

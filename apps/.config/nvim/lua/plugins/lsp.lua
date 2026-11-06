@@ -1,5 +1,5 @@
 -- 1. Mason & Tool Management
-require('mason').setup { ui = { border = 'single' } }
+require('mason').setup {}
 require('mason-tool-installer').setup {
     ensure_installed = {
         'stylua',
@@ -30,9 +30,8 @@ vim.diagnostic.config {
     update_in_insert = false,
     severity_sort = true,
     underline = true,
-    float = { border = 'single', source = true, header = '' },
-    virtual_text = { spacing = 2, prefix = '●' },
-    signs = { text = { '● ', '● ', '● ', '● ' } },
+    float = { source = true, header = '' },
+    virtual_text = false,
 }
 
 vim.lsp.config('*', {
@@ -49,10 +48,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
         if not client then
             return
         end
-
-        vim.keymap.set('n', 'K', function()
-            vim.lsp.buf.hover { border = 'single' }
-        end, { buffer = event.buf, desc = 'LSP: Hover' })
 
         vim.keymap.set('n', 'grt', vim.lsp.buf.type_definition, { buffer = event.buf, desc = 'LSP: Type Definition' })
         vim.keymap.set('n', 'grw', vim.lsp.buf.workspace_symbol, { buffer = event.buf, desc = 'LSP: Workspace Symbols' })

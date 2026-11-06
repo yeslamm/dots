@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-if [ -n "$WAYLAND_DISPLAY" ]; then
+if [ -n "${WAYLAND_DISPLAY:-}" ]; then
     echo "You are already inside an active Wayland session!"
     exit 0
 fi
@@ -29,4 +30,4 @@ export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
 export LIBVA_DRIVER_NAME=radeonsi
 export AMD_VULKAN_ICD=radv
 
-exec sway
+exec sway "$@"

@@ -7,7 +7,6 @@ oil.setup {
         padding = 2,
         max_width = 80,
         max_height = 40,
-        border = 'single',
     },
     view_options = {
         show_hidden = true,

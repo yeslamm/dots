@@ -33,6 +33,7 @@ vim.api.nvim_create_autocmd('FileType', {
 
         if args.match == 'markdown' or args.match == 'tex' or args.match == 'text' then
             vim.opt_local.wrap = true
+            vim.opt_local.linebreak = true
         end
         if args.match == 'markdown' then
             vim.opt_local.conceallevel = 2

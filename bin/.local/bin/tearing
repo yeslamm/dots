@@ -18,5 +18,5 @@ else
 fi
 
 if [[ "$NOTIFY" == true ]]; then
-    notify-send -t 2000 -h string:x-canonical-private-synchronous:vsync "$MSG"
+    notify-send -t 1000 -h string:x-canonical-private-synchronous:vsync "$MSG"
 fi

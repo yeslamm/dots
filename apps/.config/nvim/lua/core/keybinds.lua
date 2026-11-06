@@ -43,3 +43,42 @@ map('n', '<leader>q', '<cmd>bd<CR>', { desc = 'Quit Buffer' })
 map('n', '<leader>tn', '<cmd>tabnew<CR>', { desc = 'New Tab' })
 map('n', '<leader>tx', '<cmd>tabclose<CR>', { desc = 'Close Tab' })
 map('n', '<leader>to', '<cmd>tabonly<CR>', { desc = 'Only This Tab' })
+
+-- NOTE TAKING ---------------------
+local notes_dir = vim.fn.expand '~/notes'
+
+map('n', '<leader>nd', function()
+    local dailies_dir = notes_dir .. '/dailies'
+    local today_file = dailies_dir .. '/' .. os.date '%Y-%m-%d' .. '.md'
+    vim.fn.mkdir(dailies_dir, 'p')
+    vim.cmd.edit(today_file)
+
+    if vim.fn.getfsize(today_file) <= 0 then
+        vim.api.nvim_buf_set_lines(0, 0, -1, false, {
+            '# Daily Log: ' .. os.date '%Y-%m-%d (%A)',
+            '',
+        })
+        vim.cmd 'write'
+    end
+end, { desc = "Today's Note" })
+
+map('n', '<leader>nb', function()
+    local backlog_file = notes_dir .. '/backlog.md'
+    vim.fn.mkdir(notes_dir, 'p')
+    vim.cmd.edit(backlog_file)
+    if vim.fn.getfsize(backlog_file) <= 0 then
+        vim.api.nvim_buf_set_lines(0, 0, -1, false, {
+            '# Backlog',
+            '',
+        })
+        vim.cmd 'write'
+    end
+end, { desc = 'Backlog Entries' })
+
+map('n', '<leader>nf', function()
+    require('fzf-lua').files { cwd = notes_dir }
+end, { desc = 'Find Notes' })
+
+map('n', '<leader>ng', function()
+    require('fzf-lua').live_grep { cwd = notes_dir }
+end, { desc = 'Grep Notes' })

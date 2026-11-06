@@ -36,7 +36,6 @@ local deferred_plugins = {
     'which_key',
     'todo_comments',
     'indent_blankline',
-    'highlight_colors',
 }
 
 vim.schedule(function()

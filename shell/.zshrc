@@ -124,22 +124,12 @@ copy() {
 
 }
 
-function y() {
+y() {
     local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
     yazi "$@" --cwd-file="$tmp"
     IFS= read -r -d '' cwd < "$tmp"
     [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
     rm -f -- "$tmp"
-}
-
-fznvim() {
-  if [[ -n "$1" ]]; then
-    nvim "$@"
-  else
-    local file
-    file=$(fzf --border=top --preview='bat --color=always --style=numbers --line-range=:500 {}')
-    [[ -n "$file" ]] && nvim "$file"
-  fi
 }
 
 x() {
@@ -187,12 +177,7 @@ x() {
 # ----------------------------------------------------------------------
 # Aliases
 # ----------------------------------------------------------------------
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-
 alias r='exec zsh'
-alias cl='clear'
 
 alias ls='eza --color=auto --icons=never --group-directories-first'
 alias ll='eza -lh --git --smart-group --time-style=relative --color=auto --icons=never --group-directories-first'

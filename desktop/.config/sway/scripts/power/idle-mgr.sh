@@ -82,10 +82,10 @@ off)
 toggle)
     if [[ -f "$IDLE_FLAG" ]]; then
         "$SELF" off
-        notify-send -t 1500 -h string:x-canonical-private-synchronous:idlemgr 'IDLE: OFF'
+        notify-send -t 1000 -h string:x-canonical-private-synchronous:idlemgr 'IDLE: OFF'
     else
         "$SELF" on
-        notify-send -t 1500 -h string:x-canonical-private-synchronous:idlemgr 'IDLE: ON'
+        notify-send -t 1000 -h string:x-canonical-private-synchronous:idlemgr 'IDLE: ON'
     fi
     ;;
 *)

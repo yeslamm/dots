@@ -56,7 +56,7 @@ declare -a grim_args=()
 
 if [[ "$IS_COPY" == true ]]; then
     grim "${grim_args[@]}" - | wl-copy -t image/png
-    notify-send -t 2000 "Screenshot" "Copied to clipboard"
+    notify-send -t 1500 "Screenshot" "Copied to clipboard"
 else
     TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
     TMP_IMG="$(mktemp "${XDG_RUNTIME_DIR:-/tmp}/satty-XXXXXX.ppm")"
