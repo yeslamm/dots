@@ -86,7 +86,7 @@ unset key
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
-export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --exclude .git --exclude node_modules --exclude .cache --exclude venv --exclude dist'
+export FZF_DEFAULT_COMMAND='fd --type f --type l --strip-cwd-prefix --hidden --exclude .git --exclude node_modules --exclude .cache --exclude venv --exclude dist'
 
 export FZF_DEFAULT_OPTS="
   --layout=reverse
