@@ -11,4 +11,7 @@ require('render-markdown').setup {
         right_pad = 2,
         border = 'thick',
     },
+    quote = {
+        repeat_linebreak = true,
+    },
 }

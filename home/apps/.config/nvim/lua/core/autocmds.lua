@@ -37,6 +37,7 @@ vim.api.nvim_create_autocmd('FileType', {
         end
         if args.match == 'markdown' then
             vim.opt_local.conceallevel = 2
+            vim.opt_local.showbreak = '  '
         end
     end,
 })

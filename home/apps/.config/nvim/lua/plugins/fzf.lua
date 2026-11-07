@@ -29,11 +29,11 @@ fzf.setup {
         },
     },
     grep = {
-        rg_opts = '--column --line-number --no-heading --color=always --smart-case --hidden --max-columns=4096 --glob="!.git/" -e',
+        rg_opts = '--column --line-number --no-heading --color=always --smart-case --hidden --follow --max-columns=4096 --glob="!.git/" -e',
         rg_glob = true,
     },
     files = {
-        fd_opts = '--color=never --type f --hidden --strip-cwd-prefix --exclude .git --exclude node_modules',
+        fd_opts = '--color=never --type f --hidden --follow --strip-cwd-prefix --exclude .git --exclude node_modules',
     },
 }
 
