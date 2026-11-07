@@ -8,7 +8,6 @@ lib32-mesa
 lib32-vulkan-radeon
 mangohud
 prismlauncher
-proton-cachyos-slr
 protontricks
 protonup-qt
 steam
