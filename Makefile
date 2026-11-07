@@ -1,11 +1,18 @@
 SHELL := /bin/bash
-DOTS_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+
+DOTS_DIR   := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+HOME_DIR   := $(DOTS_DIR)/home
+SYSTEM_DIR := $(DOTS_DIR)/system
 
 TARGET_USER ?= $(shell logname 2>/dev/null || echo "$$USER")
 
-.PHONY: all help bootstrap pkgs pkgs-gaming pkgs-virt \
-        system zram cgroups keyd logind scx vconsole services \
-        dirs zsh audio stow profile simulate unstow
+PACKAGES := $(notdir $(patsubst %/,%,$(wildcard $(HOME_DIR)/*/)))
+STOW     := stow -d $(HOME_DIR) -t $(HOME) --no-folding
+
+.PHONY: all help bootstrap pkgs pkgs-gaming pkgs-virt system \
+        audio stow unstow simulate profile
+
+.NOTPARALLEL:
 
 all: help
 
@@ -22,14 +29,13 @@ help:
 	@echo "    pkgs-virt    - Install virtualization packages"
 	@echo ""
 	@echo "  System:"
-	@echo "    system       - Copy /etc configs and enable services"
+	@echo "    system       - Install system/etc into /etc and enable services"
 	@echo "    audio        - Set mic boost and default volume"
-	@echo "    zsh          - Install or update zimfw plugins"
 	@echo ""
 	@echo "  Dotfiles:"
-	@echo "    profile      - Deploy dotfiles, set audio, update zsh"
-	@echo "    stow         - Link dotfiles to home directory"
-	@echo "    unstow       - Remove dotfile links from home directory"
+	@echo "    profile      - Run stow and audio"
+	@echo "    stow         - Link home/* packages into $(HOME)"
+	@echo "    unstow       - Remove those links"
 	@echo "    simulate     - Preview stow changes (dry-run)"
 	@echo ""
 
@@ -65,63 +71,14 @@ pkgs-virt:
 # System (/etc)
 # ==============================================================================
 
-system: zram cgroups keyd logind scx vconsole services
-
-zram:
+system:
 	@echo ""
-	@echo "==> Configuring zram..."
-	sudo install -Dm644 $(DOTS_DIR)/system/memory/zram-generator.conf /etc/systemd/zram-generator.conf
-	sudo install -Dm644 $(DOTS_DIR)/system/memory/99-memory.conf /etc/sysctl.d/99-memory.conf
-	sudo sysctl --system > /dev/null
-
-cgroups:
-	@echo ""
-	@echo "==> Configuring systemd user delegate..."
-	sudo install -Dm644 $(DOTS_DIR)/system/systemd/user-delegate.conf /etc/systemd/system/user@.service.d/delegate.conf
-
-keyd:
-	@echo ""
-	@echo "==> Configuring keyd..."
-	sudo install -Dm644 $(DOTS_DIR)/system/keyd/default.conf /etc/keyd/default.conf
+	@echo "==> Installing /etc configs and enabling services..."
+	cd $(SYSTEM_DIR) && find etc -type f -exec sudo install -Dm644 -v {} /{} \;
 	sudo usermod -aG keyd $(TARGET_USER)
-
-logind:
-	@echo ""
-	@echo "==> Configuring logind..."
-	sudo install -Dm644 $(DOTS_DIR)/system/systemd/lid.conf /etc/systemd/logind.conf.d/lid.conf
-
-scx:
-	@echo ""
-	@echo "==> Configuring scx..."
-	sudo install -Dm644 $(DOTS_DIR)/system/scx/scx /etc/default/scx
-	sudo install -Dm644 $(DOTS_DIR)/system/scx/scx.service /etc/systemd/system/scx.service
-
-vconsole:
-	@echo ""
-	@echo "==> Configuring vconsole..."
-	sudo install -Dm644 $(DOTS_DIR)/system/vconsole/vconsole.conf /etc/vconsole.conf
-
-services:
-	@echo ""
-	@echo "==> Enabling services..."
 	sudo systemctl daemon-reload
-	sudo systemctl enable --now keyd.service
-	sudo systemctl enable --now scx.service
+	sudo systemctl enable --now keyd.service scx.service
 	@echo ""
-
-# ==============================================================================
-# Dotfiles ($HOME)
-# ==============================================================================
-
-dirs:
-	@echo ""
-	@echo "==> Creating XDG directories..."
-	mkdir -p $(HOME)/.config $(HOME)/.local/bin $(HOME)/.local/share $(HOME)/.cache $(HOME)/.icons
-
-zsh:
-	@echo ""
-	@echo "==> Installing zsh plugins..."
-	zsh -i -c "zimfw install"
 
 audio:
 	@echo ""
@@ -133,24 +90,28 @@ audio:
 	wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.25 2>/dev/null || true
 	wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 1.0 2>/dev/null || true
 
-stow: dirs
-	@echo ""
-	@echo "==> Stowing dotfiles..."
-	stow -d $(DOTS_DIR) -t $(HOME) -R bin shell apps dev desktop
+# ==============================================================================
+# Dotfiles ($HOME)
+# ==============================================================================
 
-profile: stow zsh audio
+stow:
 	@echo ""
-	@echo "==> Done."
-	@echo ""
+	@echo "==> Stowing: $(PACKAGES)"
+	$(STOW) -R $(PACKAGES)
 
-simulate: dirs
+simulate:
 	@echo ""
 	@echo "==> Dry-run stow..."
-	stow -d $(DOTS_DIR) -t $(HOME) -nvR bin shell apps dev desktop
+	$(STOW) -nvR $(PACKAGES)
 	@echo ""
 
 unstow:
 	@echo ""
 	@echo "==> Unstowing dotfiles..."
-	stow -d $(DOTS_DIR) -t $(HOME) -D bin shell apps dev desktop
+	$(STOW) -D $(PACKAGES)
+	@echo ""
+
+profile: stow audio
+	@echo ""
+	@echo "==> Done."
 	@echo ""
