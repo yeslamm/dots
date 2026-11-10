@@ -1,11 +1,10 @@
--- 1. Mason & Tool Management
 require('mason').setup {}
 require('mason-tool-installer').setup {
     ensure_installed = {
         'stylua',
         'shellcheck',
         'shfmt',
-        'prettier',
+        'prettierd',
         'clang-format',
         'roslyn-language-server',
         'marksman',
@@ -22,7 +21,6 @@ require('mason-tool-installer').setup {
     },
 }
 
--- 2. Companion Plugins & Diagnostics
 require('lazydev').setup()
 require('fidget').setup {}
 
@@ -34,11 +32,14 @@ vim.diagnostic.config {
     virtual_text = false,
 }
 
+-- vim.lsp.config('*', {
+--     capabilities = require('blink.cmp').get_lsp_capabilities(),
+-- })
+
 vim.lsp.config('*', {
-    capabilities = require('blink.cmp').get_lsp_capabilities(),
+    capabilities = vim.lsp.protocol.make_client_capabilities(),
 })
 
--- 3. LSP Buffer Attach (Keymaps & Highlights)
 local hl_group = vim.api.nvim_create_augroup('lsp-highlight', { clear = false })
 
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -49,8 +50,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
             return
         end
 
-        vim.keymap.set('n', 'grt', vim.lsp.buf.type_definition, { buffer = event.buf, desc = 'LSP: Type Definition' })
-        vim.keymap.set('n', 'grw', vim.lsp.buf.workspace_symbol, { buffer = event.buf, desc = 'LSP: Workspace Symbols' })
+        -- if client:supports_method('textDocument/completion', event.buf) then
+        --     vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
+        -- end
 
         if client:supports_method('textDocument/documentHighlight', event.buf) then
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
@@ -64,16 +66,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
                 callback = vim.lsp.buf.clear_references,
             })
         end
-
-        if client:supports_method('textDocument/inlayHint', event.buf) then
-            vim.keymap.set('n', '<leader>h', function()
-                vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf }, { bufnr = event.buf })
-            end, { buffer = event.buf, desc = 'LSP: Toggle Inlay Hints' })
-        end
     end,
 })
 
--- 4. Server Configurations
 vim.lsp.config('clangd', { cmd = { 'clangd', '--offset-encoding=utf-16' } })
 vim.lsp.config('basedpyright', { settings = { basedpyright = { analysis = { diagnosticMode = 'openFilesOnly' } } } })
 vim.lsp.config('ruff', {

@@ -17,19 +17,36 @@ conform.setup {
         lua = { 'stylua' },
         c = { 'clang-format' },
         cpp = { 'clang-format' },
-        json = { 'prettier' },
-        jsonc = { 'prettier' },
+        json = { 'prettierd' },
+        jsonc = { 'prettierd' },
         python = { 'ruff_organize_imports', 'ruff_format' },
         sh = { 'shfmt' },
         bash = { 'shfmt' },
         toml = { 'taplo' },
         tex = { 'tex-fmt' },
-        css = { 'prettier' },
-        scss = { 'prettier' },
-        less = { 'prettier' },
+        css = { 'prettierd' },
+        scss = { 'prettierd' },
+        less = { 'prettierd' },
     },
 }
 
 vim.keymap.set({ 'n', 'v' }, '<leader>F', function()
     conform.format { async = true, lsp_format = 'fallback' }
 end, { desc = 'Format buffer' })
+
+local lint = require 'lint'
+
+lint.linters_by_ft = {
+    sh = { 'shellcheck' },
+    bash = { 'shellcheck' },
+}
+
+local lint_augroup = vim.api.nvim_create_augroup('LintingConfig', { clear = true })
+vim.api.nvim_create_autocmd({ 'BufWritePost', 'BufReadPost' }, {
+    group = lint_augroup,
+    callback = function(args)
+        if vim.bo[args.buf].modifiable then
+            lint.try_lint()
+        end
+    end,
+})

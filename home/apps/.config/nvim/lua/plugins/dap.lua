@@ -4,25 +4,32 @@ vim.api.nvim_set_hl(0, 'DapBreakpoint', { fg = '#993939' })
 vim.api.nvim_set_hl(0, 'DapLogPoint', { fg = '#61afef' })
 vim.api.nvim_set_hl(0, 'DapStopped', { fg = '#98c379' })
 
-for name, s in pairs {
-    DapBreakpoint = { '', 'DapBreakpoint' },
-    DapBreakpointCondition = { '', 'DapBreakpoint' },
-    DapBreakpointRejected = { '', 'DapBreakpoint' },
-    DapLogPoint = { '', 'DapLogPoint' },
-    DapStopped = { '', 'DapStopped' },
-} do
-    vim.fn.sign_define(name, { text = s[1], texthl = s[2] })
+local signs = {
+    DapBreakpoint = { text = '', texthl = 'DapBreakpoint' },
+    DapBreakpointCondition = { text = '', texthl = 'DapBreakpoint' },
+    DapBreakpointRejected = { text = '', texthl = 'DapBreakpoint' },
+    DapLogPoint = { text = '', texthl = 'DapLogPoint' },
+    DapStopped = { text = '', texthl = 'DapStopped' },
+}
+for name, opts in pairs(signs) do
+    vim.fn.sign_define(name, opts)
 end
 
 require('mason-nvim-dap').setup {
     automatic_installation = true,
     ensure_installed = { 'debugpy', 'codelldb', 'coreclr' },
+    handlers = {},
 }
 require('nvim-dap-virtual-text').setup {}
 
 local file_prompt = function(prompt, default)
     return function()
-        return vim.fn.input(prompt, vim.fn.getcwd() .. default, 'file')
+        local path = vim.fn.input {
+            prompt = prompt,
+            default = vim.fn.getcwd() .. default,
+            completion = 'file',
+        }
+        return (path and path ~= '') and path or dap.ABORT
     end
 end
 
