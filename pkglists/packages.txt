@@ -88,6 +88,7 @@ prettier
 progress
 pulsemixer
 python-pipx
+python-pylatexenc
 python-pynvim
 qbittorrent
 qt5ct
