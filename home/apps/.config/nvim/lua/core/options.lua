@@ -29,12 +29,10 @@ opt.virtualedit = 'block'
 
 opt.ignorecase = true
 opt.smartcase = true
-opt.inccommand = 'split'
 
 opt.foldmethod = 'indent'
 opt.foldlevel = 99
 opt.foldlevelstart = 99
-opt.foldenable = true
 
 opt.list = true
 opt.listchars = {
@@ -45,10 +43,11 @@ opt.listchars = {
     precedes = '<',
 }
 
+opt.completeopt = { 'menu', 'menuone', 'noselect', 'noinsert' }
+opt.wildmode = { 'longest:full', 'full' }
 opt.diffopt:append { 'foldcolumn:0' }
 opt.fillchars:append { diff = '╱' }
 opt.shortmess:append 'c'
-opt.shortmess:append 'I'
 
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1

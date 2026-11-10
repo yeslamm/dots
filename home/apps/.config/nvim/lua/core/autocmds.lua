@@ -22,23 +22,53 @@ vim.api.nvim_create_autocmd('BufReadPost', {
     end,
 })
 
+vim.api.nvim_create_autocmd('BufWritePre', {
+    group = augroup,
+    callback = function(args)
+        if args.match:match '^%w%w+:[\\/][\\/]' then
+            return
+        end
+        local file = vim.uv.fs_realpath(args.match) or args.match
+        vim.fn.mkdir(vim.fn.fnamemodify(file, ':h'), 'p')
+    end,
+})
+
 vim.api.nvim_create_autocmd('FileType', {
     group = augroup,
     pattern = { 'json', 'jsonc', 'markdown', 'tex', 'text' },
     callback = function(args)
-        vim.opt_local.expandtab = true
-        vim.opt_local.shiftwidth = 2
-        vim.opt_local.tabstop = 2
-        vim.opt_local.softtabstop = 2
+        local ft = args.match
 
-        if args.match == 'markdown' or args.match == 'tex' or args.match == 'text' then
-            vim.opt_local.wrap = true
-            vim.opt_local.linebreak = true
+        if ft ~= 'markdown' then
+            vim.opt_local.shiftwidth = 2
+            vim.opt_local.tabstop = 2
+            vim.opt_local.softtabstop = 2
         end
-        if args.match == 'markdown' then
-            vim.opt_local.conceallevel = 2
+
+        if ft == 'markdown' or ft == 'tex' or ft == 'text' then
+            vim.opt_local.wrap = true
+        end
+
+        if ft == 'markdown' then
+            vim.opt_local.conceallevel = 3
             vim.opt_local.showbreak = '  '
         end
+    end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+    group = augroup,
+    pattern = { 'nvim-undotree', 'oil', 'qf' },
+    callback = function()
+        vim.opt_local.foldenable = false
+    end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+    group = augroup,
+    pattern = { 'help', 'qf', 'man', 'lspinfo', 'checkhealth', 'mason', 'notify', 'gitsigns-blame' },
+    callback = function(args)
+        vim.keymap.set('n', 'q', '<cmd>close<CR>', { buffer = args.buf, silent = true })
     end,
 })
 
@@ -67,13 +97,5 @@ vim.api.nvim_create_autocmd('WinLeave', {
     group = augroup,
     callback = function()
         vim.opt_local.cursorline = false
-    end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-    group = augroup,
-    pattern = { 'help', 'qf', 'man', 'lspinfo', 'checkhealth', 'mason', 'notify', 'gitsigns-blame' },
-    callback = function(args)
-        vim.keymap.set('n', 'q', '<cmd>close<CR>', { buffer = args.buf, silent = true })
     end,
 })
