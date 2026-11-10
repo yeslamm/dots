@@ -15,8 +15,9 @@ vim.pack.add {
     'https://github.com/EdenEast/nightfox.nvim',
     'https://github.com/nvim-lua/plenary.nvim',
     'https://github.com/echasnovski/mini.nvim',
-    'https://github.com/nvim-lualine/lualine.nvim',
     'https://github.com/lukas-reineke/indent-blankline.nvim',
+    'https://github.com/selimacerbas/mdkite.nvim',
+    'https://github.com/selimacerbas/kitehost.nvim',
 
     -- LSP & Tool Management
     'https://github.com/williamboman/mason.nvim',
@@ -42,7 +43,6 @@ vim.pack.add {
     'https://github.com/ibhagwan/fzf-lua',
     'https://github.com/stevearc/oil.nvim',
     'https://github.com/mrjones2014/smart-splits.nvim',
-    'https://github.com/windwp/nvim-autopairs',
     'https://github.com/folke/todo-comments.nvim',
     'https://github.com/folke/which-key.nvim',
     'https://github.com/lervag/vimtex',
@@ -50,13 +50,14 @@ vim.pack.add {
     -- Git & History
     'https://github.com/lewis6991/gitsigns.nvim',
     'https://github.com/sindrets/diffview.nvim',
-    'https://github.com/jiaoshijie/undotree',
 
     -- Debugging (DAP)
     'https://github.com/mfussenegger/nvim-dap',
     'https://github.com/theHamsta/nvim-dap-virtual-text',
     'https://github.com/jay-babu/mason-nvim-dap.nvim',
 }
+
+vim.cmd 'packadd nvim.undotree'
 
 vim.api.nvim_create_user_command('PackUpdate', function(o)
     vim.pack.update(nil, { force = o.bang })

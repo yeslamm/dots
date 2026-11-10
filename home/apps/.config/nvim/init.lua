@@ -12,9 +12,8 @@ local immediate_plugins = {
     'lsp',
     'roslyn',
     'rustaceanvim',
-    'blink',
+    -- 'blink',
     'oil',
-    'lualine',
     'vimtex',
 }
 
@@ -26,16 +25,13 @@ local deferred_plugins = {
     'fzf',
     'gitsigns',
     'smart_splits',
-    'autopairs',
     'render_markdown',
-    'undotree',
+    'mdkite',
     'diffview',
     'dap',
     'conform',
-    'lint',
     'which_key',
     'todo_comments',
-    'indent_blankline',
 }
 
 vim.schedule(function()
