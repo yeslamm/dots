@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-notes_dir="$HOME/notes"
-
-cd "$notes_dir" || exit 1
+NOTES_DIR="$HOME/notes"
+cd "$NOTES_DIR" || exit 1
 
 if ! ping -c 1 -W 1 1.1.1.1 >/dev/null 2>&1; then
     echo "==> Offline: skipping remote sync"

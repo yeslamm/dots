@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-notes_dir="$HOME/notes"
-[ -d "$notes_dir" ] || exit 0
-
-file=$(cd "$notes_dir" && fd --type f --extension md | fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}')
-
-[ -n "$file" ] && exec nvim "$notes_dir/$file"
