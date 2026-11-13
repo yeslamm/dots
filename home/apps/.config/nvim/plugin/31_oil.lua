@@ -1,6 +1,4 @@
-local oil = require 'oil'
-
-oil.setup {
+require('oil').setup {
     delete_to_trash = true,
     skip_confirm_for_simple_edits = true,
     prompt_save_on_select_new_entry = true,
@@ -28,17 +26,16 @@ oil.setup {
         ['q'] = 'actions.close',
         ['<C-c>'] = false,
         ['='] = '<cmd>write<CR>',
-
         ['<leader>so'] = {
             function()
-                require('fzf-lua').files { cwd = oil.get_current_dir() }
+                require('fzf-lua').files { cwd = require('oil').get_current_dir() }
             end,
             mode = 'n',
             desc = 'Oil: Find files',
         },
         ['<leader>sO'] = {
             function()
-                require('fzf-lua').live_grep { cwd = oil.get_current_dir() }
+                require('fzf-lua').live_grep { cwd = require('oil').get_current_dir() }
             end,
             mode = 'n',
             desc = 'Oil: Grep files',
@@ -46,5 +43,4 @@ oil.setup {
     },
 }
 
-vim.keymap.set('n', '<leader>o', oil.toggle_float, { silent = true, desc = 'Oil: Toggle Float' })
-vim.keymap.set('n', '-', '<cmd>Oil<CR>', { desc = 'Oil: Open Parent Directory' })
+vim.keymap.set('n', '-', '<cmd>Oil<CR>', { desc = 'Oil: Open parent directory' })

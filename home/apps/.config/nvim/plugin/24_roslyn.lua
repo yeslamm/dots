@@ -1,11 +1,6 @@
-local roslyn = require 'roslyn'
-
-local capabilities = require('blink.cmp').get_lsp_capabilities()
-
-roslyn.setup {
+require('roslyn').setup {
     broad_search = true,
     config = {
-        capabilities = capabilities,
         settings = {
             ['csharp|inlay_hints'] = {
                 csharp_enable_inlay_hints_for_implicit_object_creation = true,

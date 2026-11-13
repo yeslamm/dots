@@ -3,9 +3,7 @@ require('which-key').setup {
     delay = 600,
     show_help = false,
     show_keys = false,
-    icons = {
-        mappings = false,
-    },
+    icons = { mappings = false },
     win = {
         border = 'single',
         no_overlap = false,
@@ -19,12 +17,12 @@ require('which-key').setup {
         scroll_down = '<c-n>',
     },
     spec = {
-        { 'gr', group = 'References' },
+        { 'gr', group = 'LSP' },
         { '<leader>g', group = 'Git', mode = { 'n', 'v' } },
         { '<leader>s', group = 'Search' },
         { '<leader>t', group = 'Tabs' },
         { '<leader>D', group = 'Debug' },
-        { '<leader>l', group = 'LateX' },
+        { '<leader>l', group = 'LaTeX' },
         { '<leader>n', group = 'Notes' },
         { '<leader>m', group = 'Mdkite' },
     },

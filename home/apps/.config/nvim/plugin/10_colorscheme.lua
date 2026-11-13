@@ -1,6 +1,5 @@
 require('nightfox').setup {
     options = {
-        transparent = false,
         terminal_colors = true,
     },
     groups = {
@@ -11,5 +10,4 @@ require('nightfox').setup {
         },
     },
 }
-
 vim.cmd.colorscheme 'carbonfox'

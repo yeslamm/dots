@@ -1,8 +1,7 @@
-local ss = require 'smart-splits'
-
 ---@diagnostic disable-next-line: missing-fields
-ss.setup { log_level = 'error' }
+require('smart-splits').setup { log = { level = 'error' } }
 
+local ss = require 'smart-splits'
 vim.keymap.set('n', '<C-h>', ss.move_cursor_left, { desc = 'Move left split/pane' })
 vim.keymap.set('n', '<C-j>', ss.move_cursor_down, { desc = 'Move down split/pane' })
 vim.keymap.set('n', '<C-k>', ss.move_cursor_up, { desc = 'Move up split/pane' })

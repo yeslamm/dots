@@ -1,7 +1,7 @@
 require('mini.icons').setup()
 MiniIcons.mock_nvim_web_devicons()
 
-require('mini.statusline').setup {}
+require('mini.statusline').setup()
 
 require('mini.indentscope').setup {
     symbol = '│',
@@ -14,22 +14,14 @@ require('mini.indentscope').setup {
     },
 }
 
-require('mini.completion').setup {
-    lsp_completion = {
-        source_func = 'completefunc',
-        auto_setup = true,
-    },
-}
-
 vim.api.nvim_create_autocmd('FileType', {
-    pattern = { 'help', 'mason', 'notify', 'oil', 'quarto', 'rmd' },
+    pattern = { 'help', 'mason', 'markdown', 'oil', 'quarto', 'rmd' },
     callback = function()
         vim.b.miniindentscope_disable = true
     end,
 })
 
-require('mini.pairs').setup {}
-
+require('mini.pairs').setup()
 vim.api.nvim_create_autocmd('FileType', {
     pattern = { 'tex', 'markdown' },
     callback = function(ev)

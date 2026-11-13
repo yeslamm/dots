@@ -37,16 +37,6 @@ fzf.setup {
     },
 }
 
-fzf.register_ui_select {
-    winopts = {
-        height = 0.25,
-        width = 0.35,
-        row = 0.5,
-        col = 0.5,
-        preview = { hidden = 'hidden' },
-    },
-}
-
 local map = vim.keymap.set
 map('n', '<leader>sf', fzf.files, { desc = 'Files' })
 map('n', '<leader>ss', fzf.builtin, { desc = 'Builtin' })

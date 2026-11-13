@@ -32,15 +32,15 @@ vim.diagnostic.config {
     virtual_text = false,
 }
 
--- vim.lsp.config('*', {
---     capabilities = require('blink.cmp').get_lsp_capabilities(),
--- })
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+local ok, blink = pcall(require, 'blink.cmp')
+if ok then
+    capabilities = blink.get_lsp_capabilities(capabilities)
+end
 
 vim.lsp.config('*', {
-    capabilities = vim.lsp.protocol.make_client_capabilities(),
+    capabilities = capabilities,
 })
-
-local hl_group = vim.api.nvim_create_augroup('lsp-highlight', { clear = false })
 
 vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('custom-lsp-attach', { clear = true }),
@@ -50,34 +50,29 @@ vim.api.nvim_create_autocmd('LspAttach', {
             return
         end
 
-        -- if client:supports_method('textDocument/completion', event.buf) then
-        --     vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
-        -- end
-
         if client:supports_method('textDocument/documentHighlight', event.buf) then
+            local hl_group = vim.api.nvim_create_augroup('lsp-highlight-' .. event.buf, { clear = true })
+
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
                 buffer = event.buf,
                 group = hl_group,
                 callback = vim.lsp.buf.document_highlight,
             })
-            vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI', 'LspDetach' }, {
+            vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
                 buffer = event.buf,
                 group = hl_group,
                 callback = vim.lsp.buf.clear_references,
             })
+            vim.api.nvim_create_autocmd('LspDetach', {
+                buffer = event.buf,
+                group = hl_group,
+                callback = function()
+                    vim.lsp.buf.clear_references()
+                    pcall(vim.api.nvim_del_augroup_by_id, hl_group)
+                end,
+            })
         end
     end,
-})
-
-vim.lsp.config('clangd', { cmd = { 'clangd', '--offset-encoding=utf-16' } })
-vim.lsp.config('basedpyright', { settings = { basedpyright = { analysis = { diagnosticMode = 'openFilesOnly' } } } })
-vim.lsp.config('ruff', {
-    on_attach = function(client)
-        client.server_capabilities.hoverProvider = false
-    end,
-})
-vim.lsp.config('jsonls', {
-    settings = { json = { schemas = require('schemastore').json.schemas(), validate = { enable = true } } },
 })
 
 vim.lsp.enable {
