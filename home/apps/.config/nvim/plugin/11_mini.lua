@@ -1,4 +1,5 @@
-require('mini.icons').setup()
+local MiniIcons = require 'mini.icons'
+MiniIcons.setup()
 MiniIcons.mock_nvim_web_devicons()
 
 require('mini.statusline').setup()
@@ -21,7 +22,8 @@ vim.api.nvim_create_autocmd('FileType', {
     end,
 })
 
-require('mini.pairs').setup()
+local MiniPairs = require 'mini.pairs'
+MiniPairs.setup()
 vim.api.nvim_create_autocmd('FileType', {
     pattern = { 'tex', 'markdown' },
     callback = function(ev)

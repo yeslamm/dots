@@ -47,7 +47,9 @@ opt.diffopt:append { 'foldcolumn:0' }
 opt.fillchars:append { diff = '╱' }
 opt.shortmess:append 'c'
 
--- keymaps
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -92,7 +94,11 @@ map('n', '<leader>u', function()
     require('undotree').open { command = 'botright 40vnew' }
 end, { desc = 'Toggle Undotree' })
 
--- notes
+map('n', '<leader>i', function()
+    local filter = { bufnr = 0 }
+    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(filter), filter)
+end, { desc = 'Toggle LSP inlay hints' })
+
 local notes_dir = vim.fn.expand '~/notes'
 
 local function open_note(rel_path, heading)
@@ -126,7 +132,14 @@ map('n', '<leader>ns', function()
     end)
 end, { desc = 'Sync notes' })
 
--- autocmds
+map('n', '<leader>nf', function()
+    require('fzf-lua').files { cwd = notes_dir }
+end, { desc = 'Find notes' })
+
+map('n', '<leader>ng', function()
+    require('fzf-lua').live_grep { cwd = notes_dir }
+end, { desc = 'Grep notes' })
+
 local augroup = vim.api.nvim_create_augroup('UserConfig', { clear = true })
 
 vim.api.nvim_create_autocmd('TextYankPost', {
@@ -206,7 +219,6 @@ vim.api.nvim_create_autocmd('WinLeave', {
     end,
 })
 
--- plugins
 vim.api.nvim_create_autocmd('PackChanged', {
     callback = function(ev)
         local name, kind = ev.data.spec.name, ev.data.kind
