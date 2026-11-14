@@ -1,24 +1,33 @@
 require('render-markdown').setup {
+    render_modes = { 'n', 'v', 'V', '\22', 'c', 't' },
+
+    sign = { enabled = false },
+
     completions = {
         lsp = { enabled = true },
     },
 
-    sign = { enabled = false },
-
     heading = {
         width = 'block',
-        icons = {},
+        icons = { '# ', '## ', '### ', '#### ', '##### ', '###### ' },
+        right_pad = 1,
     },
 
     code = {
         width = 'block',
-        left_pad = 2,
-        right_pad = 2,
         border = 'thin',
+        right_pad = 2,
     },
 
-    bullet = { enabled = false },
-    checkbox = { enabled = false },
+    bullet = {
+        icons = { '•' },
+    },
+
+    checkbox = {
+        bullet = true,
+        unchecked = { icon = '[ ]' },
+        checked = { icon = '[x]' },
+    },
 
     pipe_table = {
         style = 'normal',
@@ -34,6 +43,9 @@ require('render-markdown').setup {
         render_modes = { 'n', 'c', 'v' },
     },
 }
+
+local normal = vim.api.nvim_get_hl(0, { name = 'Normal', link = false })
+vim.api.nvim_set_hl(0, 'RenderMarkdownBullet', { fg = normal.fg, bg = 'NONE' })
 
 require('mdkite').setup {}
 
