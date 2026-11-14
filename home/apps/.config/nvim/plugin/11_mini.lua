@@ -22,19 +22,7 @@ vim.api.nvim_create_autocmd('FileType', {
     end,
 })
 
-local MiniPairs = require 'mini.pairs'
-MiniPairs.setup()
-vim.api.nvim_create_autocmd('FileType', {
-    pattern = { 'tex', 'markdown' },
-    callback = function(ev)
-        MiniPairs.map_buf(0, 'i', '$', { action = 'closeopen', pair = '$$' })
-
-        if ev.match == 'markdown' then
-            MiniPairs.map_buf(0, 'i', '*', { action = 'closeopen', pair = '**' })
-            MiniPairs.map_buf(0, 'i', '~', { action = 'closeopen', pair = '~~' })
-        end
-    end,
-})
+require('mini.pairs').setup()
 
 require('mini.ai').setup { n_lines = 500 }
 

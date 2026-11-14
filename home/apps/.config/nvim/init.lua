@@ -7,7 +7,6 @@ opt.confirm = true
 
 opt.number = true
 opt.relativenumber = true
-opt.cursorline = true
 opt.winborder = 'single'
 opt.signcolumn = 'yes'
 opt.laststatus = 3
@@ -47,9 +46,6 @@ opt.diffopt:append { 'foldcolumn:0' }
 opt.fillchars:append { diff = '╱' }
 opt.shortmess:append 'c'
 
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -79,66 +75,15 @@ map('n', 'N', 'Nzzzv', { desc = 'Previous search centered' })
 map('x', '<', '<gv', { desc = 'Decrease indent' })
 map('x', '>', '>gv', { desc = 'Increase indent' })
 
-map('n', '<leader>q', '<cmd>bd<CR>', { desc = 'Quit buffer' })
-map('n', '<leader>tn', '<cmd>tabnew<CR>', { desc = 'New tab' })
-map('n', '<leader>tx', '<cmd>tabclose<CR>', { desc = 'Close tab' })
-map('n', '<leader>to', '<cmd>tabonly<CR>', { desc = 'Close other tabs' })
+map('n', '<C-h>', '<C-w>h', { desc = 'Move to left pane' })
+map('n', '<C-j>', '<C-w>j', { desc = 'Move to lower pane' })
+map('n', '<C-k>', '<C-w>k', { desc = 'Move to upper pane' })
+map('n', '<C-l>', '<C-w>l', { desc = 'Move to right pane' })
 
-map('n', '<leader>x', vim.diagnostic.setqflist, { desc = 'Quickfix list' })
-
-map('n', 'gl', function()
-    vim.diagnostic.open_float { scope = 'line' }
-end, { desc = 'Line diagnostics' })
-
-map('n', '<leader>u', function()
-    require('undotree').open { command = 'botright 40vnew' }
-end, { desc = 'Toggle Undotree' })
-
-map('n', '<leader>i', function()
-    local filter = { bufnr = 0 }
-    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(filter), filter)
-end, { desc = 'Toggle LSP inlay hints' })
-
-local notes_dir = vim.fn.expand '~/notes'
-
-local function open_note(rel_path, heading)
-    local full_path = notes_dir .. '/' .. rel_path
-    vim.fn.mkdir(vim.fn.fnamemodify(full_path, ':h'), 'p')
-    vim.cmd.edit(full_path)
-
-    if vim.fn.getfsize(full_path) <= 0 then
-        vim.api.nvim_buf_set_lines(0, 0, -1, false, { '# ' .. heading, '' })
-        vim.cmd.write()
-    end
-end
-
-map('n', '<leader>nd', function()
-    open_note('dailies/' .. os.date '%Y-%m-%d' .. '.md', os.date '%a, %b %d')
-end, { desc = "Today's note" })
-
-map('n', '<leader>nb', function()
-    open_note('backlog.md', 'Backlog')
-end, { desc = 'Backlog note' })
-
-map('n', '<leader>ns', function()
-    vim.system({ vim.fn.expand '~/.local/bin/notes-sync' }, {}, function(out)
-        vim.schedule(function()
-            if out.code == 0 then
-                vim.notify('Notes synced!', vim.log.levels.INFO)
-            else
-                vim.notify('Notes sync failed:\n' .. (out.stderr or ''), vim.log.levels.ERROR)
-            end
-        end)
-    end)
-end, { desc = 'Sync notes' })
-
-map('n', '<leader>nf', function()
-    require('fzf-lua').files { cwd = notes_dir }
-end, { desc = 'Find notes' })
-
-map('n', '<leader>ng', function()
-    require('fzf-lua').live_grep { cwd = notes_dir }
-end, { desc = 'Grep notes' })
+map('n', '<C-A-j>', '<cmd>resize -2<CR>', { desc = 'Decrease pane height' })
+map('n', '<C-A-k>', '<cmd>resize +2<CR>', { desc = 'Increase pane height' })
+map('n', '<C-A-h>', '<cmd>vertical resize -2<CR>', { desc = 'Decrease pane width' })
+map('n', '<C-A-l>', '<cmd>vertical resize +2<CR>', { desc = 'Increase pane width' })
 
 local augroup = vim.api.nvim_create_augroup('UserConfig', { clear = true })
 
@@ -153,7 +98,7 @@ vim.api.nvim_create_autocmd('BufReadPost', {
     group = augroup,
     callback = function(args)
         local ft = vim.bo[args.buf].filetype
-        if ft:find 'commit' or ft:find 'rebase' then
+        if vim.bo[args.buf].buftype ~= '' or vim.wo.diff or ft:find 'commit' or ft:find 'rebase' then
             return
         end
 
@@ -190,14 +135,6 @@ vim.api.nvim_create_autocmd('FileType', {
     end,
 })
 
-vim.api.nvim_create_autocmd('FileType', {
-    group = augroup,
-    pattern = { 'nvim-undotree', 'oil', 'qf' },
-    callback = function()
-        vim.opt_local.foldenable = false
-    end,
-})
-
 vim.api.nvim_create_autocmd('VimResized', {
     group = augroup,
     command = 'wincmd =',
@@ -220,6 +157,7 @@ vim.api.nvim_create_autocmd('WinLeave', {
 })
 
 vim.api.nvim_create_autocmd('PackChanged', {
+    group = augroup,
     callback = function(ev)
         local name, kind = ev.data.spec.name, ev.data.kind
         if name == 'nvim-treesitter' and (kind == 'install' or kind == 'update') then
@@ -246,6 +184,7 @@ vim.pack.add {
 
     { src = 'https://github.com/saghen/blink.cmp', version = vim.version.range '1.x' },
     'https://github.com/rafamadriz/friendly-snippets',
+    'https://github.com/L3MON4D3/LuaSnip',
     'https://github.com/stevearc/conform.nvim',
     'https://github.com/mfussenegger/nvim-lint',
 
@@ -253,21 +192,14 @@ vim.pack.add {
     'https://github.com/MeanderingProgrammer/render-markdown.nvim',
     'https://github.com/selimacerbas/mdkite.nvim',
     'https://github.com/selimacerbas/kitehost.nvim',
+    'https://github.com/lervag/vimtex',
 
     'https://github.com/ibhagwan/fzf-lua',
     'https://github.com/stevearc/oil.nvim',
     'https://github.com/folke/which-key.nvim',
-    'https://github.com/mrjones2014/smart-splits.nvim',
-    'https://github.com/smart-splits-nvim/backend-tmux',
 
     'https://github.com/lewis6991/gitsigns.nvim',
-
-    'https://github.com/mfussenegger/nvim-dap',
-    'https://github.com/theHamsta/nvim-dap-virtual-text',
-    'https://github.com/jay-babu/mason-nvim-dap.nvim',
 }
-
-vim.cmd 'packadd nvim.undotree'
 
 vim.api.nvim_create_user_command('PackUpdate', function(o)
     vim.pack.update(nil, { force = o.bang })

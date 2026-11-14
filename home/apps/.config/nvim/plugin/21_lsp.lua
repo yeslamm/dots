@@ -75,6 +75,12 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end,
 })
 
+vim.keymap.set('n', '<leader>x', vim.diagnostic.setqflist, { desc = 'Quickfix list' })
+
+vim.keymap.set('n', 'gl', function()
+    vim.diagnostic.open_float { scope = 'line' }
+end, { desc = 'Line diagnostics' })
+
 vim.lsp.enable {
     'marksman',
     'bashls',

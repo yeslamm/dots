@@ -20,8 +20,6 @@ require('which-key').setup {
         { 'gr', group = 'LSP' },
         { '<leader>g', group = 'Git', mode = { 'n', 'v' } },
         { '<leader>s', group = 'Search' },
-        { '<leader>t', group = 'Tabs' },
-        { '<leader>D', group = 'Debug' },
         { '<leader>l', group = 'LaTeX' },
         { '<leader>n', group = 'Notes' },
         { '<leader>m', group = 'Mdkite' },

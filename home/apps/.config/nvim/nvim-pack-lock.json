@@ -1,8 +1,8 @@
 {
   "plugins": {
-    "backend-tmux": {
-      "rev": "9e9e6aa9b3eb7a8d3896a993611622ac97abff52",
-      "src": "https://github.com/smart-splits-nvim/backend-tmux"
+    "LuaSnip": {
+      "rev": "0abc8f390b278c3b4aabc4c004ac8a088b65cf24",
+      "src": "https://github.com/L3MON4D3/LuaSnip"
     },
     "blink.cmp": {
       "rev": "78336bc89ee5365633bcf754d93df01678b5c08f",
@@ -37,10 +37,6 @@
       "rev": "ff2cbcba459b637ec3fd165a2be59b7bbaeedf0d",
       "src": "https://github.com/folke/lazydev.nvim"
     },
-    "mason-nvim-dap.nvim": {
-      "rev": "9a10e096703966335bd5c46c8c875d5b0690dade",
-      "src": "https://github.com/jay-babu/mason-nvim-dap.nvim"
-    },
     "mason-tool-installer.nvim": {
       "rev": "443f1ef8b5e6bf47045cb2217b6f748a223cf7dc",
       "src": "https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim"
@@ -60,14 +56,6 @@
     "nightfox.nvim": {
       "rev": "4dacd3f0185a2227bdf3b6c0975a8f0bf87cac9a",
       "src": "https://github.com/EdenEast/nightfox.nvim"
-    },
-    "nvim-dap": {
-      "rev": "cfa2d58f4537aca6ca83e2de1a0d9f1491121264",
-      "src": "https://github.com/mfussenegger/nvim-dap"
-    },
-    "nvim-dap-virtual-text": {
-      "rev": "fbdb48c2ed45f4a8293d0d483f7730d24467ccb6",
-      "src": "https://github.com/theHamsta/nvim-dap-virtual-text"
     },
     "nvim-lint": {
       "rev": "52107ce2076a27a285af781248e2c59bad817cd0",
@@ -103,9 +91,9 @@
       "rev": "13a365fa7a893891fe8724390ad7e608d1c1c59b",
       "src": "https://github.com/b0o/schemastore.nvim"
     },
-    "smart-splits.nvim": {
-      "rev": "72d073c5a10f6aec93e7cb7f5dc450f9559ed376",
-      "src": "https://github.com/mrjones2014/smart-splits.nvim"
+    "vimtex": {
+      "rev": "cedc0a172e40d0d1d49670dd0d936d6e2df61de7",
+      "src": "https://github.com/lervag/vimtex"
     },
     "which-key.nvim": {
       "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",

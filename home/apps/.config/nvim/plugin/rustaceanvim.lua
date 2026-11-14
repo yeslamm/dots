@@ -15,11 +15,6 @@ vim.g.rustaceanvim = {
                 check = {
                     command = 'clippy',
                 },
-                inlayHints = {
-                    bindingModeHints = { enable = true },
-                    parameterHints = { enable = true },
-                    typeHints = { enable = true },
-                },
             },
         },
     },
