@@ -258,6 +258,7 @@ vim.pack.add {
     'https://github.com/stevearc/oil.nvim',
     'https://github.com/folke/which-key.nvim',
     'https://github.com/mrjones2014/smart-splits.nvim',
+    'https://github.com/smart-splits-nvim/backend-tmux',
 
     'https://github.com/lewis6991/gitsigns.nvim',
 
