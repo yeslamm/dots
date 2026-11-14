@@ -21,7 +21,7 @@ exec hash dbus-update-activation-environment 2>/dev/null && \
                                                   XCURSOR_SIZE
 
 set $mod         Mod4
-set $term        foot
+set $term        footclient
 set $menu        fuzzel
 
 set $scripts     ~/.config/sway/scripts
@@ -276,8 +276,9 @@ bindsym $tc $mod+Shift+t            exec timer show
 
 exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec keyd-application-mapper
-
 exec mako
+
+exec foot --server
 exec_always pkill -SIGUSR2 -x waybar || (sleep 0.5 && waybar)
 exec_always $scripts/start-wob.sh
 
@@ -288,7 +289,6 @@ exec wayland-pipewire-idle-inhibit -d 10 -q
 
 exec wl-paste --type text  --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
 exec wl-paste --type image --watch cliphist -db-path "$XDG_RUNTIME_DIR/cliphist.db" store
-
 exec playerctld daemon
 exec aria2c --conf-path="$HOME/.config/aria2/aria2-rpc.conf"
 
