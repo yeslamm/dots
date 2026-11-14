@@ -102,6 +102,7 @@ rsync
 rustup
 satty
 scx-scheds
+sesh
 shellcheck
 slurp
 smartmontools

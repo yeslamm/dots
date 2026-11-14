@@ -1,0 +1,6 @@
+dir_length = 2
+cache = true
+blacklist = ["scratch", "popup"]
+
+[default_session]
+preview_command = "eza --all --git --icons --color=always {}"
