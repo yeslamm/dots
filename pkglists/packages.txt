@@ -102,7 +102,6 @@ rsync
 rustup
 satty
 scx-scheds
-sesh
 shellcheck
 slurp
 smartmontools
@@ -116,7 +115,6 @@ swaylock
 swh-plugins
 telegram-desktop
 terminus-font
-tmux
 tree
 ttf-amiri
 ttf-jetbrains-mono-nerd
