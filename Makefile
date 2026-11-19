@@ -113,5 +113,8 @@ unstow:
 
 profile: stow audio
 	@echo ""
+	@echo "==> Enabling user services..."
+	systemctl --user enable --now wob.socket 2>/dev/null || systemctl --user enable wob.socket
+	@echo ""
 	@echo "==> Done."
 	@echo ""
