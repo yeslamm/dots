@@ -1,13 +1,11 @@
 SHELL := /bin/bash
 
 DOTS_DIR   := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
-HOME_DIR   := $(DOTS_DIR)/home
 SYSTEM_DIR := $(DOTS_DIR)/system
 
 TARGET_USER ?= $(shell logname 2>/dev/null || echo "$$USER")
 
-PACKAGES := $(notdir $(patsubst %/,%,$(wildcard $(HOME_DIR)/*/)))
-STOW     := stow -d $(HOME_DIR) -t $(HOME) --no-folding
+STOW := stow -d $(DOTS_DIR) -t $(HOME) --no-folding
 
 .PHONY: all help bootstrap pkgs pkgs-gaming pkgs-virt system \
         audio stow unstow simulate profile
@@ -34,7 +32,7 @@ help:
 	@echo ""
 	@echo "  Dotfiles:"
 	@echo "    profile      - Run stow and audio"
-	@echo "    stow         - Link home/* packages into $(HOME)"
+	@echo "    stow         - Link home/ dotfiles into $(HOME)"
 	@echo "    unstow       - Remove those links"
 	@echo "    simulate     - Preview stow changes (dry-run)"
 	@echo ""
@@ -96,19 +94,19 @@ audio:
 
 stow:
 	@echo ""
-	@echo "==> Stowing: $(PACKAGES)"
-	$(STOW) -R $(PACKAGES)
+	@echo "==> Stowing home..."
+	$(STOW) -R home
 
 simulate:
 	@echo ""
 	@echo "==> Dry-run stow..."
-	$(STOW) -nvR $(PACKAGES)
+	$(STOW) -nvR home
 	@echo ""
 
 unstow:
 	@echo ""
 	@echo "==> Unstowing dotfiles..."
-	$(STOW) -D $(PACKAGES)
+	$(STOW) -D home
 	@echo ""
 
 profile: stow audio
