@@ -1,66 +1,19 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 
-ACTION="${1:-}"
-TMP_GEOM=""
-TMP_IMG=""
-IS_COPY=false
-
-if [[ "$ACTION" == *"-copy" ]]; then
-    IS_COPY=true
-    TARGET="${ACTION%-copy}"
-else
-    TARGET="$ACTION"
-fi
-
-cleanup() {
-    [[ -n "${TMP_GEOM:-}" && -f "$TMP_GEOM" ]] && rm -f "$TMP_GEOM"
-    [[ -n "${TMP_IMG:-}" && -f "$TMP_IMG" ]] && rm -f "$TMP_IMG"
-}
-trap cleanup EXIT INT TERM
-
-get_window_geometry() {
-    swaymsg -t get_tree |
-        jq -r '.. | select(.focused? == true and (.type? == "con" or .type? == "floating_con")) | 
-               "\((.rect.x + .window_rect.x)),\((.rect.y + .window_rect.y)) \(.window_rect.width)x\(.window_rect.height)"' |
-        head -n1
-}
-
-case "$TARGET" in
-region)
-    TMP_GEOM="$(mktemp "${XDG_RUNTIME_DIR:-/tmp}/geom-XXXXXX")"
-
-    wayfreeze --after-freeze-cmd "slurp -d -w 1 -c '#78a9ff' -s '#78a9ff1a' -b '#0f0f0f55' > '$TMP_GEOM'; pkill wayfreeze" || true
-
-    GEOM=$(<"$TMP_GEOM")
-    rm -f "$TMP_GEOM"
-    TMP_GEOM=""
-    [[ -z "$GEOM" ]] && exit 0
-    ;;
-window)
-    GEOM=$(get_window_geometry)
-    [[ -z "$GEOM" ]] && exit 0
-    ;;
-fullscreen)
-    GEOM=""
-    ;;
+case "${1:-}" in
+region) args=(--freeze save area) ;;
+window) args=(save active) ;;
+fullscreen) args=(save output) ;;
 *)
-    echo "Usage: $(basename "$0") {region|window|fullscreen|region-copy|window-copy|fullscreen-copy}" >&2
+    echo "Usage: $(basename "$0") {region|window|fullscreen}" >&2
     exit 1
     ;;
 esac
 
-declare -a grim_args=()
-[[ -n "$GEOM" ]] && grim_args+=(-g "$GEOM")
+TMP_IMG="$(mktemp "${XDG_RUNTIME_DIR:-/tmp}/satty-XXXXXX.png")"
+trap 'rm -f "$TMP_IMG"' EXIT
 
-if [[ "$IS_COPY" == true ]]; then
-    grim "${grim_args[@]}" - | wl-copy -t image/png
-    notify-send -t 1500 "Screenshot" "Copied to clipboard"
-else
-    TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
-    TMP_IMG="$(mktemp "${XDG_RUNTIME_DIR:-/tmp}/satty-XXXXXX.ppm")"
-    grim -t ppm "${grim_args[@]}" "$TMP_IMG"
-    notify-send -t 1500 "Screenshot" "Captured to scratchpad"
-    satty --filename "$TMP_IMG" --title "Satty - $TIMESTAMP"
-fi
+grimshot "${args[@]}" "$TMP_IMG" >/dev/null || exit 0
+notify-send -t 1500 "Screenshot" "Captured to scratchpad"
+satty --filename "$TMP_IMG" --title "Satty - $(date '+%Y-%m-%d %H:%M:%S')"

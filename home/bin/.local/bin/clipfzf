@@ -1,23 +1,12 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 
 DB_PATH="${XDG_RUNTIME_DIR:-/run/user/${UID}}/cliphist.db"
 SELF="$(realpath "$0")"
+BIN_RE=$'^[0-9]+\t\\[\\[ binary data '
 
 ch_cmd() {
     cliphist -db-path "$DB_PATH" "$@"
-}
-
-copy_item() {
-    local item="$1"
-    local bin_re="^[0-9]+"$'\t'"\[\[ binary data "
-
-    if [[ "$item" =~ $bin_re ]]; then
-        ch_cmd decode <<<"$item" | wl-copy --type image/png
-    else
-        ch_cmd decode <<<"$item" | wl-copy
-    fi
 }
 
 case "${1:-}" in
@@ -29,9 +18,7 @@ preview)
     row="${2:-}"
     [[ -z "$row" ]] && exit 0
 
-    re="^[0-9]+"$'\t'"\[\[ binary data "
-
-    if [[ "$row" =~ $re ]]; then
+    if [[ "$row" =~ $BIN_RE ]]; then
         ch_cmd decode <<<"$row" | chafa -s "${FZF_PREVIEW_COLUMNS:-80}x${FZF_PREVIEW_LINES:-25}"
     else
         ch_cmd decode <<<"$row"
@@ -39,75 +26,12 @@ preview)
     ;;
 
 delete)
-    if [[ -n "${2:-}" && -f "$2" ]]; then
-        ch_cmd delete <"$2"
-    elif [[ -n "${2:-}" ]]; then
-        ch_cmd delete <<<"$2"
-    fi
+    [[ -n "${2:-}" && -f "$2" ]] && ch_cmd delete <"$2"
     ;;
 
 wipe)
-    tput smcup 2>/dev/null || printf '\e[?1049h'
-    clear
-    echo ""
-    printf "  \e[31;1mWARNING: Wiping Entire Clipboard History\e[0m\n"
-    printf "  ─────────────────────────────────────────────────────────────\n"
-    printf "  Are you sure you want to permanently delete ALL entries? [y/N]: "
-
-    read -rsn 1 confirm </dev/tty
-    while read -rst 0.02 -n 100 </dev/tty; do :; done
-    echo ""
-
-    if [[ "${confirm:-}" =~ ^[Yy]$ ]]; then
-        ch_cmd wipe
-        printf "\n  \e[32m✔ Clipboard database wiped successfully.\e[0m\n"
-        sleep 0.5
-    fi
-
-    tput rmcup 2>/dev/null || printf '\e[?1049l'
-    ;;
-
-help)
-    tput smcup 2>/dev/null || printf '\e[?1049h'
-    clear
-    cat <<'EOF'
-
-  Cliphist-fzf Keybindings & Controls
-  ─────────────────────────────────────────────────────────────
-
-  Navigation & Selection
-    Enter              Copy selection to clipboard and exit
-    Tab / Shift-Tab    Toggle mark on current item
-    Ctrl-n / Ctrl-p    Move cursor down / up
-    Ctrl-u             Clear search query
-
-  List & View Controls
-    Ctrl-/             Toggle line wrap entries list
-    Alt-/              Toggle preview window on / off
-    Alt-z              Toggle preview window zoom
-    Alt-w              Toggle preview window line wrap
-
-  Item & History Management
-    Ctrl-x             Delete selected (or marked) item(s)
-    Ctrl-Delete        Wipe entire clipboard database (with confirm)
-    Ctrl-r             Reload clipboard history list
-
-  Preview Controls
-    Alt-j / Alt-k      Scroll preview 1 line down / up
-    Alt-d / Alt-u      Scroll preview half-page down / up
-
-  Help
-    F1                 Open this help screen
-    Esc / Ctrl-c       Close help / Quit picker
-
-  ─────────────────────────────────────────────────────────────
-EOF
-    printf "  \e[90mPress any key to return...\e[0m"
-
-    read -rsn 1 </dev/tty
-    while read -rst 0.02 -n 100 </dev/tty; do :; done
-
-    tput rmcup 2>/dev/null || printf '\e[?1049l'
+    read -rsn 1 -p 'Wipe clipboard history? [y/N]: ' confirm </dev/tty
+    [[ "${confirm:-}" =~ ^[Yy]$ ]] && ch_cmd wipe
     ;;
 
 *)
@@ -122,7 +46,6 @@ EOF
             --highlight-line \
             --info=inline-right \
             --border=top \
-            --border-label=" Cliphist-fzf [F1: Help] " \
             --preview "$SELF preview {}" \
             --preview-window=right:55%,wrap-word \
             --preview-border=sharp \
@@ -135,17 +58,19 @@ EOF
             --bind "alt-d:preview-half-page-down,alt-u:preview-half-page-up" \
             --bind "ctrl-x:execute-silent($SELF delete {+f})+reload($SELF list)" \
             --bind "ctrl-delete,alt-delete:execute($SELF wipe)+reload($SELF list)" \
-            --bind "ctrl-r:reload($SELF list)" \
-            --bind "f1:execute($SELF help)"
+            --bind "ctrl-r:reload($SELF list)"
     )"
 
     [[ -z "$id" ]] && exit 0
 
-    if [[ "$(wc -l <<<"$id")" -eq 1 ]]; then
-        copy_item "$id"
+    if [[ "$id" != *$'\n'* ]]; then
+        ch_cmd decode <<<"$id" | wl-copy
     else
         while IFS= read -r item; do
-            [[ -n "$item" ]] && ch_cmd decode <<<"$item"
+            [[ -n "$item" ]] && {
+                ch_cmd decode <<<"$item"
+                printf '\n'
+            }
         done <<<"$id" | wl-copy
     fi
     ;;

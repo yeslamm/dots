@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+windows=$(swaymsg -t get_tree | jq -r '
+  .. | select(.name? == "__i3_scratch")?
+     | .floating_nodes[]?
+     | recurse(.nodes[]?, .floating_nodes[]?)
+     | select(.name != null and .name != "")
+     | "[\(.id)] \(.app_id // .window_properties.class // "window"): \(.name)"
+')
+
+if [[ -z "$windows" ]]; then
+    notify-send -t 1200 -h string:x-canonical-private-synchronous:scratch "Scratchpad" "No hidden windows found."
+    exit 0
+fi
+
+selected=$(printf '%s\n' "$windows" | fuzzel -d -p "Scratchpad > " -l 20 -w 90 || true)
+
+if [[ "$selected" =~ ^\[([0-9]+)\] ]]; then
+    swaymsg "[con_id=${BASH_REMATCH[1]}] focus"
+fi

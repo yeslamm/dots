@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 
 TARGET="${1:-}"
@@ -8,22 +7,16 @@ WOB_SOCK="${XDG_RUNTIME_DIR:-/run/user/${UID}}/wob.sock"
 STEP="5"
 
 send_wob() {
-    local val="$1"
-    if [[ -n "$val" && -p "$WOB_SOCK" ]] && pgrep -x wob >/dev/null; then
-        echo "$val" >"$WOB_SOCK"
-    fi
+    [[ -n "${1:-}" && -p "$WOB_SOCK" ]] && printf '%s\n' "$1" >"$WOB_SOCK"
 }
 
 case "$TARGET" in
-vol | volume)
+vol)
     case "$ACTION" in
     up) wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ "${STEP}%+" ;;
     down) wpctl set-volume @DEFAULT_AUDIO_SINK@ "${STEP}%-" ;;
     mute) wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle ;;
-    *)
-        echo "Usage: $(basename "$0") volume {up|down|mute}" >&2
-        exit 1
-        ;;
+    *) exit 1 ;;
     esac
 
     read -r _ raw_vol status <<<"$(wpctl get-volume @DEFAULT_AUDIO_SINK@)"
@@ -31,28 +24,21 @@ vol | volume)
         send_wob 0
     else
         IFS='.' read -r int frac <<<"$raw_vol"
-        frac="${frac:0:2}"
-        printf -v frac "%-2s" "$frac"
-        frac="${frac// /0}"
-        send_wob "$((10#$int * 100 + 10#$frac))"
+        frac="${frac}00"
+        send_wob "$((10#$int * 100 + 10#${frac:0:2}))"
     fi
     ;;
 
-mic | microphone)
+mic)
     case "$ACTION" in
     toggle) wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle ;;
     mute) wpctl set-mute @DEFAULT_AUDIO_SOURCE@ 1 ;;
     unmute) wpctl set-mute @DEFAULT_AUDIO_SOURCE@ 0 ;;
-    *)
-        echo "Usage: $(basename "$0") mic {toggle|mute|unmute}" >&2
-        exit 1
-        ;;
+    *) exit 1 ;;
     esac
 
-    raw_mic=$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@)
     status="Unmuted"
-    [[ "$raw_mic" == *"[MUTED]"* ]] && status="Muted"
-
+    [[ "$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@)" == *"[MUTED]"* ]] && status="Muted"
     notify-send -t 1000 -h string:x-canonical-private-synchronous:mic "Microphone: $status"
     ;;
 
@@ -60,10 +46,7 @@ brightness)
     case "$ACTION" in
     up) arg="${STEP}%+" ;;
     down) arg="${STEP}%-" ;;
-    *)
-        echo "Usage: $(basename "$0") brightness {up|down}" >&2
-        exit 1
-        ;;
+    *) exit 1 ;;
     esac
 
     IFS=',' read -r _ _ _ perc _ <<<"$(brightnessctl -m set "$arg")"
@@ -71,7 +54,7 @@ brightness)
     ;;
 
 *)
-    echo "Usage: $(basename "$0") {volume|mic|brightness} <action>" >&2
+    echo "Usage: $(basename "$0") {vol|mic|brightness} <action>" >&2
     exit 1
     ;;
 esac
