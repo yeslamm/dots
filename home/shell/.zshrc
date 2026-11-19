@@ -194,7 +194,6 @@ alias error='journalctl -b -p err'
 alias cc='clang -fsanitize=integer -fsanitize=undefined -ggdb3 -O0 -std=c11 -Wall -Werror -Wextra -lcs50 -lm'
 
 alias rr='nvim ~/.zshrc'
-alias swayconf='nvim ~/.config/sway/config'
 
 alias appid='swaymsg -t get_tree | rg app_id'
 alias img='swayimg'
