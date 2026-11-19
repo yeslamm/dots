@@ -51,7 +51,6 @@ tooltip label {
 #clock,
 #privacy,
 #tray,
-#custom-idlemgr,
 #network,
 #wireplumber,
 #battery,
@@ -73,16 +72,7 @@ tooltip label {
   font-weight: bold;
 }
 
-#custom-timer {
-  font-weight: bold;
-  margin-left: 5px;
-}
-
 #privacy,
-#custom-idlemgr {
-  color: #78a9ff;
-}
-
 #battery.charging {
   color: #25be6a;
 }

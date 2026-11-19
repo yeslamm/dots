@@ -10,11 +10,10 @@
     "temperature",
     "custom/fan"
   ],
-  "modules-center": ["clock", "custom/timer"],
+  "modules-center": ["clock"],
   "modules-right": [
     "privacy",
     "tray",
-    "custom/idlemgr",
     "network",
     "wireplumber",
     "battery",
@@ -76,15 +75,6 @@
       "on-click-right": "shift_down"
     }
   },
-  "custom/timer": {
-    "exec": "[ -f \"${XDG_RUNTIME_DIR:-/run/user/${UID}}/timer.state\" ] && echo 'T' || echo ''",
-    "return-type": "text",
-    "interval": "once",
-    "signal": 13,
-    "tooltip": false,
-    "on-click": "timer show",
-    "on-click-right": "timer stop"
-  },
   "network": {
     "format-wifi": "{essid}",
     "format-ethernet": "ETH",
@@ -122,13 +112,6 @@
       "balanced": "B",
       "power-saver": "S"
     }
-  },
-  "custom/idlemgr": {
-    "exec": "[ -f \"${XDG_RUNTIME_DIR:-/run/user/${UID}}/sway-power/idle_enabled\" ] && echo '' || echo 'INHIBIT'",
-    "return-type": "text",
-    "interval": "once",
-    "signal": 12,
-    "tooltip": false
   },
   "tray": {
     "icon-size": 16,
