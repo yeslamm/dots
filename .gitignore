@@ -5,6 +5,6 @@
 *.log
 *.lock
 secret.key
-home/apps/.config/aria2/aria2-rpc.conf
-home/desktop/.config/bluelight/config
-home/apps/.config/yazi/plugins/
+home/.config/aria2/aria2-rpc.conf
+home/.config/bluelight/config
+home/.config/yazi/plugins/
