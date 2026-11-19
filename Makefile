@@ -35,7 +35,6 @@ help:
 	@echo "    stow         - Link home/ dotfiles into $(HOME)"
 	@echo "    unstow       - Remove those links"
 	@echo "    simulate     - Preview stow changes (dry-run)"
-	@echo ""
 
 # ==============================================================================
 # Bootstrap
@@ -44,7 +43,6 @@ help:
 bootstrap: pkgs system profile
 	@echo ""
 	@echo "==> Bootstrap complete. Reboot recommended."
-	@echo ""
 
 # ==============================================================================
 # Packages
@@ -76,7 +74,6 @@ system:
 	sudo usermod -aG keyd $(TARGET_USER)
 	sudo systemctl daemon-reload
 	sudo systemctl enable --now keyd.service scx.service
-	@echo ""
 
 audio:
 	@echo ""
@@ -101,13 +98,11 @@ simulate:
 	@echo ""
 	@echo "==> Dry-run stow..."
 	$(STOW) -nvR home
-	@echo ""
 
 unstow:
 	@echo ""
 	@echo "==> Unstowing dotfiles..."
 	$(STOW) -D home
-	@echo ""
 
 profile: stow audio
 	@echo ""
@@ -115,4 +110,3 @@ profile: stow audio
 	systemctl --user enable --now wob.socket 2>/dev/null || systemctl --user enable wob.socket
 	@echo ""
 	@echo "==> Done."
-	@echo ""
