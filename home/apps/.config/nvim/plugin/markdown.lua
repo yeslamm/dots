@@ -39,6 +39,8 @@ require('render-markdown').setup {
         repeat_linebreak = true,
     },
 
+    link = { enabled = false },
+
     latex = {
         render_modes = { 'n', 'c', 'v' },
     },
