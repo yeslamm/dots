@@ -55,17 +55,17 @@ bootstrap: pkgs system profile
 pkgs:
 	@echo ""
 	@echo "==> Installing packages..."
-	@awk '!/^ *#/ && NF' $(DOTS_DIR)/pkglists/packages.txt | sort -u | yay -S --needed -
+	awk '!/^ *#/ && NF' $(DOTS_DIR)/pkglists/packages.txt | sort -u | yay -S --needed -
 
 pkgs-gaming:
 	@echo ""
 	@echo "==> Installing gaming packages..."
-	@awk '!/^ *#/ && NF' $(DOTS_DIR)/pkglists/gaming.txt | sort -u | yay -S --needed -
+	awk '!/^ *#/ && NF' $(DOTS_DIR)/pkglists/gaming.txt | sort -u | yay -S --needed -
 
 pkgs-virt:
 	@echo ""
 	@echo "==> Installing virtualization packages..."
-	@awk '!/^ *#/ && NF' $(DOTS_DIR)/pkglists/virt.txt | sort -u | yay -S --needed -
+	awk '!/^ *#/ && NF' $(DOTS_DIR)/pkglists/virt.txt | sort -u | yay -S --needed -
 
 # ==============================================================================
 # System (/etc)
